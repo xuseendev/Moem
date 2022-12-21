@@ -1,0 +1,156 @@
+@page "/licences/detail/{id:int}"
+@using MoeSystem.Client.Pages.Licences.Components
+
+
+@inject IHttpRepository<LicenceDetailDto> licenceService
+@inject IHttpRepository<LicenceDocumentDetailDto> LicenceDocumentService
+@inject IDialogService Dialog
+
+<div class="nk-content-body">
+    <div class="nk-block-head nk-block-head-sm">
+        <div class="nk-block-between g-3">
+            <div class="nk-block-head-content">
+                <h3 class="nk-block-title page-title">Licence / <strong
+                        class="text-primary small">@Licence.LicenceId</strong></h3>
+                <div class="nk-block-des text-soft">
+                    <ul class="list-inline">
+                        <li>Licence ID: <span class="text-base">@Licence.Id</span></li>
+                        <li>Last Update: <span class="text-base">
+                                @Licence.UpdatedOn.ToString("dd MMM,yyyy hh:mm tt")</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="nk-block-head-content">
+                <a href="html/user-list-regular.html" class="btn btn-outline-light bg-white d-none d-sm-inline-flex"><em
+                        class="icon ni ni-arrow-left"></em><span>Back</span></a>
+                <a href="html/user-list-regular.html"
+                    class="btn btn-icon btn-outline-light bg-white d-inline-flex d-sm-none"><em
+                        class="icon ni ni-arrow-left"></em></a>
+            </div>
+        </div>
+    </div><!-- .nk-block-head -->
+    <div class="nk-block">
+        <div class="card">
+            <div class="card-aside-wrap">
+                <div class="card-content">
+                    @if (loading)
+                    {
+
+                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+
+                    }
+                    else
+                    {
+                        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+
+                            <MudTabPanel Text="Licence" Icon="@Icons.Filled.AccountBox">
+
+                                <LicenceDetail Licence="Licence" />
+
+
+
+                            </MudTabPanel>
+                            <MudTabPanel Text="Documents" Icon="@Icons.Filled.Article">
+
+                                <LicenceDocuments LicenceId="Licence.Id" DialogOptions="maxWidth"
+                                LicenceEventCallBack="GetLicence" />
+                            </MudTabPanel>
+                            <MudTabPanel Text="Cordinates" Icon="@Icons.Filled.LocationOn">
+
+                                <LicenceCordinates LicenceId="Licence.Id" LicenceEventCallBack="GetLicence" />
+
+                            </MudTabPanel>
+                            <MudTabPanel Text="Comments" Icon="@Icons.Filled.InsertComment">
+
+                                <LicenceComments LicenceId="Licence.Id" LicenceEventCallBack="GetLicence" />
+                            </MudTabPanel>
+                            <MudTabPanel Text="Workflow History" Icon="@Icons.Filled.AccessTimeFilled">
+
+                                <LicenceWorkflows LicenceId="Licence.Id" LicenceEventCallBack="GetLicence" />
+                            </MudTabPanel>
+                            <MudTabPanel Text="Map Detail" Icon="@Icons.Filled.Map">
+                                <MudText>Map Detail Here</MudText>
+
+                            </MudTabPanel>
+                            <MudTabPanel Text="Activities" Icon="@Icons.Filled.Psychology">
+                                <LicenceLogs LicenceId="Licence.Id" />
+                            </MudTabPanel>
+                        </MudTabs>
+                    }
+
+
+                </div><!-- .card-content -->
+
+            </div><!-- .card-aside-wrap -->
+        </div><!-- .card -->
+    </div><!-- .nk-block -->
+</div>
+
+
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private LicenceDetailDto Licence = new LicenceDetailDto();
+
+    protected async override Task OnParametersSetAsync()
+    {
+
+        await GetLicence();
+    }
+
+
+
+    private async Task GetLicence()
+    {
+        loading = true;
+        Licence = await licenceService.Get($"{EndPoints.LicencesEndPoint}GetLicenceDetail/", Id);
+        loading = false;
+    }
+
+    private bool loading = true;
+
+
+
+
+    private string searchLicence = "";
+
+    private LicenceDto selectedLicenceItem = null;
+
+
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Medium,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+
+
+    };
+
+
+
+
+
+
+
+
+
+
+
+    private bool FilterLicence(LicenceDto element) => FilterLicence1(element, searchLicence);
+
+    private bool FilterLicence1(LicenceDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.LicenceType.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+}

@@ -1,0 +1,312 @@
+@page "/licenceworkflows/index"
+@inject IJSRuntime jsRuntime
+@inject IDialogService Dialog
+@inject IHttpRepository<LicenceWorkFlowDto> licenceWorkflowService
+@inject HttpInerceptorService _interceptor
+@inject ISnackbar snackbarService
+
+
+@implements IDisposable
+
+<div class="nk-content-body">
+    <div class="nk-block-head nk-block-head-sm">
+        <div class="nk-block-between">
+            <div class="nk-block-head-content">
+                <h3 class="nk-block-title page-title">My Worksheet</h3>
+            </div><!-- .nk-block-head-content -->
+            <div class="nk-block-head-content">
+                <div class="toggle-wrap nk-block-tools-toggle">
+                    <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu"><em
+                            class="icon ni ni-more-v"></em></a>
+                    <div class="toggle-expand-content" data-content="pageMenu">
+                        <ul class="nk-block-tools g-3">
+                            <li>
+                                <div class="drodown">
+                                    <a href="#" class="dropdown-toggle btn btn-white btn-dim btn-outline-light"
+                                        data-bs-toggle="dropdown"><em
+                                            class="d-none d-sm-inline icon ni ni-calender-date"></em><span><span
+                                                class="d-none d-md-inline">Import</span> Excel</span><em
+                                            class="dd-indc icon ni ni-chevron-right"></em></a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <ul class="link-list-opt no-bdr">
+                                            <li><a href="#"><span>Last 30 Days</span></a></li>
+                                            <li><a href="#"><span>Last 6 Months</span></a></li>
+                                            <li><a href="#"><span>Last 1 Years</span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-primary"><em
+                                        class="icon ni ni-plus"></em><span>Add Licence</span></button></li>
+                            <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-info"><em
+                                        class="icon ni ni-plus"></em><span>Add Company</span></button></li>
+                            <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-warning"><em
+                                        class="icon ni ni-plus"></em><span>Add LicenceType</span></button></li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!-- .nk-block-head-content -->
+        </div><!-- .nk-block-between -->
+    </div><!-- .nk-block-head -->
+    <div class="nk-block">
+        <MudTable Loading="loading" Items="@Workflows" Dense="true" Hover="true" Bordered="true" Striped="true"
+            Filter="new Func<LicenceWorkFlowDto,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">My Tasks</MudText>
+                <MudSpacer />
+
+                <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start"
+                    AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Id</MudTh>
+                <MudTh>Licence Type</MudTh>
+                <MudTh>Licence #</MudTh>
+                <MudTh>Company</MudTh>
+                <MudTh>Mineral Type</MudTh>
+                <MudTh>StartedOn</MudTh>
+                <MudTh>Task Owner</MudTh>
+                <MudTh>Licence Status</MudTh>
+                <MudTh>Status</MudTh>
+
+                <MudTh>CreatedOn</MudTh>
+                <MudTh>Actions</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nr">@context.Id</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.LicenceType</MudTd>
+                <MudTd DataLabel="Name">@context.LicenceId</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.CompanyName</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.MineralType</MudTd>
+                <MudTd DataLabel="Name">@context.StartedOn.ToShortDateString()</MudTd>
+                <MudTd DataLabel="Name">@context.TaskActualOwner</MudTd>
+                <MudTd DataLabel="Region">@context.WorkFlowName</MudTd>
+                <MudTd DataLabel="Active">@if (context.Status)
+                    {
+
+                        <MudChip Label="true" Color="Color.Success">APPROVED</MudChip>
+
+                    }
+                    else
+                    {
+
+                        <MudChip Label="true" Color="Color.Warning">PENDING</MudChip>
+
+                    }
+                </MudTd>
+                <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
+                <MudTd DataLabel="Actions">
+                    <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Href="@($"/licenceworkflows/detail/{context.Id}")"
+                        Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
+                    <MudButton Variant="Variant.Outlined" @onclick="(()=>UnClaim(context.Id))" Color="Color.Error"
+                        class="ml-1" Size="Size.Small">UnClaim</MudButton>
+
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+
+    </div>
+    <div class="nk-block">
+        <MudTable Loading="loadingClaim" Items="@ClaimWorkflows" Dense="true" Hover="@true" Bordered="true"
+            Striped="true" Filter="new Func<LicenceWorkFlowDto,bool>(FilterUnClaimFunc1)"
+            @bind-SelectedItem="searchselectedItem1">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">To Claim</MudText>
+                <MudSpacer />
+                <MudTextField @bind-Value="searchClaimString1" Placeholder="Search" Adornment="Adornment.Start"
+                    AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Id</MudTh>
+                <MudTh>Licence Type</MudTh>
+                <MudTh>Licence #</MudTh>
+                <MudTh>Company</MudTh>
+                <MudTh>Mineral Type</MudTh>
+                <MudTh>Issue Date</MudTh>
+                <MudTh>Expire Date</MudTh>
+                <MudTh>Licence Status</MudTh>
+                <MudTh>Status</MudTh>
+                <MudTh>CreatedOn</MudTh>
+                <MudTh>Actions</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nr">@context.Id</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.LicenceType</MudTd>
+                <MudTd DataLabel="Name">@context.LicenceId</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.CompanyName</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.MineralType</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.LicenceStartDate.Value.ToShortDateString()</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.LicenceEndDate.ToShortDateString()</MudTd>
+                <MudTd DataLabel="Region">@context.WorkFlowName</MudTd>
+                <MudTd DataLabel="Active">@if (context.Status)
+                    {
+
+                        <MudChip Label="true" Color="Color.Success">APPROVED</MudChip>
+
+                    }
+                    else
+                    {
+
+                        <MudChip Label="true" Color="Color.Warning">PENDING</MudChip>
+
+                    }
+                </MudTd>
+                <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
+                <MudTd DataLabel="Actions">
+                    <MudIconButton class="mr-2" Icon="@Icons.Filled.RemoveRedEye"
+                        Href="@($"/licenceworkflows/detail/{context.Id}")" Variant="Variant.Outlined"
+                        Color="Color.Primary" Size="Size.Small" />
+                    @if (ClaimWorkflows.First() == context)
+                    {
+
+                        <MudButton Variant="Variant.Outlined" @onclick="(()=>Claim(context.Id))" Color="Color.Success"
+                        Size="Size.Small">Claim</MudButton>
+                    }
+
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+
+    </div>
+</div>
+
+
+@code {
+
+    private bool bordered = false;
+    private bool loading = true;
+    private bool loadingClaim = true;
+    private string searchString1 = "";
+    private string searchClaimString1 = "";
+    private LicenceWorkFlowDto selectedItem1 = null;
+    private LicenceWorkFlowDto searchselectedItem1 = null;
+    private HashSet<LicenceWorkFlowDto> selectedItems = new HashSet<LicenceWorkFlowDto>();
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Large,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter
+    };
+
+    private List<LicenceWorkFlowDto> Workflows = new List<LicenceWorkFlowDto>();
+    private List<LicenceWorkFlowDto> ClaimWorkflows = new List<LicenceWorkFlowDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Tasks();
+        await ToClaims();
+
+
+    }
+
+    private async Task Tasks()
+    {
+        loading = true;
+        Workflows = await licenceWorkflowService.GetAll($"{EndPoints.LicenceWorkflowEndPoint}GetTaskLicences");
+        loading = false;
+    }
+
+    private async Task ToClaims()
+    {
+        loadingClaim = true;
+        ClaimWorkflows = await licenceWorkflowService.GetAll($"{EndPoints.LicenceWorkflowEndPoint}GetToClaimLicences");
+        loadingClaim = false;
+    }
+
+    private async Task Refresh()
+    {
+        await ToClaims();
+        await Tasks();
+    }
+
+    private async Task Claim(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Do you really want to claim thise task?");
+        parameters.Add("ButtonText", "Claim");
+        parameters.Add("Color", Color.Success);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.Large };
+
+        var dialog = Dialog.Show<ConfirmDialog>("Claim Task", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+
+            await licenceWorkflowService.Update($"{EndPoints.LicenceWorkflowEndPoint}ClaimTask/", null, id);
+            await Refresh();
+            snackbarService.Add("Successfully Claimed Task", Severity.Success);
+
+
+
+
+        }
+    }
+    private async Task UnClaim(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Do you really want to unclaim thise task?");
+        parameters.Add("ButtonText", "UnClaim");
+        parameters.Add("Color", Color.Warning);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.Medium };
+
+        var dialog = Dialog.Show<ConfirmDialog>("UnClaim Task", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            loading = true;
+            await licenceWorkflowService.Update($"{EndPoints.LicenceWorkflowEndPoint}UnClaimTask/", null, id);
+            await Refresh();
+            snackbarService.Add("Successfully UnClaimed Task", Severity.Success);
+
+
+
+        }
+    }
+
+    private void OpenCreateForm()
+    {
+        //Dialog.Show<Create>("Add New Workflow", maxWidth);
+    }
+
+    private bool FilterFunc1(LicenceWorkFlowDto element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(LicenceWorkFlowDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Licence.CompanyName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+    private bool FilterUnClaimFunc1(LicenceWorkFlowDto element) => FilterUnClaimFunc(element, searchString1);
+
+    private bool FilterUnClaimFunc(LicenceWorkFlowDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Licence.CompanyName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
+}

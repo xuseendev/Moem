@@ -1,0 +1,87 @@
+﻿@inject IHttpRepository<CreateRegionDto> regionService
+@inject ISnackbar snackbarService
+<EditForm Model="@model" OnValidSubmit="CreateRegion">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Name" HelperText="Max. 12 characters" Variant="Variant.Outlined" class="mb-3"
+                        @bind-Value="model.Name" For="@(() => model.Name)" />
+                    <MudCheckBox @bind-Checked="@model.Active" Size="Size.Small" Color="Color.Tertiary">Active
+                    </MudCheckBox>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
+                        Color="Color.Primary" class="ml-auto">
+                        @if (loading)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>@ButtonText</MudText>
+                        }
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
+                        Reset</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+
+@code {
+    CreateRegionDto model = new CreateRegionDto();
+    [Parameter]
+    public int? Id { get; set; }
+    [Parameter]
+    public string ButtonText { get; set; }
+    bool loading = false;
+    [Parameter]
+    public EventCallback Regions { get; set; }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (Id != null)
+            model = await regionService.Get($"{EndPoints.RegionEndPoint}", Id.Value);
+    }
+
+
+
+    private async Task CreateRegion()
+    {
+        loading = true;
+        Console.WriteLine("Hello");
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        if (Id == null)
+        {
+
+            await regionService.Post($"{EndPoints.RegionEndPoint}", model);
+            SnackMessage("Succesfully Saved Record", Severity.Success);
+        }
+        else
+        {
+            model.Id = Id.Value;
+            await regionService.Update($"{EndPoints.RegionEndPoint}", model, Id.Value);
+            SnackMessage("Succesfully Updated Record", Severity.Success);
+        }
+        await Regions.InvokeAsync();
+        loading = false;
+
+    }
+
+    private void SnackMessage(string text, Severity type)
+    {
+        snackbarService.Add(text, type);
+    }
+
+}

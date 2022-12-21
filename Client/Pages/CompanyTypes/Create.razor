@@ -1,0 +1,65 @@
+@inject IHttpRepository<CreateCompanyTypeDto> companyTypeService
+@inject ISnackbar snackbarService
+<EditForm Model="@model" OnValidSubmit="CreateMineralType">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Name" HelperText="Max. 12 characters" @bind-Value="model.Name"
+                        Variant="Variant.Outlined" class="mb-3" For="@(() => model.Name)" />
+                    <MudCheckBox @bind-Checked="@model.Active" Size="Size.Small" Color="Color.Tertiary">Active
+                    </MudCheckBox>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
+                        Color="Color.Primary" class="ml-auto">
+                        @if (loading)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Register</MudText>
+                        }
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
+                        Reset</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+
+@code {
+    CreateCompanyTypeDto model = new CreateCompanyTypeDto();
+    bool loading = false;
+    [Parameter]
+    public EventCallback CompanyTypes { get; set; }
+
+    private async Task CreateMineralType()
+    {
+        loading = true;
+        Console.WriteLine("Hello");
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        await companyTypeService.Post($"{EndPoints.CompanyTypeEndPoint}", model);
+        SnackMessage("Succesfully Saved Record", Severity.Success);
+        await CompanyTypes.InvokeAsync();
+        loading = false;
+
+    }
+
+    private void SnackMessage(string text, Severity type)
+    {
+        snackbarService.Add(text, type);
+    }
+
+}

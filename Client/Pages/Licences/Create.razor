@@ -1,0 +1,291 @@
+@inject IHttpRepository<CreateLicenceDto> licenceService
+@inject IHttpRepository<BaseLookUpDto> lookupService
+@inject IHttpRepository<CompanyDto> companyService
+@inject IHttpRepository<LicenceTypeDto> licenceTypeService
+@inject ISnackbar snackbarService
+@inject NavigationManager navManager
+<EditForm Model="@model" OnValidSubmit="CreateLicenceType">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+                    <MudItem xs="12">
+                        <MudGrid>
+                            <MudItem xs="6">
+
+                          <MudTextField Label="LicenceId" Variant="Variant.Outlined"  @bind-Value="model.LicenceId"
+                        For="@(() => model.LicenceId)" />
+                            </MudItem>
+
+
+                            <MudItem xs="6">
+                                                              <MudSelect Variant="Variant.Outlined" T="int" Label="Mineral Type" @bind-Value="model.MineralTypeId" AnchorOrigin="Origin.BottomCenter"    For="@(() => model.MineralTypeId)">
+                        @foreach (var type in MineralTypes)
+                        {
+
+                            <MudSelectItem Value="@(type.Id)">@type.Name</MudSelectItem>
+
+                        }                                 </MudSelect>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+        <h6 class="overline-title text-primary-alt mt-5">Company Information</h6>
+   
+                    <MudItem xs="12">
+                        <MudGrid>
+                                          <MudItem xs="4">
+                                                                                                         <MudSelect Variant="Variant.Outlined" T="int" Label="Company" ValueChanged="value => CompanyOnChange(value)"  AnchorOrigin="Origin.BottomCenter"    For="@(() => model.CompanyId)">
+                        @foreach (var company in Companies)
+                        {
+
+                            <MudSelectItem Value="@(company.Id)">@company.Name</MudSelectItem>
+
+
+                        }
+                                                              </MudSelect>
+                            </MudItem>
+                            <MudItem xs="4">
+                                         <MudTextField Label="Company Name" Variant="Variant.Outlined"  Disabled="true" @bind-Value="Company.Name"
+                        For="@(() => Company.Name)" />
+                            </MudItem>
+                                         <MudItem xs="4">
+                                         <MudTextField Label="Company Phone" Variant="Variant.Outlined"  Disabled="true" @bind-Value="Company.TellPhone"
+                        For="@(() => Company.TellPhone)" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                         <h6 class="overline-title text-primary-alt mt-5">Licence Information</h6>
+                          <MudItem xs="12">
+                        <MudGrid>
+                                          <MudItem xs="3">
+                                                                                                         <MudSelect Variant="Variant.Outlined" T="int" Label="Licence Type" ValueChanged="value => LicenceOnChange(value)"  AnchorOrigin="Origin.BottomCenter"    For="@(() => model.LicenceTypeId)">
+                        @foreach (var licenceType in LicenceTypes)
+                        {
+
+                            <MudSelectItem Value="@(licenceType.Id)">@licenceType.Name</MudSelectItem>
+
+
+                        }
+                                                              </MudSelect>
+                            </MudItem>
+                            <MudItem xs="3">
+                                         <MudTextField Label="Term of Licence" Variant="Variant.Outlined"  Disabled="true" @bind-Value="model.TermOfTheLicence"
+                        For="@(() => model.TermOfTheLicence)" />
+                            </MudItem>
+                                         <MudItem xs="3">
+          
+                              <MudDatePicker Variant="Variant.Outlined" Label="Issue Date" DateChanged="value => IssueDateOnChange(value)" For="@(() => model.LicenceStartDate)" />
+                        
+                            </MudItem>
+                                                             <MudItem xs="3">
+                                         <MudTextField Label="Licence EndDate" Variant="Variant.Outlined"  Disabled="true" @bind-Value="model.LicenceEndDate"
+                        For="@(() => model.LicenceEndDate)" />
+                        
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                     <h6 class="overline-title text-primary-alt mt-5">Address Information</h6>
+                          <MudItem xs="12" class="mb-1">
+                        <MudGrid>
+                        
+
+                            <MudItem xs="4" >
+                 
+                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="Region"  ValueChanged="value => RegionOnChange(value)" AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var region in Regions)
+                        {
+
+                            <MudSelectItem Value="@(region.Id)">@region.Name</MudSelectItem>
+
+
+                        }
+                                                              </MudSelect>
+                            </MudItem>
+                                  <MudItem xs="4">
+                     
+                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="City" ValueChanged="value => CityOnChange(value)" AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var city in Cities)
+                        {
+
+                            <MudSelectItem Value="@(city.Id)">@city.Name</MudSelectItem>
+
+
+                        }
+                                                              </MudSelect>
+                            </MudItem>
+                                            <MudItem xs="4">
+                     
+                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="Area" @bind-Value="model.AreaId" AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var area in Areas)
+                        {
+
+                            <MudSelectItem Value="@(area.Id)">@area.Name</MudSelectItem>
+
+
+                        }
+                                                              </MudSelect>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                           <h6 class="overline-title text-primary-alt mt-5">Additional Information</h6>
+            <MudItem xs="12">
+
+                                <MudTextField Variant="Variant.Outlined" Lines="5" Label="Description"  @bind-Value="model.Note"
+                                    For="@(() => model.Note)" />
+                   </MudItem>
+                </MudCardContent>
+                <MudCardActions class="mt-3">
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
+                        Color="Color.Primary" class="ml-auto">
+                        @if (loading)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Register</MudText>
+                        }
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
+                        Reset</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+
+@code {
+    CreateLicenceDto model = new CreateLicenceDto();
+     private CompanyDto Company =new CompanyDto();
+     private LicenceTypeDto LicenceType=new LicenceTypeDto();
+         [Parameter] 
+    public int? Id { get; set; }
+    [Parameter]
+    public string ButtonText { get; set; }
+
+    bool loading = false;
+    [Parameter]
+    public EventCallback Workflows { get; set; }
+        private List<string> Types = new List<string>(){
+"Indivudual",
+"Group"
+};
+    private async Task CreateLicenceType()
+    {
+        loading = true;
+        Console.WriteLine("Hello");
+        if(Id==null){
+
+        await licenceService.Post($"{EndPoints.LicencesEndPoint}GenerateLicence", model);
+        SnackMessage("Succesfully Saved Record", Severity.Success);
+        }else{
+            model.Id=Id.Value;
+             await licenceService.Update($"{EndPoints.LicencesEndPoint}", model,Id.Value);
+        SnackMessage("Succesfully Saved Record", Severity.Success); 
+        }
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        await Workflows.InvokeAsync();
+        model=new CreateLicenceDto();
+        //navManager.NavigateTo("/companies/detail/{context.Id}");
+        loading = false;
+
+    }
+     private IEnumerable<BaseLookUpDto> LicenceTypes = new List<BaseLookUpDto>();
+     private IEnumerable<BaseLookUpDto> Companies = new List<BaseLookUpDto>();
+     private IEnumerable<BaseLookUpDto> MineralTypes = new List<BaseLookUpDto>();
+
+        protected override async Task OnInitializedAsync()
+    {
+        LicenceTypes = await lookupService.GetAll($"{EndPoints.LicenceTypesEndPoint}LookUp");
+        Companies = await lookupService.GetAll($"{EndPoints.CompaniesEndPoint}LookUp");
+        MineralTypes = await lookupService.GetAll($"{EndPoints.MineralTypeEndPoint}LookUp");
+        Regions = await lookupService.GetAll($"{EndPoints.RegionEndPoint}LookUp");
+     
+
+    }
+
+    protected async override Task OnParametersSetAsync()
+        {
+            if(Id.HasValue)
+            model=await licenceService.Get($"{EndPoints.LicencesEndPoint}",Id.Value);
+
+        }
+         private IEnumerable<BaseLookUpDto> Regions = new List<BaseLookUpDto>();
+     private IEnumerable<BaseLookUpDto> Cities = new List<BaseLookUpDto>();
+     private IEnumerable<BaseLookUpDto> Areas = new List<BaseLookUpDto>();
+          private async Task RegionOnChange(int value)
+    {
+        model.RegionId =value;
+        Cities = await lookupService.GetAll($"{EndPoints.CityEndPoint}LookUp/{model.RegionId}");
+        
+    }
+            private async Task CityOnChange(int value)
+    {
+        model.CityId =value;
+        Areas = await lookupService.GetAll($"{EndPoints.AreaEndPoint}LookUp/{model.CityId}");
+        
+    }
+
+        private async Task CompanyOnChange(int value)
+    {
+        model.CompanyId =value;
+        Company=await companyService.Get($"{EndPoints.CompaniesEndPoint}",value);
+        
+    }
+
+            private void IssueDateOnChange(DateTime? value)
+    {
+        model.LicenceStartDate =value.Value;
+          var days=0;
+        switch(LicenceType.LicencePeriodType){
+            case "Year":
+            days=360 * LicenceType.LicencePeriod;
+            break;
+            case "Month":
+            days=30 * LicenceType.LicencePeriod;
+            break;
+            default:
+            days=1 * LicenceType.LicencePeriod;
+            break;
+
+        }
+        model.LicenceEndDate=model.LicenceStartDate.Value.AddDays(days);
+        
+    }
+            private async Task LicenceOnChange(int value)
+    {
+        model.LicenceTypeId =value;
+        LicenceType=await licenceTypeService.Get($"{EndPoints.LicenceTypesEndPoint}",value); 
+        model.TermOfTheLicence=LicenceType.TermOfLicence;
+      
+
+        
+
+        
+    }
+            @* private async Task CityOnChange(int value)
+    {
+        model.CityId =value;
+        Areas = await lookupService.GetAll($"{EndPoints.AreaEndPoint}LookUp/{model.CityId}");
+        
+    } *@
+
+    private void SnackMessage(string text, Severity type)
+    {
+        snackbarService.Add(text, type);
+    }
+
+}

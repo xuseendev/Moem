@@ -1,0 +1,132 @@
+@page "/documenttypes/index"
+@inject IJSRuntime jsRuntime
+@inject IDialogService Dialog
+@inject HttpInerceptorService _interceptor
+
+@implements IDisposable
+@inject IHttpRepository<DocumentTypeDto> documentTypeService
+<div class="nk-content-body">
+    <div class="nk-block-head nk-block-head-sm">
+        <div class="nk-block-between">
+            <div class="nk-block-head-content">
+                <h3 class="nk-block-title page-title">Document Types</h3>
+            </div><!-- .nk-block-head-content -->
+            <div class="nk-block-head-content">
+                <div class="toggle-wrap nk-block-tools-toggle">
+                    <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu"><em
+                            class="icon ni ni-more-v"></em></a>
+                    <div class="toggle-expand-content" data-content="pageMenu">
+                        <ul class="nk-block-tools g-3">
+                            <li>
+                                <div class="drodown">
+                                    <a href="#" class="dropdown-toggle btn btn-white btn-dim btn-outline-light"
+                                        data-bs-toggle="dropdown"><em
+                                            class="d-none d-sm-inline icon ni ni-calender-date"></em><span><span
+                                                class="d-none d-md-inline">Import</span> Excel</span><em
+                                            class="dd-indc icon ni ni-chevron-right"></em></a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <ul class="link-list-opt no-bdr">
+                                            <li><a href="#"><span>Last 30 Days</span></a></li>
+                                            <li><a href="#"><span>Last 6 Months</span></a></li>
+                                            <li><a href="#"><span>Last 1 Years</span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-primary"><em
+                                        class="icon ni ni-plus"></em><span>Add</span></button></li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!-- .nk-block-head-content -->
+        </div><!-- .nk-block-between -->
+    </div><!-- .nk-block-head -->
+    <div class="nk-block">
+        <MudTable Loading="loading" Items="@Elements" Dense="true" Hover="@hover" Bordered="@bordered"
+            Striped="@striped" Filter="new Func<DocumentTypeDto,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">List</MudText>
+                <MudSpacer />
+                <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start"
+                    AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Id</MudTh>
+                <MudTh>Name</MudTh>
+                <MudTh>Active</MudTh>
+                <MudTh>CreatedBy</MudTh>
+                <MudTh>CreatedOn</MudTh>
+                <MudTh>Actions</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nr">@context.Id</MudTd>
+                <MudTd DataLabel="Sign">@context.Name</MudTd>
+                <MudTd DataLabel="Name">@context.Active</MudTd>
+                <MudTd DataLabel="Position">@context.CreatedBy</MudTd>
+                <MudTd DataLabel="Molar mass">@context.CreatedOn</MudTd>
+                <MudTd DataLabel="Actions">
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Error"
+                        Size="Size.Small" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary"
+                        Size="Size.Small" />
+
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+
+    </div>
+</div>
+
+
+@code {
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+    private bool loading = true;
+    private string searchString1 = "";
+    private DocumentTypeDto selectedItem1 = null;
+    private HashSet<DocumentTypeDto> selectedItems = new HashSet<DocumentTypeDto>();
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Medium,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter
+    };
+
+    private IEnumerable<DocumentTypeDto> Elements = new List<DocumentTypeDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _interceptor.MonitorEvent();
+        Elements = await documentTypeService.GetAll($"{EndPoints.DocumentTypeEndPoint}");
+        loading = false;
+    }
+
+    private void OpenCreateForm()
+    {
+        Dialog.Show<Create>("Add New CompanyType", maxWidth);
+    }
+
+    private bool FilterFunc1(DocumentTypeDto element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(DocumentTypeDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
+}

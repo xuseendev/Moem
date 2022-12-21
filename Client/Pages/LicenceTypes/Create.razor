@@ -1,0 +1,140 @@
+@inject IHttpRepository<CreateLicenceTypeDto> licenceTypeService
+@inject ISnackbar snackbarService
+<EditForm Model="@model" OnValidSubmit="CreateLicenceType">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+
+                    <MudItem xs="12">
+                        <MudGrid>
+                            <MudItem xs="6">
+
+                                <MudTextField Label="Name" HelperText="Max. 12 characters" @bind-Value="model.Name"
+                                    Variant="Variant.Outlined" class="mb-3" For="@(() => model.Name)" />
+                            </MudItem>
+
+
+                            <MudItem xs="6">
+                                <MudTextField Label="Term Of Licence" @bind-Value="model.TermOfLicence"
+                                    Variant="Variant.Outlined" class="mb-3" For="@(() => model.TermOfLicence)" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudGrid>
+                            <MudItem xs="6">
+
+                                <MudTextField Label="Licence Period" HelperText="Max. 12 number"
+                                    @bind-Value="model.LicencePeriod" Variant="Variant.Outlined" class="mb-3"
+                                    For="@(() => model.LicencePeriod)" />
+                            </MudItem>
+
+
+                            <MudItem xs="6">
+                                <MudSelect T="string" Label="Licence Period Type" @bind-Value="model.LicencePeriodType"
+                                    AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" class="mb-3">
+
+                                    @foreach (var type in LicencePeriodTypes)
+                                    {
+
+                                        <MudSelectItem Value="@(type)">@type</MudSelectItem>
+
+
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudGrid>
+                            <MudItem xs="4">
+
+                                <MudTextField Label="Title" HelperText="Max. 12 characters" @bind-Value="model.Title"
+                                    Variant="Variant.Outlined" class="mb-3" For="@(() => model.Title)" />
+                            </MudItem>
+
+
+                            <MudItem xs="4">
+                                <MudTextField Label="SubTitle" @bind-Value="model.SubTitle" Variant="Variant.Outlined"
+                                    class="mb-3" For="@(() => model.SubTitle)" />
+                            </MudItem>
+                            <MudItem xs="4">
+                                <MudCheckBox @bind-Checked="@model.Active" Size="Size.Small" Color="Color.Tertiary">
+                                    Active
+                                </MudCheckBox>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                    <MudItem xs="12">
+                        <MudGrid>
+                            <MudItem xs="12">
+
+                                <MudTextField Lines="5" Label="Description" @bind-Value="model.Description"
+                                    Variant="Variant.Outlined" class="mb-3" For="@(() => model.Description)" />
+                            </MudItem>
+
+
+
+
+                        </MudGrid>
+                    </MudItem>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
+                        Color="Color.Primary" class="ml-auto">
+                        @if (loading)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Register</MudText>
+                        }
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
+                        Reset</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+
+@code {
+    CreateLicenceTypeDto model = new CreateLicenceTypeDto();
+    bool loading = false;
+    [Parameter]
+    public EventCallback Areas { get; set; }
+    private List<string> LicencePeriodTypes = new List<string>(){
+"Year",
+"Month"
+};
+    private async Task CreateLicenceType()
+    {
+        loading = true;
+        Console.WriteLine("Hello");
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        await licenceTypeService.Post($"{EndPoints.LicenceTypesEndPoint}", model);
+        SnackMessage("Succesfully Saved Record", Severity.Success);
+        await Areas.InvokeAsync();
+        model = new CreateLicenceTypeDto();
+        loading = false;
+
+    }
+
+    private void SnackMessage(string text, Severity type)
+    {
+        snackbarService.Add(text, type);
+    }
+
+}

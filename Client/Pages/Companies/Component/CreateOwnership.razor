@@ -1,0 +1,100 @@
+@inject IHttpRepository<CreateCompanyOwnershipDto> companyOwnershipservice
+@inject IHttpRepository<DocumentTypeDto> documentTypeService
+@inject ISnackbar snackbarService
+<EditForm Model="@model" OnValidSubmit="CreateCompanyOwnership">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+                    <MudSelect class="mb-3" T="string" Label="Identity Type" Variant="Variant.Outlined"
+                        @bind-Value="model.IdType" AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var type in Types)
+                        {
+
+                            <MudSelectItem Value="@(type)">@type</MudSelectItem>
+
+
+                        }
+                    </MudSelect>
+                    <MudTextField class="mb-3" Label="Person Id" Variant="Variant.Outlined" HelperText="Max. 12 characters"
+                        @bind-Value="model.PersonId" For="@(() => model.PersonId)" />
+                    <MudTextField class="mb-3" Label="Name" Variant="Variant.Outlined" HelperText="Max. 12 characters"
+                        @bind-Value="model.Name" For="@(() => model.Name)" />
+                    <MudTextField class="mb-3" Label="Phone" Variant="Variant.Outlined" InputType="InputType.Number"
+                        HelperText="Max. 10 characters" @bind-Value="model.Phone" For="@(() => model.Phone)" />
+                    <MudTextField class="mb-3" Label="Title" Variant="Variant.Outlined" HelperText="Max. 12 characters"
+                        @bind-Value="model.Title" For="@(() => model.Title)" />
+
+
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
+                        Color="Color.Primary" class="ml-auto">
+                        @if (loading)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Register</MudText>
+                        }
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
+                        Reset</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+
+@code {
+    CreateCompanyOwnershipDto model = new CreateCompanyOwnershipDto();
+    bool loading = false;
+    [Parameter]
+    public int CompanyId { get; set; }
+
+    [Parameter]
+    public EventCallback Areas { get; set; }
+
+    private List<string> Types = new List<string>(){
+"Passport",
+"National Id",
+"Licence"
+};
+
+    private async Task CreateCompanyOwnership()
+    {
+        model.CompanyId = CompanyId;
+        loading = true;
+        Console.WriteLine("Hello");
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        await companyOwnershipservice.Post($"{EndPoints.CompanyOwnershipEndPoint}", model);
+        SnackMessage("Succesfully Saved Record", Severity.Success);
+        model = new CreateCompanyOwnershipDto();
+        await Areas.InvokeAsync();
+        loading = false;
+
+    }
+
+
+
+
+
+
+
+    private void SnackMessage(string text, Severity type)
+    {
+        snackbarService.Add(text, type);
+    }
+
+}

@@ -1,0 +1,43 @@
+@inject IHttpRepository<BaseLogsDto> logsRepository
+<MudText Typo="Typo.h6">Company Logs</MudText>
+<div class="nk-block card">
+    <table class="table table-ulogs">
+        <thead class="table-light">
+            <tr>
+                <th class="tb-col-os"><span class="overline-title">Id <span class="d-sm-none"></span></span></th>
+                <th class="tb-col-ip"><span class="overline-title">Description</span></th>
+                <th class="tb-col-time"><span class="overline-title">CreatedBy</span></th>
+                <th class="tb-col-ip"><span class="overline-title">Date</span></th>
+                <th class="tb-col-time"><span class="overline-title">Time</span></th>
+
+                <th class="tb-col-action"><span class="overline-title">&nbsp;</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in Logs)
+            {
+
+                <tr>
+                    <td class="tb-col-os">@log.Id</td>
+                    <td class="tb-col-ip"><span class="sub-text">@log.Description</span></td>
+                    <td class="tb-col-ip"><span class="sub-text">@log.CreatedBy</span></td>
+                    <td class="tb-col-ip"><span class="sub-text">@log.Dated</span></td>
+                    <td class="tb-col-time">@log.Dated.ToShortTimeString()</td>
+                    <td class="tb-col-action"></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter]
+    public int CompanyId { get; set; }
+
+    private List<BaseLogsDto> Logs = new List<BaseLogsDto>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        Logs = await logsRepository.GetAll($"{EndPoints.CompaniesEndPoint}GetLogs/{CompanyId}");
+    }
+}

@@ -1,0 +1,101 @@
+@inject IDialogService Dialog
+@inject IHttpRepository<CompanyLicenceDto> companyOwnershipService
+@inject ISnackbar snackbarService
+
+<MudTable Items="Company.CompanyLicences" Dense="true" Hover="true" Bordered="true" Striped="true"
+    Filter="new Func<CompanyLicenceDto,bool>(FilterCompanyOwnership)" @bind-SelectedItem="selectedOwnership">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Company Licences</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchCompanyLicence" Placeholder="Search" Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Number</MudTh>
+        <MudTh>Issue Date</MudTh>
+        <MudTh>Start Date</MudTh>
+        <MudTh>CreatedBy</MudTh>
+        <MudTh>CreatedOn</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Id</MudTd>
+        <MudTd DataLabel="Region">@context.Number</MudTd>
+        <MudTd DataLabel="Name">@context.IssueDate.Value.ToShortDateString()</MudTd>
+        <MudTd DataLabel="Name">@context.ExpireDate.Value.ToShortDateString()</MudTd>
+
+        <MudTd DataLabel="CreatedBy">@context.CreatedBy</MudTd>
+        <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Variant="Variant.Outlined" Color="Color.Primary"
+                Size="Size.Small" />
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" @onclick="(()=>DeleteOwnership(context.Id))"
+                Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
+
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Parameter]
+    public CompanyDetailDto Company { get; set; }
+    [Parameter]
+    public EventCallback CompanyEventCallBack { get; set; }
+
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Medium,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+
+
+    };
+
+    private CompanyLicenceDto selectedOwnership = null;
+    private string searchCompanyLicence = "";
+    private HashSet<CompanyLicenceDto> selectedOwnershipItems = new HashSet<CompanyLicenceDto>();
+    private bool FilterCompanyOwnership(CompanyLicenceDto element) => FilterCompanyOwnership1(element,
+    searchCompanyLicence);
+
+    private bool FilterCompanyOwnership1(CompanyLicenceDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        @* if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true; *@
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+
+
+
+
+
+    private async Task DeleteOwnership(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Do you really want to delete these records?");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = Dialog.Show<ConfirmDialog>("Delete", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            System.Console.WriteLine("Hello");
+            await companyOwnershipService.Delete($"{EndPoints.CompanyOwnershipEndPoint}", id);
+            snackbarService.Add("Successfully Deleted Record", Severity.Success);
+            await CompanyEventCallBack.InvokeAsync();
+        }
+    }
+
+}

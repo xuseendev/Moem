@@ -1,0 +1,83 @@
+@inject IHttpRepository<CreateCompanyLicenceDto> companyLicenceService
+@inject IHttpRepository<DocumentTypeDto> documentTypeService
+@inject ISnackbar snackbarService
+<EditForm Model="@model" OnValidSubmit="Create">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+
+                    <MudTextField Label="Number" HelperText="Max. 12 characters" Variant="Variant.Outlined" @bind-Value="model.Number"
+                        For="@(() => model.Number)" />
+                    <MudDatePicker Label="Issue Date" @bind-Date="model.IssueDate" Variant="Variant.Outlined" For="@(() => model.IssueDate)" />
+                    <MudDatePicker Label="Expire Date" @bind-Date="model.ExpireDate" Variant="Variant.Outlined" For="@(() => model.ExpireDate)" />
+
+
+
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
+                        Color="Color.Primary" class="ml-auto">
+                        @if (loading)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Register</MudText>
+                        }
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
+                        Reset</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+
+@code {
+    CreateCompanyLicenceDto model = new CreateCompanyLicenceDto();
+    bool loading = false;
+    [Parameter]
+    public int CompanyId { get; set; }
+
+    [Parameter]
+    public EventCallback Areas { get; set; }
+
+
+
+    private async Task Create()
+    {
+        model.CompanyId = CompanyId;
+        loading = true;
+        Console.WriteLine("Hello");
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        await companyLicenceService.Post($"{EndPoints.CompanyLicenceEndPoint}", model);
+        SnackMessage("Succesfully Saved Record", Severity.Success);
+        model = new CreateCompanyLicenceDto();
+        await Areas.InvokeAsync();
+        loading = false;
+
+    }
+
+
+
+
+
+
+
+    private void SnackMessage(string text, Severity type)
+    {
+        snackbarService.Add(text, type);
+    }
+
+}

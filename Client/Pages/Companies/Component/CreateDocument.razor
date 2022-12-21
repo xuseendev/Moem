@@ -1,0 +1,125 @@
+@inject IHttpRepository<CreateCompanyDocumentDto> companyDocumentService
+@inject IHttpRepository<DocumentTypeDto> documentTypeService
+@inject ISnackbar snackbarService
+<EditForm Model="@model" OnValidSubmit="CreateArea">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Document Name" Variant="Variant.Outlined" HelperText="Max. 12 characters"
+                        @bind-Value="model.DocumentName" For="@(() => model.DocumentName)" />
+                    <MudSelect T="int" Label="Document Type" Variant="Variant.Outlined"
+                        @bind-Value="model.DocumentTypeId" AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var city in DocumentTypes)
+                        {
+
+                            <MudSelectItem Value="@(city.Id)">@city.Name</MudSelectItem>
+
+
+                        }
+                    </MudSelect>
+
+                    <InputFile id="fileInput" OnChange="UploadFiles" hidden MaxBufferSize="@(1000*1024)" />
+                    <MudButton HtmlTag="label" class="mt-4" Variant="Variant.Filled" Color="Color.Success"
+                        StartIcon="@Icons.Filled.CloudUpload" for="fileInput">
+                        Upload File
+                    </MudButton>
+                    <p class="text-danger">@UploadFileWarning</p>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
+                        Color="Color.Primary" class="ml-auto">
+                        @if (loading)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Register</MudText>
+                        }
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
+                        Reset</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+
+@code {
+    CreateCompanyDocumentDto model = new CreateCompanyDocumentDto();
+    bool loading = false;
+    private string UploadFileWarning = string.Empty;
+    [Parameter]
+    public int CompanyId { get; set; }
+    [Parameter]
+    public EventCallback Areas { get; set; }
+    private IEnumerable<DocumentTypeDto> DocumentTypes = new List<DocumentTypeDto>();
+    private async Task CreateArea()
+    {
+        if (file == null)
+        {
+            SnackMessage("You need to upload document", Severity.Error);
+            return;
+        }
+        model.CompanyId = CompanyId;
+        loading = true;
+        Console.WriteLine("Hello");
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        await companyDocumentService.Post($"{EndPoints.CompanyDocumentEndPoint}", model);
+        SnackMessage("Succesfully Saved Record", Severity.Success);
+        model = new CreateCompanyDocumentDto();
+        await Areas.InvokeAsync();
+        loading = false;
+
+    }
+    private long maxFileSize = 1024 * 15;
+    IBrowserFile file = null;
+
+    private async Task UploadFiles(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+        if (file != null)
+        {
+            var ext = System.IO.Path.GetExtension(file.Name);
+            if (ext.ToLower() == ".jpg" || ext.ToLower() == "png" || ext.ToLower() == ".jpeg" || ext.ToLower() == ".pdf")
+            {
+
+                var buffers = new byte[file.Size];
+                await file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 1024).ReadAsync(buffers);
+                model.FileName = file.Name;
+                model.FileExtension = Path.GetExtension(file.Name);
+                model.File = buffers;
+                UploadFileWarning = file.Name;
+            }
+            else
+            {
+                UploadFileWarning = "Please select a valid image file (*.jpg | *.png)";
+
+            }
+
+        }
+
+
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        DocumentTypes = await documentTypeService.GetAll($"{EndPoints.DocumentTypeEndPoint}LookUp");
+
+    }
+    private void SnackMessage(string text, Severity type)
+    {
+        snackbarService.Add(text, type);
+    }
+
+}

@@ -1,0 +1,123 @@
+@inject IDialogService Dialog
+@inject IHttpRepository<LicenceCordinateDto> licenceCordinateService
+@inject ISnackbar snackbarService
+<MudButton Variant="Variant.Filled" @onclick="OpenLicenceCordinateForm" StartIcon="@Icons.Material.Filled.Add"
+    Color="Color.Primary">Add Cordinates
+</MudButton>
+<MudTable Items="Cordinates" Dense="true" Hover="true" Bordered="true" Striped="true"
+    Filter="new Func<LicenceCordinateDto,bool>(FilterCompanyOwnership)" @bind-SelectedItem="selectedOwnership">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Ownerships</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchOwnership" Placeholder="Search" Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Lat</MudTh>
+        <MudTh>Lng</MudTh>
+        <MudTh>CreatedBy</MudTh>
+        <MudTh>CreatedOn</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Id</MudTd>
+        <MudTd DataLabel="Region">@context.Name</MudTd>
+        <MudTd DataLabel="Name">@context.Lat</MudTd>
+        <MudTd DataLabel="Name">@context.Lng</MudTd>
+
+        <MudTd DataLabel="CreatedBy">@context.CreatedBy</MudTd>
+        <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Variant="Variant.Outlined" Color="Color.Primary"
+                Size="Size.Small" />
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" @onclick="(()=>DeleteOwnership(context.Id))"
+                Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
+
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Parameter]
+    public int LicenceId { get; set; }
+    [Parameter]
+    public EventCallback LicenceEventCallBack { get; set; }
+
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Medium,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+
+
+    };
+
+
+
+    private List<LicenceCordinateDto> Cordinates = new List<LicenceCordinateDto>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        Cordinates = await licenceCordinateService.GetAll($"{EndPoints.LicencesEndPoint}GetLicenceCordinates/{LicenceId}");
+    }
+
+    private async Task OpenLicenceCordinateForm()
+    {
+
+        var parameters = new DialogParameters();
+        parameters.Add("LicenceId", LicenceId);
+        var dialog = Dialog.Show<CreateLicenceCordinates>("Add New Cordinates", parameters, maxWidth);
+        var result = await dialog.Result;
+        await OnInitializedAsync();
+    }
+
+
+
+    private LicenceCordinateDto selectedOwnership = null;
+    private string searchOwnership = "";
+    private HashSet<LicenceCordinateDto> selectedOwnershipItems = new HashSet<LicenceCordinateDto>();
+    private bool FilterCompanyOwnership(LicenceCordinateDto element) => FilterCompanyOwnership1(element, searchOwnership);
+
+    private bool FilterCompanyOwnership1(LicenceCordinateDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+
+
+
+
+
+    private async Task DeleteOwnership(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Do you really want to delete these records?");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = Dialog.Show<ConfirmDialog>("Delete", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            System.Console.WriteLine("Hello");
+            await licenceCordinateService.Delete($"{EndPoints.LicenceCordinateEndPoint}", id);
+            snackbarService.Add("Successfully Deleted Record", Severity.Success);
+            await LicenceEventCallBack.InvokeAsync();
+        }
+    }
+
+}

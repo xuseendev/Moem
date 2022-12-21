@@ -1,0 +1,146 @@
+@page "/licenceworkflows/rejected"
+@inject IJSRuntime jsRuntime
+@inject IDialogService Dialog
+@inject IHttpRepository<LicenceWorkFlowDto> licenceWorkflowService
+@inject HttpInerceptorService _interceptor
+
+@implements IDisposable
+
+<div class="nk-content-body">
+    <div class="nk-block-head nk-block-head-sm">
+        <div class="nk-block-between">
+            <div class="nk-block-head-content">
+                <h3 class="nk-block-title page-title">Rejected Licences</h3>
+            </div><!-- .nk-block-head-content -->
+            <div class="nk-block-head-content">
+                <div class="toggle-wrap nk-block-tools-toggle">
+                    <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu"><em
+                            class="icon ni ni-more-v"></em></a>
+                    <div class="toggle-expand-content" data-content="pageMenu">
+                        <ul class="nk-block-tools g-3">
+                            <li>
+                                <div class="drodown">
+                                    <a href="#" class="dropdown-toggle btn btn-white btn-dim btn-outline-light"
+                                        data-bs-toggle="dropdown"><em
+                                            class="d-none d-sm-inline icon ni ni-calender-date"></em><span><span
+                                                class="d-none d-md-inline">Import</span> Excel</span><em
+                                            class="dd-indc icon ni ni-chevron-right"></em></a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <ul class="link-list-opt no-bdr">
+                                            <li><a href="#"><span>Last 30 Days</span></a></li>
+                                            <li><a href="#"><span>Last 6 Months</span></a></li>
+                                            <li><a href="#"><span>Last 1 Years</span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-primary"><em
+                                        class="icon ni ni-plus"></em><span>Add</span></button></li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!-- .nk-block-head-content -->
+        </div><!-- .nk-block-between -->
+    </div><!-- .nk-block-head -->
+    <div class="nk-block">
+        <MudTable Loading="loading" Items="@Workflows" Dense="true" Hover="@hover" Bordered="@bordered"
+            Striped="@striped" Filter="new Func<LicenceWorkFlowDto,bool>(FilterFunc1)"
+            @bind-SelectedItem="selectedItem1">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">List</MudText>
+                <MudSpacer />
+                <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start"
+                    AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Id</MudTh>
+                <MudTh>Licence Type</MudTh>
+                <MudTh>Licence #</MudTh>
+                <MudTh>Company</MudTh>
+                <MudTh>Mineral Type</MudTh>
+                <MudTh>Issue Date</MudTh>
+                <MudTh>Expire Date</MudTh>
+                <MudTh>Licence Status</MudTh>
+                <MudTh>Status</MudTh>
+                <MudTh>CreatedBy</MudTh>
+                <MudTh>CreatedOn</MudTh>
+                <MudTh>Actions</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nr">@context.Id</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.LicenceType</MudTd>
+                <MudTd DataLabel="Name">@context.LicenceId</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.CompanyName</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.MineralType</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.LicenceStartDate.Value.ToShortDateString()</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.LicenceEndDate.ToShortDateString()</MudTd>
+                <MudTd DataLabel="Region">@context.WorkFlowName</MudTd>
+                <MudTd DataLabel="Active">
+                    <MudChip Label="true" Color="Color.Error">REJECTED</MudChip>
+                </MudTd>
+                <MudTd DataLabel="CreatedBy">@context.CreatedBy</MudTd>
+                <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
+                <MudTd DataLabel="Actions">
+                    <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Href="@($"/licenceworkflows/detail/{context.Id}")"
+                        Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
+
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+
+    </div>
+</div>
+
+
+@code {
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+    private bool loading = true;
+    private string searchString1 = "";
+    private LicenceWorkFlowDto selectedItem1 = null;
+    private HashSet<LicenceWorkFlowDto> selectedItems = new HashSet<LicenceWorkFlowDto>();
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Large,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter
+    };
+
+    private List<LicenceWorkFlowDto> Workflows = new List<LicenceWorkFlowDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _interceptor.MonitorEvent();
+        Workflows = await licenceWorkflowService.GetAll($"{EndPoints.LicenceWorkflowEndPoint}RejectedLicence");
+        loading = false;
+    }
+
+    private void OpenCreateForm()
+    {
+        //Dialog.Show<Create>("Add New Workflow", maxWidth);
+    }
+
+    private bool FilterFunc1(LicenceWorkFlowDto element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(LicenceWorkFlowDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Licence.CompanyName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
+}

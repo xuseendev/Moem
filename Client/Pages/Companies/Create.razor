@@ -1,0 +1,215 @@
+@inject IHttpRepository<CreateCompanyDto> companyService
+
+@inject IHttpRepository<BaseLookUpDto> lookupService
+@inject ISnackbar snackbarService
+@inject NavigationManager navManager
+<EditForm Model="@model" OnValidSubmit="CreateLicenceType">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+
+                    <MudItem xs="12">
+                        <MudGrid>
+                            <MudItem xs="6">
+
+                          <MudTextField Label="CompanyId" Variant="Variant.Outlined"  @bind-Value="model.CompanyId"
+                        For="@(() => model.CompanyId)" />
+                            </MudItem>
+
+
+                            <MudItem xs="6">
+                                                              <MudSelect T="int" Variant="Variant.Outlined" Label="Licence Type" @bind-Value="model.CompanyTypeId" AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var type in CompanyTypes)
+                        {
+
+                            <MudSelectItem Value="@(type.Id)">@type.Name</MudSelectItem>
+
+
+                        }
+                                                              </MudSelect>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudGrid>
+                                          <MudItem xs="6">
+                  <MudTextField Label="Company Name" Variant="Variant.Outlined" HelperText="Max. 12 characters" @bind-Value="model.Name"
+                        For="@(() => model.Name)" />
+                            </MudItem>
+                            <MudItem xs="6">
+
+                                                                                          <MudSelect Variant="Variant.Outlined" T="string" Label="Type" @bind-Value="model.Type" AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var type in Types)
+                        {
+
+                            <MudSelectItem Value="@(type)">@type</MudSelectItem>
+
+
+                        }
+                                                              </MudSelect>
+                            </MudItem>
+
+
+              
+                        </MudGrid>
+                    </MudItem>
+                    
+        <MudItem xs="12">
+                        <MudGrid>
+                                          <MudItem xs="6">
+                  <MudTextField Label="Email"  Variant="Variant.Outlined" @bind-Value="model.Email"
+                        For="@(() => model.Email)" />
+                            </MudItem>
+                            <MudItem xs="6">
+
+  <MudTextField Label="Tellphone" HelperText="Max. 10 characters" Variant="Variant.Outlined" @bind-Value="model.TellPhone"
+                        For="@(() => model.TellPhone)" />
+                            </MudItem>
+
+
+              
+                        </MudGrid>
+                    </MudItem>
+                     <h6 class="overline-title text-primary-alt mt-2 mb-3">Address Information</h6>
+                      <MudItem xs="12" class="mb-1">
+                        <MudGrid>
+                        
+
+                            <MudItem xs="6" >
+                 
+                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="Region"  ValueChanged="value => RegionOnChange(value)" AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var region in Regions)
+                        {
+
+                            <MudSelectItem Value="@(region.Id)" >@region.Name</MudSelectItem>
+
+
+                        }
+                                                              </MudSelect>
+                            </MudItem>
+                                  <MudItem xs="6">
+                     
+                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="City" @bind-Value="model.CityId" AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var city in Cities)
+                        {
+
+                            <MudSelectItem Value="@(city.Id)">@city.Name</MudSelectItem>
+
+
+                        }
+                                                              </MudSelect>
+                            </MudItem>
+               
+                        </MudGrid>
+                    </MudItem>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
+                        Color="Color.Primary" class="ml-auto">
+                        @if (loading)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>@ButtonText</MudText>
+                        }
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
+                        Reset</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+
+@code {
+    CreateCompanyDto model = new CreateCompanyDto();
+    [Parameter] 
+    public int? Id { get; set; }
+    [Parameter]
+    public string ButtonText { get; set; }
+    bool loading = false;
+    [Parameter]
+    public EventCallback Workflows { get; set; }
+        private List<string> Types = new List<string>(){
+"Indivudual",
+"Group"
+};
+
+        protected async override Task OnParametersSetAsync()
+        {
+            if(Id.HasValue)
+            model=await companyService.Get($"{EndPoints.CompaniesEndPoint}",Id.Value);
+
+        }
+    
+    private async Task CreateLicenceType()
+    {
+        loading = true;
+        Console.WriteLine("Hello");
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        if(Id==null){
+        await companyService.Post($"{EndPoints.CompaniesEndPoint}", model);
+        SnackMessage("Succesfully Saved Record", Severity.Success);
+
+        }else{
+            model.Id=Id.Value;
+            await companyService.Update($"{EndPoints.CompaniesEndPoint}",model,Id.Value);
+        SnackMessage("Succesfully Updated Record", Severity.Success);
+
+        }
+        await Workflows.InvokeAsync();
+        model=new CreateCompanyDto();
+        //navManager.NavigateTo("/companies/detail/{context.Id}");
+        loading = false;
+
+    }
+     private IEnumerable<BaseLookUpDto> CompanyTypes = new List<BaseLookUpDto>();
+     private IEnumerable<BaseLookUpDto> Regions = new List<BaseLookUpDto>();
+     private IEnumerable<BaseLookUpDto> Cities = new List<BaseLookUpDto>();
+     private IEnumerable<BaseLookUpDto> Areas = new List<BaseLookUpDto>();
+        protected override async Task OnInitializedAsync()
+    {
+        CompanyTypes = await lookupService.GetAll($"{EndPoints.CompanyTypeEndPoint}LookUp");
+        Regions = await lookupService.GetAll($"{EndPoints.RegionEndPoint}LookUp");
+     
+
+    }
+
+        private async Task RegionOnChange(int value)
+    {
+        model.RegionId =value;
+        Cities = await lookupService.GetAll($"{EndPoints.CityEndPoint}LookUp/{model.RegionId}");
+        
+    }
+            private async Task CityOnChange(int value)
+    {
+        model.CityId =value;
+        Areas = await lookupService.GetAll($"{EndPoints.AreaEndPoint}LookUp/{model.CityId}");
+        
+    }
+
+    private void SnackMessage(string text, Severity type)
+    {
+        snackbarService.Add(text, type);
+    }
+
+}
+
+

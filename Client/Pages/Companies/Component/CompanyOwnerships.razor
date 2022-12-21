@@ -1,0 +1,118 @@
+@inject IDialogService Dialog
+@inject IHttpRepository<CompanyOwnershipDto> companyOwnershipService
+@inject ISnackbar snackbarService
+
+<MudButton Variant="Variant.Filled" @onclick="OpenOwnershipForm" StartIcon="@Icons.Material.Filled.Add"
+    Color="Color.Primary">Add Ownership</MudButton>
+<MudTable Items="CompanyOwnershipss" Dense="true" Hover="true" Bordered="true" Striped="true"
+    Filter="new Func<CompanyOwnershipDto,bool>(FilterCompanyOwnership)" @bind-SelectedItem="selectedOwnership">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Ownerships</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchOwnership" Placeholder="Search" Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Person id</MudTh>
+        <MudTh>Name</MudTh>
+        <MudTh>Title</MudTh>
+        <MudTh>CreatedBy</MudTh>
+        <MudTh>CreatedOn</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Id</MudTd>
+        <MudTd DataLabel="Region">@context.PersonId</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Name">@context.Title</MudTd>
+
+        <MudTd DataLabel="CreatedBy">@context.CreatedBy</MudTd>
+        <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
+        <MudTd DataLabel="Actions">
+
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" @onclick="(()=>DeleteOwnership(context.Id))"
+                Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
+
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Parameter]
+    public int CompanyId { get; set; }
+    [Parameter]
+    public EventCallback CompanyEventCallBack { get; set; }
+
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Medium,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+
+
+    };
+
+    private async Task OpenOwnershipForm()
+    {
+
+        var parameters = new DialogParameters();
+        parameters.Add("CompanyId", CompanyId);
+        var dialog = Dialog.Show<CreateOwnership>("Add New Ownership", parameters, maxWidth);
+        var result = await dialog.Result;
+        await OnInitializedAsync();
+    }
+
+
+    private CompanyOwnershipDto selectedOwnership = null;
+    private string searchOwnership = "";
+    private HashSet<CompanyOwnershipDto> selectedOwnershipItems = new HashSet<CompanyOwnershipDto>();
+    private bool FilterCompanyOwnership(CompanyOwnershipDto element) => FilterCompanyOwnership1(element, searchOwnership);
+
+    private bool FilterCompanyOwnership1(CompanyOwnershipDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+
+    private List<CompanyOwnershipDto> CompanyOwnershipss = new List<CompanyOwnershipDto>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        CompanyOwnershipss = await
+        companyOwnershipService.GetAll($"{EndPoints.CompaniesEndPoint}GetCompanyOwernships/{CompanyId}");
+    }
+
+
+
+    private async Task DeleteOwnership(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Do you really want to delete these records?");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = Dialog.Show<ConfirmDialog>("Delete", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            System.Console.WriteLine("Hello");
+            await companyOwnershipService.Delete($"{EndPoints.CompanyOwnershipEndPoint}", id);
+            snackbarService.Add("Successfully Deleted Record", Severity.Success);
+            await CompanyEventCallBack.InvokeAsync();
+        }
+    }
+
+}

@@ -1,0 +1,292 @@
+<div class="row">
+    <div class="col-12">
+        <div class="card card-bordered">
+            <div class="card-header  clearfix" style="background-color: lightblue;">
+                <h5 class="card-title" style="color: white;">
+
+                    Licence Workflow
+                </h5>
+
+            </div>
+            <div class="card-body">
+
+                <div class="col-lg-6 col-xxl-4">
+                    <div class="card h-100">
+                        <div class="card-inner border-bottom">
+                            <div class="card-title-group">
+                                <div class="card-title">
+                                    <h6 class="title">Notifications</h6>
+                                </div>
+                                <div class="card-tools">
+                                    <a href="#" class="link">View All</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-inner">
+                            <div class="timeline">
+                                <h6 class="timeline-head">November, 2019</h6>
+                                <ul class="timeline-list">
+                                    <li class="timeline-item">
+                                        <div class="timeline-status bg-primary is-outline"></div>
+                                        <div class="timeline-date">13 Nov <em class="icon ni ni-alarm-alt"></em></div>
+                                        <div class="timeline-data">
+                                            <h6 class="timeline-title">Submitted KYC Application</h6>
+                                            <div class="timeline-des">
+                                                <p>Re-submitted KYC Application form.</p>
+                                                <span class="time">09:30am</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="timeline-item">
+                                        <div class="timeline-status bg-primary"></div>
+                                        <div class="timeline-date">13 Nov <em class="icon ni ni-alarm-alt"></em></div>
+                                        <div class="timeline-data">
+                                            <h6 class="timeline-title">Submitted KYC Application</h6>
+                                            <div class="timeline-des">
+                                                <p>Re-submitted KYC Application form.</p>
+                                                <span class="time">09:30am</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="timeline-item">
+                                        <div class="timeline-status bg-pink"></div>
+                                        <div class="timeline-date">13 Nov <em class="icon ni ni-alarm-alt"></em></div>
+                                        <div class="timeline-data">
+                                            <h6 class="timeline-title">Submitted KYC Application</h6>
+                                            <div class="timeline-des">
+                                                <p>Re-submitted KYC Application form.</p>
+                                                <span class="time">09:30am</span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div><!-- .card -->
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-bordered">
+            <div class="card-header  clearfix" style="background-color: lightblue;">
+                <h5 class="card-title" style="color: white;">
+
+                    Licence Details
+                </h5>
+
+            </div>
+            <div class="card-body">
+
+                <div class="row ">
+                    <div class="col-md-6">
+                        <h6>Licence Info</h6>
+                        <div class="table-responsive-lg table-responsive-sm table-responsive-md table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td> Licence Type </td>
+                                        <td>
+                                            @Licence.LicenceType
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> Mineral Type </td>
+                                        <td>@Licence.MineralType</td>
+                                    </tr>
+                                    <tr>
+                                        <td> Term </td>
+                                        <td>@Licence.TermOfTheLicence</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Expiration Info</h6>
+                        <div class="table-responsive-lg table-responsive-sm table-responsive-md table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td>Term</td>
+                                        <td>@Licence.TermOfTheLicence</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Issue Date</td>
+                                        <td>
+                                            @Licence.LicenceStartDate.Value.ToString("dd-MM-yyyy")
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Expire Date</td>
+                                        <td>
+                                            @Licence.LicenceEndDate.ToString("dd-MM-yyyy")
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Address</td>
+                                        <td>
+                                            Model.Notary.Address
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-bordered">
+            <div class="card-header  clearfix" style="background-color: lightblue;">
+                <h5 class="card-title" style="color: white;">
+
+                    Company Details
+                </h5>
+
+            </div>
+            <div class="card-body">
+                <MudButton Variant="Variant.Filled" Href="@($"/companies/detail/{Licence.CompanyId}")"
+                    style="text-align: right;" StartIcon="@Icons.Material.Filled.Info" Color="Color.Primary">Company
+                    Info
+                </MudButton>
+                <div class="row ">
+                    <div class="col-md-6">
+                        <h6>Company Detial</h6>
+                        <div class="table-responsive-lg table-responsive-sm table-responsive-md table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td> Company Id </td>
+                                        <td>
+                                            @Licence.Company.Id
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> Company Name </td>
+                                        <td>@Licence.Company.Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td> Type </td>
+                                        <td>@Licence.Company.Type</td>
+                                    </tr>
+                                    <tr>
+                                        <td> Email </td>
+                                        <td>@Licence.Company.Email</td>
+                                    </tr>
+                                    <tr>
+                                        <td> Tellphone Number</td>
+                                        <td>@Licence.Company.TellPhone</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <h6>Physical Info</h6>
+                        <div class="table-responsive-lg table-responsive-sm table-responsive-md table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td>Region</td>
+                                        <td>@Licence.Company.Region</td>
+                                    </tr>
+                                    <tr>
+                                        <td>City</td>
+                                        <td>
+                                            @Licence.Company.City
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Area</td>
+                                        <td>
+
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-bordered">
+            <div class="card-header  clearfix" style="background-color: lightblue;">
+                <h5 class="card-title" style="color: white;">
+
+                    Company Documents
+                </h5>
+
+            </div>
+            <div class="card-body">
+
+                <MoeSystem.Client.Pages.Companies.Component.CompanyDocuments CompanyId="Licence.CompanyId" />
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-bordered">
+            <div class="card-header  clearfix" style="background-color: lightblue;">
+                <h6 class="card-title">
+
+                    Company Ownership
+                </h6>
+
+            </div>
+            <div class="card-body">
+
+                <MoeSystem.Client.Pages.Companies.Component.CompanyOwnerships CompanyId="Licence.CompanyId" />
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-bordered">
+            <div class="card-header  clearfix" style="background-color: lightblue;">
+                <h6 class="card-title">
+
+                    Comments
+                </h6>
+
+            </div>
+            <div class="card-body">
+
+                <LicenceComments LicenceId="Licence.Id" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public LicenceDetailDto Licence { get; set; }
+}

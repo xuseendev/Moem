@@ -1,0 +1,81 @@
+@inject IHttpRepository<CreateAreaDto> areaService
+@inject IHttpRepository<RegionDto> regionService
+@inject ISnackbar snackbarService
+<EditForm Model="@model" OnValidSubmit="CreateRegion">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+
+                    <MudTextField    Variant="Variant.Outlined"class="mb-3" Label="Name" HelperText="Max. 12 characters" @bind-Value="model.Name"
+                        For="@(() => model.Name)" />
+                    <MudSelect    Variant="Variant.Outlined"class="mb-3" T="int" Label="Region" @bind-Value="model.CityId" AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var region in Regions)
+                        {
+
+                            <MudSelectItem Value="@(region.Id)">@region.Name</MudSelectItem>
+
+
+                        }
+                    </MudSelect>
+                    <MudCheckBox @bind-Checked="@model.Active" Size="Size.Small" Color="Color.Tertiary">Active
+                    </MudCheckBox>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
+                        Color="Color.Primary" class="ml-auto">
+                        @if (loading)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Register</MudText>
+                        }
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
+                        Reset</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+
+@code {
+    CreateAreaDto model = new CreateAreaDto();
+    bool loading = false;
+    [Parameter]
+    public EventCallback Areas { get; set; }
+    private IEnumerable<RegionDto> Regions = new List<RegionDto>();
+    private async Task CreateRegion()
+    {
+        loading = true;
+        Console.WriteLine("Hello");
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        await areaService.Post($"{EndPoints.CityEndPoint}", model);
+        SnackMessage("Succesfully Saved Record", Severity.Success);
+        await Areas.InvokeAsync();
+        loading = false;
+
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        Regions = await regionService.GetAll($"{EndPoints.RegionEndPoint}LookUp");
+
+    }
+    private void SnackMessage(string text, Severity type)
+    {
+        snackbarService.Add(text, type);
+    }
+
+}

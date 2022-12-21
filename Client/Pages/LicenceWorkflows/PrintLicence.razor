@@ -1,0 +1,183 @@
+@page "/licenceworkflows/print/{id:int}"
+@inject IHttpRepository<LicenceDto> licenceService
+@inject IJSRuntime jsRuntime
+
+@layout EmptyLayout
+<style>
+    media(max-width: 575.98px) {
+        html body .content .content-wrapper {
+            padding: calc(2.2rem - 0.4rem) calc(2.2rem - 1rem) 0;
+        }
+    }
+
+    media(max-width: 575.98px) {
+
+        body.navbar-static .app-content .header-navbar .navbar-container,
+        body.navbar-sticky .app-content .header-navbar .navbar-container {
+            padding-left: 1rem;
+            padding-right: 0.5rem;
+        }
+    }
+
+    mediascreen and (-ms-high-contrast: active),
+    (-ms-high-contrast: none) {
+        html.full-screen {
+            width: 100%;
+        }
+
+        html.full-screen .content.app-content {
+            height: 100%;
+            overflow: scroll;
+            overflow-x: hidden;
+        }
+    }
+</style>
+
+<body>
+    <div class="nk-block">
+        <div class="invoice invoice-print">
+            <div class="invoice-wraps">
+                <div id="invoice-customer-details" class="row">
+                    <div class="col-sm-5 col-12 text-left">
+                        <h5><b>Jamhuuriyadda Somaliland</b></h5>
+                        <h6>Wasaarada Tamarta Iyo Macdanta</h6>
+                        <hr style="border-color:red" />
+
+                        @*<div class="recipient-contact pb-2 ">
+                            <p>
+                            <i class="feather icon-mail"></i>
+
+                            </p>
+                            <p>
+                            <i class="feather icon-phone"></i>
+                            +91 988 888 8888
+                            </p>
+                            </div>*@
+                    </div>
+                    <div class="col-md-2">
+                        <center>
+                            <img src="images/som.png" width="20" height="20" />
+
+                        </center>
+                    </div>
+                    <div class="col-sm-5 col-12 text-right">
+                        <h5><b>Republic Of Somaliland</b></h5>
+                        <h6>Ministry Of Energy And Minerals</h6>
+                        <hr style="border-color:red" />
+
+                        @*<div class="company-contact">
+                            <p>
+                            <i class="feather icon-mail"></i>
+                            hello@pixinvent.net
+                            </p>
+                            <p>
+                            <i class="feather icon-phone"></i>
+                            +91 999 999 9999
+                            </p>
+                            </div>*@
+                    </div>
+                </div>
+
+                <div class="invoice-bills">
+                    <div class="table-responsive">
+                        <table class="table  table-bordered" style="font-size:medium;font-weight:bold;color:black">
+
+                            <tbody>
+                                <tr>
+                                    <td>Licence Id</td>
+                                    <td>@Licence.LicenceId</td>
+
+                                </tr>
+                                <tr>
+                                    <td>Company Name</td>
+                                    <td>@Licence.CompanyName</td>
+
+                                </tr>
+                                <tr>
+                                    <td>Regoin</td>
+                                    <td></td>
+
+                                </tr>
+                                <tr>
+                                    <td>Type Of Mineral</td>
+                                    <td>@Licence.LicenceType</td>
+
+                                </tr>
+                                <tr>
+                                    <td>Term Of The Licence</td>
+                                    <td>@Licence.TermOfTheLicence</td>
+
+                                </tr>
+                                <tr>
+                                    <td>Term Commense On</td>
+                                    <td>@Licence.LicenceStartDate.Value.ToString("dd-MM-yyyy")</td>
+
+                                </tr>
+                                <tr>
+                                    <td>Term Commense On</td>
+                                    <td>@Licence.LicenceEndDate.ToString("dd-MM-yyyy")</td>
+
+                                </tr>
+                                <tr>
+                                    <td>Area</td>
+                                    <td>@Licence.LicenceStartDate.Value.ToString("dd-MM-yyyy")</td>
+
+                                </tr>
+                            </tbody>
+                            @* <tfoot>
+                                <tr>
+                                <td colspan="2"></td>
+                                <td colspan="2">Subtotal</td>
+                                <td>$435.00</td>
+                                </tr>
+                                <tr>
+                                <td colspan="2"></td>
+                                <td colspan="2">Processing fee</td>
+                                <td>$10.00</td>
+                                </tr>
+                                <tr>
+                                <td colspan="2"></td>
+                                <td colspan="2">TAX</td>
+                                <td>$43.50</td>
+                                </tr>
+                                <tr>
+                                <td colspan="2"></td>
+                                <td colspan="2">Grand Total</td>
+                                <td>$478.50</td>
+                                </tr>
+                                </tfoot> *@
+                        </table>
+                    </div>
+                </div><!-- .invoice-bills -->
+            </div><!-- .invoice-wrap -->
+        </div><!-- .invoice -->
+    </div><!-- .nk-block -->
+    @* <script>
+        function printPromot() {
+        window.print();
+        }
+        </script> *@
+</body>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private bool loading = false;
+    private LicenceDto Licence = new LicenceDto();
+    protected async override Task OnParametersSetAsync()
+    {
+
+        await GetLicence();
+    }
+    private async Task PrintContent()
+    {
+        await jsRuntime.InvokeVoidAsync("printContent", "printContent");
+    }
+
+    private async Task GetLicence()
+    {
+        loading = true;
+        Licence = await licenceService.Get($"{EndPoints.LicencesEndPoint}GetLicenceDetail/", Id);
+        loading = false;
+    }
+}

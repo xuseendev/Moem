@@ -1,0 +1,428 @@
+@page "/companies/detail/{id:int}"
+@using Component
+@using MoeSystem.Client.Pages.Companies.Component
+
+@inject IHttpRepository<CompanyDetailDto> companyService
+@inject IHttpRepository<CompanyDocumentDetailDto> companyDocumentService
+    @inject IDialogService Dialog
+
+            <div class="nk-content-body">
+                <div class="nk-block-head nk-block-head-sm">
+                    <div class="nk-block-between g-3">
+                        <div class="nk-block-head-content">
+                            <h3 class="nk-block-title page-title">Company / <strong
+                                    class="text-primary small">@Company.Name</strong></h3>
+                            <div class="nk-block-des text-soft">
+                                <ul class="list-inline">
+                                    <li>Company ID: <span class="text-base">@Company.Id</span></li>
+                                    <li>Last Update: <span class="text-base">
+                                            @Company.UpdatedOn.ToString("dd MMM,yyyy hh:mm tt")</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="nk-block-head-content">
+                            <a href="html/user-list-regular.html"
+                                class="btn btn-outline-light bg-white d-none d-sm-inline-flex"><em
+                                    class="icon ni ni-arrow-left"></em><span>Back</span></a>
+                            <a href="html/user-list-regular.html"
+                                class="btn btn-icon btn-outline-light bg-white d-inline-flex d-sm-none"><em
+                                    class="icon ni ni-arrow-left"></em></a>
+                        </div>
+                    </div>
+                </div><!-- .nk-block-head -->
+                <div class="nk-block">
+                    <div class="card">
+                        <div class="card-aside-wrap">
+                            <div class="card-content">
+                                    @if(loading){
+                                    
+<MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+
+                                    }else{
+                                <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+
+                                    <MudTabPanel Text="Company" Icon="@Icons.Filled.AccountBox">
+                                        <div class="card-inner">
+                                            <div class="nk-block">
+                                                <div class="nk-block-head">
+                                                    <h5 class="title">Company Information</h5>
+                                                    <p>Basic info, like your name and address, that you use on Nio
+                                                        Platform.
+                                                    </p>
+                                                </div><!-- .nk-block-head -->
+                                                <div class="profile-ud-list">
+                                                    <div class="profile-ud-item">
+                                                        <div class="profile-ud wider">
+                                                            <span class="profile-ud-label">ID</span>
+                                                            <span class="profile-ud-value">@Company.Id</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-ud-item">
+                                                        <div class="profile-ud wider">
+                                                            <span class="profile-ud-label">Company Name</span>
+                                                            <span class="profile-ud-value">@Company.Name</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-ud-item">
+                                                        <div class="profile-ud wider">
+                                                            <span class="profile-ud-label">Type</span>
+                                                            <span class="profile-ud-value">@Company.Type</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-ud-item">
+                                                        <div class="profile-ud wider">
+                                                            <span class="profile-ud-label">CreatedOn</span>
+                                                            <span class="profile-ud-value">@Company.CreatedOn</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-ud-item">
+                                                        <div class="profile-ud wider">
+                                                            <span class="profile-ud-label">Tellphone</span>
+                                                            <span class="profile-ud-value">@Company.TellPhone</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-ud-item">
+                                                        <div class="profile-ud wider">
+                                                            <span class="profile-ud-label">Email Address</span>
+                                                            <span class="profile-ud-value">@Company.Email</span>
+                                                        </div>
+                                                    </div>
+                                                </div><!-- .profile-ud-list -->
+                                            </div><!-- .nk-block -->
+                                            <div class="nk-block">
+                                                <div class="nk-block-head nk-block-head-line">
+                                                    <h6 class="title overline-title text-base">Address Information
+                                                    </h6>
+                                                </div><!-- .nk-block-head -->
+                                                <div class="profile-ud-list">
+                                                    <div class="profile-ud-item">
+                                                        <div class="profile-ud wider">
+                                                            <span class="profile-ud-label">Region</span>
+                                                            <span class="profile-ud-value">@Company?.Regoin</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="profile-ud-item">
+                                                        <div class="profile-ud wider">
+                                                            <span class="profile-ud-label">City</span>
+                                                            <span class="profile-ud-value">@Company.City</span>
+                                                        </div>
+                                                    </div>
+                                                  
+                                                    <div class="profile-ud-item">
+                                                        <div class="profile-ud wider">
+                                                            <span class="profile-ud-label">Nationality</span>
+                                                            <span class="profile-ud-value"></span>
+                                                        </div>
+                                                    </div>
+                                                </div><!-- .profile-ud-list -->
+                                            </div><!-- .nk-block -->
+                                            <div class="nk-divider divider md"></div>
+                                            <div class="nk-block">
+                                                <div class="nk-block-head nk-block-head-sm nk-block-between">
+                                                    <h5 class="title">Admin Note</h5>
+                                                    <a href="#" class="link link-sm">+ Add Note</a>
+                                                </div><!-- .nk-block-head -->
+                                                <div class="bq-note">
+                                                    <div class="bq-note-item">
+                                                        <div class="bq-note-text">
+                                                            <p>Aproin at metus et dolor tincidunt feugiat eu id quam.
+                                                                Pellentesque habitant morbi tristique senectus et netus
+                                                                et
+                                                                malesuada fames ac turpis egestas. Aenean sollicitudin
+                                                                non
+                                                                nunc
+                                                                vel pharetra. </p>
+                                                        </div>
+                                                        <div class="bq-note-meta">
+                                                            <span class="bq-note-added">Added on <span
+                                                                    class="date">November
+                                                                    18,
+                                                                    2019</span> at <span class="time">5:34
+                                                                    PM</span></span>
+                                                            <span class="bq-note-sep sep">|</span>
+                                                            <span class="bq-note-by">By <span>Softnio</span></span>
+                                                            <a href="#" class="link link-sm link-danger">Delete Note</a>
+                                                        </div>
+                                                    </div><!-- .bq-note-item -->
+                                                    <div class="bq-note-item">
+                                                        <div class="bq-note-text">
+                                                            <p>Aproin at metus et dolor tincidunt feugiat eu id quam.
+                                                                Pellentesque habitant morbi tristique senectus et netus
+                                                                et
+                                                                malesuada fames ac turpis egestas. Aenean sollicitudin
+                                                                non
+                                                                nunc
+                                                                vel pharetra. </p>
+                                                        </div>
+                                                        <div class="bq-note-meta">
+                                                            <span class="bq-note-added">Added on <span
+                                                                    class="date">November
+                                                                    18,
+                                                                    2019</span> at <span class="time">5:34
+                                                                    PM</span></span>
+                                                            <span class="bq-note-sep sep">|</span>
+                                                            <span class="bq-note-by">By <span>Softnio</span></span>
+                                                            <a href="#" class="link link-sm link-danger">Delete Note</a>
+                                                        </div>
+                                                    </div><!-- .bq-note-item -->
+                                                </div><!-- .bq-note -->
+                                            </div><!-- .nk-block -->
+                                        </div><!-- .card-inner -->
+                                    </MudTabPanel>
+                                    <MudTabPanel Text="Documents" Icon="@Icons.Filled.Article">
+                                       
+                                        <CompanyDocuments CompanyId="Company.Id" CompanyEventCallBack="GetComany" DialogOptions="maxWidth"/>
+                                    </MudTabPanel>
+                                    <MudTabPanel Text="Ownerships" Icon="@Icons.Filled.SwitchAccount">
+
+                                      
+                                        <CompanyOwnerships CompanyId="Company.Id" CompanyEventCallBack="GetComany"/>
+                                    </MudTabPanel>
+                                    <MudTabPanel Text="Licences" Icon="@Icons.Filled.Payments">
+                                        <MudButton Variant="Variant.Filled"  StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary">Add Licence</MudButton>
+
+                                           <MudTable  Items="Company.Licences" Dense="true"
+                                            Hover="true" Bordered="true" Striped="true"
+                                            Filter="new Func<LicenceDto,bool>(FilterLicence)"
+                                            @bind-SelectedItem="selectedLicenceItem">
+                                            <ToolBarContent>
+                                                <MudText Typo="Typo.h6">Licences</MudText>
+                                                <MudSpacer />
+                                                <MudTextField @bind-Value="searchLicence" Placeholder="Search"
+                                                    Adornment="Adornment.Start"
+                                                    AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"
+                                                    Class="mt-0"></MudTextField>
+                                            </ToolBarContent>
+                                            <HeaderContent>
+                                                <MudTh>Id</MudTh>
+                                                <MudTh>Licence id</MudTh>
+                                                <MudTh>Type</MudTh>
+                                                <MudTh>Start Date</MudTh>
+                                                <MudTh>End Date</MudTh>
+                                                <MudTh>Mineral Type</MudTh>
+                                                <MudTh>Status</MudTh>
+                                                <MudTh>CreatedOn</MudTh>
+                                                <MudTh>Actions</MudTh>
+                                            </HeaderContent>
+                                            <RowTemplate>
+                                                <MudTd DataLabel="Nr">@context.Id</MudTd>
+                                                <MudTd DataLabel="Region">@context.LicenceId</MudTd>
+                                                <MudTd DataLabel="Name">@context.LicenceType</MudTd>
+                                                <MudTd DataLabel="Name">@context.LicenceStartDate.Value.ToShortDateString()</MudTd>
+                                                <MudTd DataLabel="Name">@context.LicenceEndDate.ToShortDateString()</MudTd>
+                                                <MudTd DataLabel="Name">@context.MineralType</MudTd>
+                                                <MudTd DataLabel="Name">@context.Status</MudTd>
+
+                          
+                                                <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
+                                                <MudTd DataLabel="Actions">
+                                                    <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Href="@($"/licences/detail/{context.Id}")"
+                                                        Variant="Variant.Outlined" Color="Color.Primary"
+                                                        Size="Size.Small" />
+                                                    
+
+                                                </MudTd>
+                                            </RowTemplate>
+                                            <PagerContent>
+                                                <MudTablePager />
+                                            </PagerContent>
+                                        </MudTable>
+                                    </MudTabPanel>
+                                       <MudTabPanel Text="Company Licence" Icon="@Icons.Filled.AccessTimeFilled">
+                                            <MudButton Variant="Variant.Filled" @onclick="OpenLicenceForm" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary">Add Company Licence</MudButton>
+                                        <CompanyLicences Company="Company" CompanyEventCallBack="GetComany"/>
+                                    </MudTabPanel>
+                                    <MudTabPanel Text="Activities" Icon="@Icons.Filled.Psychology">
+                                       <CompanyLogs CompanyId="Company.Id"/>
+                              
+                                    </MudTabPanel>
+                                </MudTabs>
+                                    }
+
+
+                            </div><!-- .card-content -->
+                            <div class="card-aside card-aside-right user-aside toggle-slide toggle-slide-right toggle-break-xxl"
+                                data-content="userAside" data-toggle-screen="xxl" data-toggle-overlay="true"
+                                data-toggle-body="true">
+                                <div class="card-inner-group" data-simplebar>
+                                    @if(loading){
+<MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+
+                                    }else{
+
+                                    <div class="card-inner">
+                                        <div class="user-card user-card-s2">
+                                            <div class="user-avatar lg bg-primary">
+                                   
+
+                                                <span>@Company.Name[0]@Company.Name[1]</span>
+                                                
+                                            </div>
+                                            <div class="user-info">
+                                                <div class="badge bg-outline-light rounded-pill ucap">@Company.Type</div>
+                                                <h5>@Company.Name</h5>
+                                                <span class="sub-text">@Company.Email</span>
+                                            </div>
+                                        </div>
+                                    </div><!-- .card-inner -->
+                                    }
+                                    <div class="card-inner card-inner-sm">
+                                        <ul class="btn-toolbar justify-center gx-1">
+                                            <li><a href="#" class="btn btn-trigger btn-icon"><em
+                                                        class="icon ni ni-shield-off"></em></a></li>
+                                            <li><a href="#" class="btn btn-trigger btn-icon"><em
+                                                        class="icon ni ni-mail"></em></a></li>
+                                            <li><a href="#" class="btn btn-trigger btn-icon"><em
+                                                        class="icon ni ni-download-cloud"></em></a></li>
+                                            <li><a href="#" class="btn btn-trigger btn-icon"><em
+                                                        class="icon ni ni-bookmark"></em></a></li>
+                                            <li><a href="#" class="btn btn-trigger btn-icon text-danger"><em
+                                                        class="icon ni ni-na"></em></a></li>
+                                        </ul>
+                                    </div><!-- .card-inner -->
+                                    <div class="card-inner">
+                                        <div class="overline-title-alt mb-2">In Account</div>
+                                        <div class="profile-balance">
+                                            <div class="profile-balance-group gx-4">
+                                                <div class="profile-balance-sub">
+                                                    <div class="profile-balance-amount">
+                                                        <div class="number">2,500.00 <small
+                                                                class="currency currency-usd">USD</small></div>
+                                                    </div>
+                                                    <div class="profile-balance-subtitle">Invested Amount</div>
+                                                </div>
+                                                <div class="profile-balance-sub">
+                                                    <span class="profile-balance-plus text-soft"><em
+                                                            class="icon ni ni-plus"></em></span>
+                                                    <div class="profile-balance-amount">
+                                                        <div class="number">1,643.76</div>
+                                                    </div>
+                                                    <div class="profile-balance-subtitle">Profit Earned</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><!-- .card-inner -->
+                                    <div class="card-inner">
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <div class="profile-stats">
+                                                    @if(!loading){
+                                                   
+
+                                                    <span class="amount">@Company.Licences.Count()</span>
+                                                    <span class="sub-text">Total Licence</span>
+                                                    
+                                                    }
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="profile-stats">
+                                                    <span class="amount">20</span>
+                                                    <span class="sub-text">Complete</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="profile-stats">
+                                                    <span class="amount">3</span>
+                                                    <span class="sub-text">Progress</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><!-- .card-inner -->
+
+                                </div><!-- .card-inner -->
+                            </div><!-- .card-aside -->
+                        </div><!-- .card-aside-wrap -->
+                    </div><!-- .card -->
+                </div><!-- .nk-block -->
+            </div>
+
+   <div class="modal fade text-left " id="print-view-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true" style="display: none;">
+
+                                                            <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
+                                                                <div class="modal-content">
+
+                                                                    <div class="modal-header badge badge-info">
+                                                                        <h4 class="modal-title" id="myModalLabel1">Documents</h4>
+
+                                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                    </div>
+
+                                                                    <div class="modal-body">
+                                                                        <div class="input-group">
+                                                                            <div id="pdf_files"></div>
+
+                                                                        </div>
+                                                                    </div>
+
+
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private CompanyDetailDto Company = new CompanyDetailDto();
+
+    protected async override Task OnParametersSetAsync()
+    {
+
+        await GetComany();
+    }
+
+ 
+
+    private async Task GetComany(){
+        loading=true;
+        Company = await companyService.Get($"{EndPoints.CompaniesEndPoint}GetCompanyDetail/", Id);
+        loading=false;
+    }
+
+    private bool loading=true;
+
+
+
+
+    private string searchLicence = "";
+
+    private LicenceDto selectedLicenceItem = null;
+
+
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Medium,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+        
+
+    };
+
+  
+
+    
+    private async Task OpenLicenceForm()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("CompanyId", Company.Id);
+        var dialog = Dialog.Show<CreateCompanyLicence>("Add New Company Licence", parameters, maxWidth);
+        var result = await dialog.Result;
+        await GetComany();
+    }
+    private bool FilterLicence(LicenceDto element) => FilterLicence1(element, searchLicence);
+
+    private bool FilterLicence1(LicenceDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.LicenceType.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+}

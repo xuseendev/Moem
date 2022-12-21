@@ -1,0 +1,122 @@
+@inject IDialogService Dialog
+@inject IHttpRepository<LicenceDocumentDto> licenceDocumentService
+@inject ISnackbar snackbarService
+<MudButton Variant="Variant.Filled" @onclick="OpenDocumentForm" StartIcon="@Icons.Material.Filled.Add"
+    Color="Color.Primary">Add Document
+</MudButton>
+<MudTable Items="LicenceDocumentss" Dense="true" Hover="true" Bordered="true" Striped="true"
+    Filter="new Func<LicenceDocumentDto,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Documents</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Document Type</MudTh>
+        <MudTh>Document Name</MudTh>
+        <MudTh>File Type</MudTh>
+        <MudTh>CreatedBy</MudTh>
+        <MudTh>CreatedOn</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Id</MudTd>
+        <MudTd DataLabel="Region">@context.DocumentType</MudTd>
+        <MudTd DataLabel="Name">@context.DocumentName</MudTd>
+        <MudTd DataLabel="Name">@context.FileExtension</MudTd>
+
+        <MudTd DataLabel="CreatedBy">@context.CreatedBy</MudTd>
+        <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Variant="Variant.Outlined"
+                @onclick="(()=>GetDocument(context.Id))" Color="Color.Primary" Size="Size.Small" />
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" @onclick="(()=>DeleteDocument(context.Id))"
+                Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
+
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+@code {
+    [Parameter]
+    public int LicenceId { get; set; }
+    [Parameter]
+    public EventCallback LicenceEventCallBack { get; set; }
+
+    [Parameter]
+    public DialogOptions DialogOptions { get; set; }
+    private LicenceDocumentDto selectedItem1 = null;
+    private HashSet<LicenceDocumentDto> selectedItems = new HashSet<LicenceDocumentDto>();
+    private string searchString1 = "";
+    private bool FilterFunc1(LicenceDocumentDto element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(LicenceDocumentDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.DocumentName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Medium,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+
+
+    };
+
+    private async Task OpenDocumentForm()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("LicenceId", LicenceId);
+        var dialog = Dialog.Show<CreateLicenceDocument>("Add New Document", parameters, maxWidth);
+        var result = await dialog.Result;
+        await OnInitializedAsync();
+    }
+
+    private void GetDocument(int id)
+    {
+        DialogOptions.MaxWidth = MaxWidth.Large;
+        var parameters = new DialogParameters();
+        parameters.Add("Id", id);
+        var dialog = Dialog.Show<ShowDocument>("Documents", parameters, DialogOptions);
+
+    }
+
+    private async Task DeleteDocument(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Do you really want to delete these records?");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = Dialog.Show<ConfirmDialog>("Delete", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            System.Console.WriteLine("Hello");
+            await licenceDocumentService.Delete($"{EndPoints.CompanyDocumentEndPoint}", id);
+            snackbarService.Add("Successfully Deleted Record", Severity.Success);
+            await LicenceEventCallBack.InvokeAsync();
+        }
+    }
+
+    private List<LicenceDocumentDto> LicenceDocumentss = new List<LicenceDocumentDto>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        LicenceDocumentss = await licenceDocumentService.GetAll($"{EndPoints.LicencesEndPoint}GetLicenceDocuments/{LicenceId}");
+    }
+
+}

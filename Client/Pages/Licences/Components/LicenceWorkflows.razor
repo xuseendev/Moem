@@ -1,0 +1,132 @@
+@inject IDialogService Dialog
+@inject IHttpRepository<GetLicenceWorkflowDto> licenceWorkflowService
+@inject IHttpRepository<LicenceWorkFlowDto> licenceListWorkflowService
+@inject ISnackbar snackbarService
+
+<MudTable Items="LicenceWorkFlows" Dense="true" Hover="true" Bordered="true" Striped="true"
+    Filter="new Func<LicenceWorkFlowDto,bool>(FilterCompanyOwnership)" @bind-SelectedItem="selectedOwnership">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Licence Workflows History</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchOwnership" Placeholder="Search" Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>WorkFollow</MudTh>
+        <MudTh>Status</MudTh>
+        <MudTh>UserGroup</MudTh>
+
+
+        <MudTh>Task Owner</MudTh>
+        <MudTh>Assigned Date</MudTh>
+
+        <MudTh>Started Date</MudTh>
+        <MudTh>Completed Date</MudTh>
+
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Id</MudTd>
+        <MudTd DataLabel="Region">@context.WorkFlowName</MudTd>
+        <MudTd DataLabel="Name">@if (context.Status)
+            {
+                <MudBadge Color="Color.Error" Overlap="true" Bordered="true">
+                    <MudChip Label="true" Color="Color.Success">APPROVED</MudChip>
+                </MudBadge>
+            }
+            else
+            {
+                if (context.Reject)
+                {
+                    <MudBadge Color="Color.Error" Overlap="true" Bordered="true">
+                        <MudChip Label="true" Color="Color.Error">REJECTED</MudChip>
+                    </MudBadge>
+                }
+                else
+                {
+                    <MudBadge Color="Color.Error" Overlap="true" Bordered="true">
+                        <MudChip Label="true" Color="Color.Warning">PENDING</MudChip>
+                    </MudBadge>
+                }
+            }
+        </MudTd>
+        <MudTd DataLabel="Name">@context.UserGroup</MudTd>
+
+
+        <MudTd DataLabel="CreatedBy">@context.TaskActualOwner</MudTd>
+        <MudTd DataLabel="CreatedBy">@context.CreatedOn</MudTd>
+        <MudTd DataLabel="CreatedOn">@context.StartedOn</MudTd>
+        <MudTd DataLabel="CreatedOn">@context.CompletedOn</MudTd>
+
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    [Parameter]
+    public int LicenceId { get; set; }
+    [Parameter]
+    public EventCallback LicenceEventCallBack { get; set; }
+
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Medium,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+
+
+    };
+
+    private List<LicenceWorkFlowDto> LicenceWorkFlows = new List<LicenceWorkFlowDto>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        LicenceWorkFlows = await
+        licenceListWorkflowService.GetAll($"{EndPoints.LicencesEndPoint}GetLicenceWorkflows/{LicenceId}");
+    }
+
+    private LicenceWorkFlowDto selectedOwnership = null;
+    private string searchOwnership = "";
+    private HashSet<LicenceWorkFlowDto> selectedOwnershipItems = new HashSet<LicenceWorkFlowDto>();
+    private bool FilterCompanyOwnership(LicenceWorkFlowDto element) => FilterCompanyOwnership1(element, searchOwnership);
+
+    private bool FilterCompanyOwnership1(LicenceWorkFlowDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        @* if (element.Type.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true; *@
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+
+
+
+
+
+    private async Task DeleteOwnership(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Do you really want to delete these records?");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = Dialog.Show<ConfirmDialog>("Delete", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            System.Console.WriteLine("Hello");
+            await licenceWorkflowService.Delete($"{EndPoints.LicenceWorkflowEndPoint}", id);
+            snackbarService.Add("Successfully Deleted Record", Severity.Success);
+            await LicenceEventCallBack.InvokeAsync();
+        }
+    }
+
+}

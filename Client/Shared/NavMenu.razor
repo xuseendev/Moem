@@ -1,0 +1,70 @@
+﻿<MudNavMenu Class="mt-1">
+    <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+
+    <MudNavLink Href="/licenceworkflows/index" Icon="@Icons.Filled.TaskAlt">My WorkSheet</MudNavLink>
+    <li class="nk-menu-heading mt-2">
+        <h6 class="overline-title text-primary-alt">Licence Types</h6>
+    </li><!-- .nk-menu-heading -->
+    <MudNavGroup Icon="@Icons.Filled.MergeType" Title="Licence Types">
+        <MudNavLink Href="/licencetypes/index">Detail LicenceType</MudNavLink>
+        <MudNavLink Href="/companies/expired">Licence Template</MudNavLink>
+
+
+
+    </MudNavGroup>
+    <li class="nk-menu-heading mt-2">
+        <h6 class="overline-title text-primary-alt">Company</h6>
+    </li><!-- .nk-menu-heading -->
+    <MudNavGroup Icon="@Icons.Material.Filled.Home" Title="Companies">
+        <MudNavLink Href="/companies/index">Detail Companies</MudNavLink>
+        <MudNavLink Href="/companies/expired">Expired Companies</MudNavLink>
+        <MudNavLink Href="/companies/expiring">Expiring Companies</MudNavLink>
+
+
+    </MudNavGroup>
+    <li class="nk-menu-heading mt-2">
+        <h6 class="overline-title text-primary-alt">Licence</h6>
+    </li><!-- .nk-menu-heading -->
+
+    <MudNavLink Href="/licences/index" Icon="@Icons.Filled.Search">Search Licence</MudNavLink>
+
+    <MudNavGroup Icon="@Icons.Filled.MenuBook" Title="Licences">
+        <MudNavLink Href="/licences/index">Detail Licences</MudNavLink>
+        <MudNavLink Href="/licencesworkflows/progress">Progress Licences</MudNavLink>
+        <MudNavLink Href="/licencesworkflows/finished">Finished Licences</MudNavLink>
+        <MudNavLink Href="/licenceworkflows/rejected">Rejected Licences</MudNavLink>
+        <MudNavLink Href="/licences/expired">Expired Licenses</MudNavLink>
+        <MudNavLink Href="/licences/expiring">Expiring Licences</MudNavLink>
+
+    </MudNavGroup>
+    <MudNavLink Href="/licenceworkflows/delivered" Icon="@Icons.Filled.Print">Printable Licence</MudNavLink>
+    <li class="nk-menu-heading mt-3">
+        <h6 class="overline-title text-primary-alt">Setting</h6>
+    </li><!-- .nk-menu-heading -->
+    <MudNavGroup Icon="@Icons.Material.Filled.Settings" Title="Settings">
+        <MudNavLink Href="/regions/index">Region</MudNavLink>
+        <MudNavLink Href="/cities/index">City</MudNavLink>
+        <MudNavLink Href="/areas/index">Area</MudNavLink>
+        <MudNavLink Href="/mineraltypes/index">Mineral Types</MudNavLink>
+        <MudNavLink Href="/companytypes/index">Company Type</MudNavLink>
+        <MudNavLink Href="/documenttypes/index">Document Type</MudNavLink>
+        <MudNavLink Href="/licencestatus/index">Licence Status</MudNavLink>
+        <MudNavLink Href="/messages/index">Messages</MudNavLink>
+        <MudNavLink Href="/usergroups/index">UserGroups</MudNavLink>
+        <MudNavLink Href="/workflows/index">Workflows</MudNavLink>
+        <MudNavLink Href="/signatures/index">Signatures</MudNavLink>
+        <MudNavLink Href="/users/index">Users</MudNavLink>
+    </MudNavGroup>
+
+    <li class="nk-menu-heading mt-2">
+        <h6 class="overline-title text-primary-alt">Reports</h6>
+    </li><!-- .nk-menu-heading -->
+    <MudNavLink Href="/licenceworkflow/index" Icon="@Icons.Material.Filled.Dock">Licence Reports</MudNavLink>
+    <MudNavLink Href="/licenceworkflow/index" Icon="@Icons.Material.Filled.Dock">Company Reports</MudNavLink>
+
+    <MudNavGroup Icon="@Icons.Material.Filled.Report" Title="Reports">
+        <MudNavLink Href="/licences/index">Licence</MudNavLink>
+        <MudNavLink Href="/licences/create">Licence</MudNavLink>
+
+    </MudNavGroup>
+</MudNavMenu>

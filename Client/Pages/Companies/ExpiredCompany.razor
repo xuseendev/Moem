@@ -1,0 +1,167 @@
+@page "/companies/expired"
+@inject IJSRuntime jsRuntime
+@inject IDialogService Dialog
+@inject IHttpRepository<PagedResult<CompanyLicenceDto>> companyService
+@inject HttpInerceptorService _interceptor
+
+@implements IDisposable
+
+<div class="nk-content-body">
+    <div class="nk-block-head nk-block-head-sm">
+        <div class="nk-block-between">
+            <div class="nk-block-head-content">
+                <h3 class="nk-block-title page-title">Companies</h3>
+            </div><!-- .nk-block-head-content -->
+            <div class="nk-block-head-content">
+                <div class="toggle-wrap nk-block-tools-toggle">
+                    <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu"><em
+                            class="icon ni ni-more-v"></em></a>
+                    <div class="toggle-expand-content" data-content="pageMenu">
+                        <ul class="nk-block-tools g-3">
+                            <li>
+                                <div class="drodown">
+                                    <a href="#" class="dropdown-toggle btn btn-white btn-dim btn-outline-light"
+                                        data-bs-toggle="dropdown"><em
+                                            class="d-none d-sm-inline icon ni ni-calender-date"></em><span><span
+                                                class="d-none d-md-inline">Import</span> Excel</span><em
+                                            class="dd-indc icon ni ni-chevron-right"></em></a>
+                                    <div class="dropdown-menu dropdown-menu-end">
+                                        <ul class="link-list-opt no-bdr">
+                                            <li><a href="#"><span>Last 30 Days</span></a></li>
+                                            <li><a href="#"><span>Last 6 Months</span></a></li>
+                                            <li><a href="#"><span>Last 1 Years</span></a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-primary"><em
+                                        class="icon ni ni-plus"></em><span>Add</span></button></li>
+                        </ul>
+                    </div>
+                </div>
+            </div><!-- .nk-block-head-content -->
+        </div><!-- .nk-block-between -->
+    </div><!-- .nk-block-head -->
+    <div class="nk-block">
+        <MudTable Loading="loading" ServerData="@(new Func<TableState, Task<TableData<CompanyLicenceDto>>>(LoadCompanies))" @ref="table" Dense="true" Hover="@hover" Bordered="@bordered"
+            Striped="@striped">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">Expired List</MudText>
+                <MudSpacer />
+                <MudTextField T="string" ValueChanged="@(searchTerm => OnSearch(searchTerm))" Placeholder="Search" Adornment="Adornment.Start"
+                    AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Id</MudTh>
+                <MudTh>Comp Id</MudTh>
+                <MudTh>Name</MudTh>
+                <MudTh>Number</MudTh>
+                <MudTh>Issue Date</MudTh>
+                <MudTh>Expire Date</MudTh>
+                <MudTh>CreatedBy</MudTh>
+                <MudTh>CreatedOn</MudTh>
+                <MudTh>Actions</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nr">@context.Id</MudTd>
+                <MudTd DataLabel="Region">@context.CompanyId</MudTd>
+                <MudTd DataLabel="Name">@context.CompanyName</MudTd>
+                <MudTd DataLabel="Name">@context.TellPhone</MudTd>
+                <MudTd DataLabel="Name">@context.IssueDate.Value.ToShortDateString()</MudTd>
+                <MudTd DataLabel="Name">@context.ExpireDate.Value.ToShortDateString()</MudTd>
+                <MudTd DataLabel="CreatedBy">@context.CreatedBy</MudTd>
+                <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
+                <MudTd DataLabel="Actions">
+                    <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Variant="Variant.Outlined" Color="Color.Info"
+                        Size="Size.Small" Href="@($"/companies/detail/{context.CompanyId}")" Target="" />
+ 
+
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="pageSizeOptions"></MudTablePager>
+            </PagerContent>
+        </MudTable>
+
+    </div>
+</div>
+
+
+@code {
+ 
+    private MudTable<CompanyLicenceDto> table;
+    private int[] pageSizeOptions = new int[] { 5, 10, 15 };
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+    private bool loading = true;
+    private string searchString1 = string.Empty;
+    private CompanyDto selectedItem1 = null;
+    private HashSet<CompanyLicenceDto> selectedItems = new HashSet<CompanyLicenceDto>();
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Large,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+         CloseOnEscapeKey = true
+    };
+
+    private void OnSearch(string searchTerm)
+{
+    searchString1 = searchTerm;
+    table.ReloadServerData();
+}
+
+
+
+
+
+
+
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        table.SetRowsPerPage(15);
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task OpenCreateForm()
+    {
+       var dialog= Dialog.Show<Create>("Add New Company", maxWidth);
+        var result = await dialog.Result;
+        
+
+        await table.ReloadServerData();
+        
+    }
+
+     public async Task<TableData<CompanyLicenceDto>> LoadCompanies(TableState state)
+    {
+        System.Console.WriteLine("Hello there");
+         _interceptor.MonitorEvent();
+        var response = await companyService.GetPagined($"{EndPoints.CompaniesEndPoint}GetExpiredCompany?startIndex={(state.Page + 1)}&pagesize={state.PageSize}&name={searchString1}");
+        loading = false;
+        System.Console.WriteLine(response.Data);
+        return new TableData<CompanyLicenceDto>() { Items = response.Data, TotalItems =response.TotalCount };
+    }
+
+    private bool FilterFunc1(CompanyDto element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(CompanyDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        table.ReloadServerData();
+        return false;
+    }
+
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
+}

@@ -1,0 +1,37 @@
+@inject IHttpRepository<CompanyDocumentDetailDto> companyDocumentService
+
+@if (companyDocumentDetail.FileExtension == ".pdf")
+{
+    <div style="height: 1200;">
+
+        <embed id="iframe" src="@file" width="1270" height="1200" allowfullscreen webkitallowfullscreen />
+    </div>
+
+}
+else
+{
+    <img width="1300" height="700" src="@file" />
+}
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+    private string file;
+    private CompanyDocumentDetailDto companyDocumentDetail = new CompanyDocumentDetailDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        companyDocumentDetail = await companyDocumentService.Get($"{EndPoints.CompanyDocumentEndPoint}", Id);
+        var base64String = Convert.ToBase64String(companyDocumentDetail.File, 0, companyDocumentDetail.File.Length);
+        if (companyDocumentDetail.FileExtension == ".pdf")
+        {
+
+            file = $"data:application/pdf;base64,{base64String}";
+        }
+        else
+        {
+            file = $"data:image/png;base64,{base64String}";
+        }
+    }
+
+}

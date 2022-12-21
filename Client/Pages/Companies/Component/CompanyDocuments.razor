@@ -1,0 +1,120 @@
+@inject IDialogService Dialog
+@inject IHttpRepository<CompanyDocumentDto> companyDocumentService
+@inject ISnackbar snackbarService
+<MudButton Variant="Variant.Filled" @onclick="OpenDocumentForm" StartIcon="@Icons.Material.Filled.Add"
+    Color="Color.Primary">Add Document</MudButton>
+<MudTable Items="CompanyDocumentss" Dense="true" Hover="true" Bordered="true" Striped="true"
+    Filter="new Func<CompanyDocumentDto,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Documents</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Document Type</MudTh>
+        <MudTh>Document Name</MudTh>
+        <MudTh>File Type</MudTh>
+        <MudTh>CreatedBy</MudTh>
+        <MudTh>CreatedOn</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Id</MudTd>
+        <MudTd DataLabel="Region">@context.DocumentType</MudTd>
+        <MudTd DataLabel="Name">@context.DocumentName</MudTd>
+        <MudTd DataLabel="Name">@context.FileExtension</MudTd>
+
+        <MudTd DataLabel="CreatedBy">@context.CreatedBy</MudTd>
+        <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Variant="Variant.Outlined"
+                @onclick="(()=>GetDocument(context.Id))" Color="Color.Primary" Size="Size.Small" />
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" @onclick="(()=>DeleteDocument(context.Id))"
+                Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
+
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+@code {
+    [Parameter]
+    public int CompanyId { get; set; }
+    [Parameter]
+    public EventCallback CompanyEventCallBack { get; set; }
+    [Parameter]
+    public DialogOptions DialogOptions { get; set; }
+    private CompanyDocumentDto selectedItem1 = null;
+    private HashSet<CompanyDocumentDto> selectedItems = new HashSet<CompanyDocumentDto>();
+    private string searchString1 = "";
+    private bool FilterFunc1(CompanyDocumentDto element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(CompanyDocumentDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.DocumentName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Medium,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter
+
+
+    };
+    private async Task OpenDocumentForm()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("CompanyId", CompanyId);
+        var dialog = Dialog.Show<CreateDocument>("Add New Document", parameters, maxWidth);
+        var result = await dialog.Result;
+        await OnInitializedAsync();
+    }
+
+    private void GetDocument(int id)
+    {
+        DialogOptions.MaxWidth = MaxWidth.Large;
+        var parameters = new DialogParameters();
+        parameters.Add("Id", id);
+        var dialog = Dialog.Show<ShowDocument>("Documents", parameters, DialogOptions);
+
+    }
+
+    private List<CompanyDocumentDto> CompanyDocumentss = new List<CompanyDocumentDto>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        CompanyDocumentss = await
+        companyDocumentService.GetAll($"{EndPoints.CompaniesEndPoint}GetCompanyDocuments/{CompanyId}");
+    }
+
+    private async Task DeleteDocument(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Do you really want to delete these records?");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = Dialog.Show<ConfirmDialog>("Delete", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            System.Console.WriteLine("Hello");
+            await companyDocumentService.Delete($"{EndPoints.CompanyDocumentEndPoint}", id);
+            snackbarService.Add("Successfully Deleted Record", Severity.Success);
+            await CompanyEventCallBack.InvokeAsync();
+        }
+    }
+
+}

@@ -1,0 +1,94 @@
+@inject IHttpRepository<CreateLicenceCommentDto> licenceCommentService
+@inject IHttpRepository<DocumentTypeDto> documentTypeService
+@inject ISnackbar snackbarService
+<EditForm Model="@model" OnValidSubmit="Create">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+                    <MudSelect T="string" Label="Type" Variant="Variant.Outlined" @bind-Value="model.Type"
+                        AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var type in Types)
+                        {
+
+                            <MudSelectItem Value="@(type)">@type</MudSelectItem>
+
+
+                        }
+                    </MudSelect>
+
+                    <MudTextField Label="Comment" class="mt-3" Variant="Variant.Outlined" Lines="5"
+                        @bind-Value="model.Comment" For="@(() => model.Comment)" />
+
+
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
+                        Color="Color.Primary" class="ml-auto">
+                        @if (loading)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Register</MudText>
+                        }
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
+                        Reset</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+
+@code {
+    CreateLicenceCommentDto model = new CreateLicenceCommentDto();
+    bool loading = false;
+    [Parameter]
+    public int LicenceId { get; set; }
+
+    [Parameter]
+    public EventCallback Areas { get; set; }
+
+    private List<string> Types = new List<string>(){
+"Normal",
+"Rejection"
+};
+
+    private async Task Create()
+    {
+        model.LicenceId = LicenceId;
+        loading = true;
+        Console.WriteLine("Hello");
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        await licenceCommentService.Post($"{EndPoints.LicenceCommentEndPoint}", model);
+        SnackMessage("Succesfully Saved Record", Severity.Success);
+        model = new CreateLicenceCommentDto();
+        await Areas.InvokeAsync();
+        loading = false;
+
+    }
+
+
+
+
+
+
+
+    private void SnackMessage(string text, Severity type)
+    {
+        snackbarService.Add(text, type);
+    }
+
+}

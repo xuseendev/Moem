@@ -1,0 +1,160 @@
+@inject IHttpRepository<CreateWorkFlowDto> worflowService
+@inject IHttpRepository<BaseLookUpDto> lookupService
+@inject ISnackbar snackbarService
+<EditForm Model="@model" OnValidSubmit="CreateLicenceType">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+
+                    <MudItem xs="12">
+                        <MudGrid>
+                            <MudItem xs="6">
+
+                               <MudSelect T="int" Label="Status" @bind-Value="model.LicenceStatusId" AnchorOrigin="Origin.BottomCenter"    Variant="Variant.Outlined"class="mb-3">
+
+                        @foreach (var status in LicenceStatus)
+                        {
+
+                            <MudSelectItem Value="@(status.Id)">@status.Name</MudSelectItem>
+
+
+                        }
+                    </MudSelect>
+                            </MudItem>
+
+
+                            <MudItem xs="6">
+                                                              <MudSelect T="int" Label="Licence Type" @bind-Value="model.LicenceTypeId" AnchorOrigin="Origin.BottomCenter"    Variant="Variant.Outlined"class="mb-3">
+
+                        @foreach (var type in LicenceTypes)
+                        {
+
+                            <MudSelectItem Value="@(type.Id)">@type.Name</MudSelectItem>
+
+
+                        }
+                                                              </MudSelect>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+                    <MudItem xs="12">
+                        <MudGrid>
+                            <MudItem xs="6">
+
+                                                                                          <MudSelect T="int" Label="User Group" @bind-Value="model.UserGroupId" AnchorOrigin="Origin.BottomCenter"    Variant="Variant.Outlined"class="mb-3">
+
+                        @foreach (var group in UserGroups)
+                        {
+
+                            <MudSelectItem Value="@(group.Id)">@group.Name</MudSelectItem>
+
+
+                        }
+                                                              </MudSelect>
+                            </MudItem>
+
+
+                            <MudItem xs="6">
+                  <MudTextField Label="Step"  @bind-Value="model.Step"    Variant="Variant.Outlined"class="mb-3"
+                        For="@(() => model.Step)" />
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                      <MudItem xs="12" class="mb-1">
+                        <MudGrid>
+                        
+
+                            <MudItem xs="6" >
+                                                 <MudCheckBox @bind-Checked="@model.LastStep" Size="Size.Small" Color="Color.Tertiary">Is This Last Step
+                    </MudCheckBox>
+                            </MudItem>
+                                  <MudItem xs="6">
+                                 <MudCheckBox @bind-Checked="@model.Active" Size="Size.Small" Color="Color.Tertiary">Active
+                    </MudCheckBox>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                      <MudItem xs="12"Class="mb-5">
+
+                                <MudTextField Label="Activity" Lines="3"  @bind-Value="model.Activity"
+                                    For="@(() => model.Activity)" />
+                            </MudItem>
+   <MudItem xs="12">
+                        <MudGrid>
+               
+         
+
+
+                         
+                        </MudGrid>
+                    </MudItem>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
+                        Color="Color.Primary" class="ml-auto">
+                        @if (loading)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Register</MudText>
+                        }
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
+                        Reset</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+
+@code {
+    CreateWorkFlowDto model = new CreateWorkFlowDto();
+    bool loading = false;
+    [Parameter]
+    public EventCallback Workflows { get; set; }
+        private List<string> LicencePeriodTypes = new List<string>(){
+"Year",
+"Month"
+};
+    private async Task CreateLicenceType()
+    {
+        loading = true;
+        Console.WriteLine("Hello");
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        await worflowService.Post($"{EndPoints.WorkflowEndPoint}", model);
+        SnackMessage("Succesfully Saved Record", Severity.Success);
+        await Workflows.InvokeAsync();
+        model=new CreateWorkFlowDto();
+        loading = false;
+
+    }
+     private IEnumerable<BaseLookUpDto> LicenceStatus = new List<BaseLookUpDto>();
+     private IEnumerable<BaseLookUpDto> LicenceTypes = new List<BaseLookUpDto>();
+     private IEnumerable<BaseLookUpDto> UserGroups = new List<BaseLookUpDto>();
+        protected override async Task OnInitializedAsync()
+    {
+        LicenceStatus = await lookupService.GetAll($"{EndPoints.LicenceStatusEndPoint}LookUp");
+        LicenceTypes = await lookupService.GetAll($"{EndPoints.LicenceTypesEndPoint}LookUp");
+        UserGroups = await lookupService.GetAll($"{EndPoints.UserGroupEndPoint}LookUp");
+
+    }
+
+    private void SnackMessage(string text, Severity type)
+    {
+        snackbarService.Add(text, type);
+    }
+
+}
