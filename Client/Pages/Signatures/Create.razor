@@ -1,0 +1,123 @@
+@inject IHttpRepository<CreateUpdateSignatureDto> signatureService
+@inject IHttpRepository<BaseLookUpDto> lookUpService
+@inject ISnackbar snackbarService
+<EditForm Model="@model" OnValidSubmit="CreateSignature">
+    <DataAnnotationsValidator />
+    <MudGrid>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+                    <MudTextField Label="Name" HelperText="Max. 12 characters" @bind-Value="model.Name"
+                        Variant="Variant.Outlined" class="mb-3" For="@(() => model.Name)" />
+                    <MudTextField Label="Title" HelperText="Max. 12 characters" @bind-Value="model.Title"
+                        Variant="Variant.Outlined" class="mb-3" For="@(() => model.Title)" />
+                    <InputFile id="fileInput" OnChange="UploadFiles" hidden MaxBufferSize="@(1000*1024)" />
+                    <MudButton HtmlTag="label" class="mt-4" Variant="Variant.Filled" Color="Color.Success"
+                        StartIcon="@Icons.Filled.CloudUpload" for="fileInput">
+                        Upload File
+                    </MudButton>
+                    <p class="text-danger">@UploadFileWarning</p>
+                    <MudSelect Variant="Variant.Outlined" class="mb-3" T="int" Label="UserGroup"
+                        @bind-Value="model.UserGroupId" AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var userGroup in UserGroups)
+                        {
+
+                            <MudSelectItem Value="@(userGroup.Id)">@userGroup.Name</MudSelectItem>
+
+
+                        }
+                    </MudSelect>
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
+                        Color="Color.Primary" class="ml-auto">
+                        @if (loading)
+                        {
+                            <MudProgressCircular Class="ms-n1" Size="Size.Small" Indeterminate="true" />
+                            <MudText Class="ms-2">Processing</MudText>
+                        }
+                        else
+                        {
+                            <MudText>Register</MudText>
+                        }
+                    </MudButton>
+                    <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
+                        Reset</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12">
+            <MudText Typo="Typo.body2" Align="Align.Center">
+                Fill out the form correctly to see the success message.
+            </MudText>
+        </MudItem>
+    </MudGrid>
+</EditForm>
+
+
+@code {
+
+    CreateUpdateSignatureDto model = new CreateUpdateSignatureDto();
+    private List<BaseLookUpDto> UserGroups = new List<BaseLookUpDto>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        UserGroups = await lookUpService.GetAll($"{EndPoints.UserGroupEndPoint}lookup");
+    }
+
+
+
+
+
+    IBrowserFile file = null;
+    private string UploadFileWarning = string.Empty;
+
+    private async Task UploadFiles(InputFileChangeEventArgs e)
+    {
+        file = e.File;
+        if (file != null)
+        {
+            var ext = System.IO.Path.GetExtension(file.Name);
+            if (ext.ToLower() == ".jpg" || ext.ToLower() == "png" || ext.ToLower() == ".jpeg" || ext.ToLower() == ".pdf")
+            {
+
+                var buffers = new byte[file.Size];
+                await file.OpenReadStream(maxAllowedSize: 1024 * 1024 * 1024).ReadAsync(buffers);
+                model.File = buffers;
+                UploadFileWarning = file.Name;
+            }
+            else
+            {
+                UploadFileWarning = "Please select a valid image file (*.jpg | *.png)";
+
+            }
+
+        }
+
+
+    }
+
+    bool loading = false;
+    [Parameter]
+    public EventCallback Signatures { get; set; }
+
+    private async Task CreateSignature()
+    {
+        loading = true;
+        Console.WriteLine("Hello");
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        await signatureService.Post($"{EndPoints.SignatureEndPoint}", model);
+        SnackMessage("Succesfully Saved Record", Severity.Success);
+        await Signatures.InvokeAsync();
+        loading = false;
+
+    }
+
+    private void SnackMessage(string text, Severity type)
+    {
+        snackbarService.Add(text, type);
+    }
+
+}

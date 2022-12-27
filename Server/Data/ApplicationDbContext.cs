@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using MoeSystem.Client.Services.Base;
-using Server.Data;
+
 
 namespace MoeSystem.Server.Data
 {

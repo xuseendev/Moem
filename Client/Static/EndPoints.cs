@@ -11,7 +11,9 @@ namespace MoeSystem.Client.Static
         public static string CompanyTypeEndPoint = $"{Prefix}/companytypes/";
         public static string DocumentTypeEndPoint = $"{Prefix}/documenttypes/";
         public static string LicenceStatusEndPoint = $"{Prefix}/licencestatus/";
+        public static string SignatureEndPoint = $"{Prefix}/signatures/";
         public static string LicenceTypesEndPoint = $"{Prefix}/licencetypes/";
+        public static string LicenceTypesTemplateEndPoint = $"{Prefix}/licencetypetemplates/";
         public static string MessagesEndPoint = $"{Prefix}/messages/";
         public static string UserGroupEndPoint = $"{Prefix}/usergroups/";
         public static string WorkflowEndPoint = $"{Prefix}/workflows/";

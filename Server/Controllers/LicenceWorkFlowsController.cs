@@ -56,7 +56,7 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("ApproveLicence/{id}")]
         public async Task<ActionResult<LicenceWorkFlowDto>> ApproveLicence(int id)
         {
-            return await _licenceRepository.ApproveLicence(id);
+            return await _licenceRepository.ApproveLicence(id, HttpContext);
         }
 
 
@@ -64,12 +64,12 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("RejectLicence/{id}")]
         public async Task<ActionResult<LicenceWorkFlowDto>> RejectLicence(int id)
         {
-            return await _licenceRepository.RejectLicence(id);
+            return await _licenceRepository.RejectLicence(id, HttpContext);
         }
         [HttpPut("AproveRejectLicence/{id}")]
         public async Task<ActionResult<LicenceWorkFlowDto>> AproveRejectLicence(int id)
         {
-            return await _licenceRepository.ApproveRejectLicence(id);
+            return await _licenceRepository.ApproveRejectLicence(id, HttpContext);
         }
 
         [HttpGet("RejectedLicence")]
@@ -103,13 +103,13 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<LicenceWorkFlow>> PutLicenceWorkFlow(int id, UpdateLicenceWorkFlowDto updateLicenceWorkFlowDto)
         {
-            return await _licenceWorkflowRepository.UpdateAsync<UpdateLicenceWorkFlowDto>(id, updateLicenceWorkFlowDto);
+            return await _licenceWorkflowRepository.UpdateAsync<UpdateLicenceWorkFlowDto>(id, updateLicenceWorkFlowDto, HttpContext);
         }
-        
+
         [HttpPut("ClaimTask/{id}")]
         public async Task<ActionResult<LicenceWorkFlowDto>> ClaimTask(int id)
         {
-            return await _licenceRepository.ClaimTask(id,User.GetUsername());
+            return await _licenceRepository.ClaimTask(id, User.GetUsername());
         }
         [HttpPut("UnClaimTask/{id}")]
         public async Task<ActionResult<LicenceWorkFlowDto>> UnClaimTask(int id)
@@ -121,7 +121,7 @@ namespace MoeSystem.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<LicenceWorkFlow>> PostLicenceWorkFlow(CreateLicenceWorkFlow createLicenceWorkFlow)
         {
-            return await _licenceWorkflowRepository.AddAsync<CreateLicenceWorkFlow,LicenceWorkFlow>(createLicenceWorkFlow);
+            return await _licenceWorkflowRepository.AddAsync<CreateLicenceWorkFlow, LicenceWorkFlow>(createLicenceWorkFlow, HttpContext);
         }
 
         // DELETE: api/LicenceWorkFlows/5

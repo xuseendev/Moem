@@ -44,14 +44,14 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<UserGroup>> PutUserGroup(int id, UpdateUserGroupDto updateUserGroupDto)
         {
-            return await _userGroupRepository.UpdateAsync<UpdateUserGroupDto>(id, updateUserGroupDto);
+            return await _userGroupRepository.UpdateAsync<UpdateUserGroupDto>(id, updateUserGroupDto, HttpContext);
         }
 
         // POST: api/UserGroups
         [HttpPost]
         public async Task<ActionResult<UserGroup>> PostUserGroup(CreateUserGroupDto createUserGroupDto)
         {
-            return await _userGroupRepository.AddAsync<CreateUserGroupDto,UserGroup>(createUserGroupDto);
+            return await _userGroupRepository.AddAsync<CreateUserGroupDto, UserGroup>(createUserGroupDto, HttpContext);
         }
 
         // DELETE: api/UserGroups/5

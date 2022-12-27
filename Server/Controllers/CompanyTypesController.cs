@@ -45,14 +45,14 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<CompanyType>> PutCompanyType(int id, UpdateCompanyTypeDto updateCompanyTypeDto)
         {
-            return await _companyTypeRepository.UpdateAsync<UpdateCompanyTypeDto>(id, updateCompanyTypeDto);
+            return await _companyTypeRepository.UpdateAsync<UpdateCompanyTypeDto>(id, updateCompanyTypeDto, HttpContext);
         }
 
 
         [HttpPost]
         public async Task<ActionResult<CompanyType>> PostCompanyType(CreateCompanyTypeDto createCompanyTypeDto)
         {
-            return await _companyTypeRepository.AddAsync<CreateCompanyTypeDto,CompanyType>(createCompanyTypeDto);
+            return await _companyTypeRepository.AddAsync<CreateCompanyTypeDto, CompanyType>(createCompanyTypeDto, HttpContext);
         }
 
         // DELETE: api/CompanyTypes/5

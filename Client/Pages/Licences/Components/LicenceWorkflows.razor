@@ -96,7 +96,7 @@
     {
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
-        @* if (element.Type.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+        @* if (element.WorkFlowName.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true; *@
         if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;

@@ -44,14 +44,14 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<LicenceType>> PutLicenceType(int id, UpdateLicenceTypeDto updateLicenceTypeDto)
         {
-            return await _licenceTypeRepository.UpdateAsync<UpdateLicenceTypeDto>(id, updateLicenceTypeDto);
+            return await _licenceTypeRepository.UpdateAsync<UpdateLicenceTypeDto>(id, updateLicenceTypeDto, HttpContext);
         }
 
         // POST: api/LicenceTypes
         [HttpPost]
         public async Task<ActionResult<LicenceType>> PostLicenceType(CreateLicenceTypeDto createLicenceTypeDto)
         {
-            return await _licenceTypeRepository.AddAsync<CreateLicenceTypeDto,LicenceType>(createLicenceTypeDto);
+            return await _licenceTypeRepository.AddAsync<CreateLicenceTypeDto, LicenceType>(createLicenceTypeDto, HttpContext);
         }
 
         // DELETE: api/LicenceTypes/5

@@ -14,7 +14,7 @@ namespace MoeSystem.Shared.Models.LicenceDocument
         public int? LicenceId { get; set; }
 
 
-
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
 
         public string FileExtension { get; set; }
     }

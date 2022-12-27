@@ -45,14 +45,14 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<MineralType>> PutMineralType(int id, UpdateMineralTypeDto updateMineralTypeDto)
         {
-            return await _mineralTypeRepository.UpdateAsync<UpdateMineralTypeDto>(id, updateMineralTypeDto);
+            return await _mineralTypeRepository.UpdateAsync<UpdateMineralTypeDto>(id, updateMineralTypeDto, HttpContext);
         }
 
         // POST: api/MineralTypes
         [HttpPost]
         public async Task<ActionResult<MineralType>> PostMineralType(CreateMineralTypeDto createMineralTypeDto)
         {
-            return await _mineralTypeRepository.AddAsync<CreateMineralTypeDto,MineralType>(createMineralTypeDto);
+            return await _mineralTypeRepository.AddAsync<CreateMineralTypeDto, MineralType>(createMineralTypeDto, HttpContext);
         }
 
         // DELETE: api/MineralTypes/5

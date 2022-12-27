@@ -16,7 +16,7 @@ using Serilog;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("MoeDbConnectionStringLocal");
+var connectionString = builder.Configuration.GetConnectionString("MoeDbConnectionString");
 builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseSqlServer(connectionString); });
 
 builder.Services.AddIdentityCore<User>()
@@ -146,16 +146,16 @@ app.UseCors("AllowAll");
 //    }; context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] = new string[] { "Accept-Enciding" };
 //    await next();
 //});
-//app.UseBlazorFrameworkFiles();
-//app.UseStaticFiles();
+app.UseBlazorFrameworkFiles();
+app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-//app.MapRazorPages();
+app.MapRazorPages();
 app.MapControllers();
 //app.MapGraphQL("/graphql");
-//app.MapFallbackToFile("index.html");
+app.MapFallbackToFile("index.html");
 
 app.Run();

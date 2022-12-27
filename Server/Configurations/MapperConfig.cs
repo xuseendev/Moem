@@ -23,6 +23,8 @@ using MoeSystem.Shared.Models.Messages;
 using MoeSystem.Shared.Models.CompanyLicence;
 using MoeSystem.Shared.Models.LicenceDocument;
 using MoeSystem.Shared.Models.Logs;
+using MoeSystem.Shared.Models.Signature;
+using MoeSystem.Shared.Models.LicenceTypeTemplate;
 
 namespace MoeSystem.Server.Configurations
 {
@@ -52,7 +54,7 @@ namespace MoeSystem.Server.Configurations
 
             CreateMap<Messages, MessageDto>().ReverseMap();
             CreateMap<Messages, CreateMessageDto>().ReverseMap();
-            CreateMap<Messages,UpdateMessageDto>().ReverseMap();
+            CreateMap<Messages, UpdateMessageDto>().ReverseMap();
             CreateMap<Messages, UpdateMessageDto>().ReverseMap();
 
             CreateMap<CompanyType, CompanyTypeDto>().ReverseMap();
@@ -64,6 +66,15 @@ namespace MoeSystem.Server.Configurations
             CreateMap<DocumentType, CreateDocumentTypeDto>().ReverseMap();
             CreateMap<DocumentType, UpdateDocumentTypeDto>().ReverseMap();
             CreateMap<DocumentType, BaseLookUpDto>().ReverseMap();
+
+            CreateMap<Signature, SignatureDto>().ReverseMap();
+            CreateMap<Signature, CreateUpdateSignatureDto>().ReverseMap();
+            CreateMap<Signature, BaseLookUpDto>().ReverseMap();
+            CreateMap<Signature, SignatureDetailDto>().ReverseMap();
+
+            CreateMap<LicenceTypeTemplate, LicenceTypeTemplateDto>().ReverseMap();
+            CreateMap<LicenceTypeTemplate, CreateUpdateLicenceTypeTemplateDto>().ReverseMap();
+            CreateMap<LicenceTypeTemplate, BaseLookUpDto>().ReverseMap();
 
             CreateMap<CompanyDocument, CompanyDocumentDto>()
                                 .ForMember(src => src.DocumentType, dest => dest.MapFrom(x => x.DocumentType.Name))
@@ -121,17 +132,17 @@ namespace MoeSystem.Server.Configurations
             CreateMap<LicenceComments, UpdateLicenceCommentDto>().ReverseMap();
 
             CreateMap<WorkFlow, WorkFlowDto>()
-                .ForMember(src=>src.LicenceStatus,dest=>dest.MapFrom(x=>x.LicenceStatus.Name))
-                .ForMember(src=>src.LicenceType,dest=>dest.MapFrom(x=>x.LicenceType.Name))
-                .ForMember(src=>src.UserGroup, dest=>dest.MapFrom(x=>x.UserGroup.Name))
+                .ForMember(src => src.LicenceStatus, dest => dest.MapFrom(x => x.LicenceStatus.Name))
+                .ForMember(src => src.LicenceType, dest => dest.MapFrom(x => x.LicenceType.Name))
+                .ForMember(src => src.UserGroup, dest => dest.MapFrom(x => x.UserGroup.Name))
                 .ReverseMap();
             CreateMap<WorkFlow, CreateWorkFlowDto>().ReverseMap();
             CreateMap<WorkFlow, UpdateWorkFlowDto>().ReverseMap();
 
             CreateMap<Licence, LicenceDto>()
-                .ForMember(src=>src.LicenceType,dest=>dest.MapFrom(x=>x.LicenceType.Name))
-                .ForMember(src=>src.MineralType,dest=>dest.MapFrom(x=>x.LicenceType.Name))
-                .ForMember(src=>src.CompanyName,dest=>dest.MapFrom(x=>x.Company.Name))
+                .ForMember(src => src.LicenceType, dest => dest.MapFrom(x => x.LicenceType.Name))
+                .ForMember(src => src.MineralType, dest => dest.MapFrom(x => x.LicenceType.Name))
+                .ForMember(src => src.CompanyName, dest => dest.MapFrom(x => x.Company.Name))
                 .ReverseMap();
             CreateMap<Licence, LicenceDetailDto>()
     .ForMember(src => src.LicenceType, dest => dest.MapFrom(x => x.LicenceType.Name))

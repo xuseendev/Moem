@@ -50,7 +50,7 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<LicenceStatus>> PutLicenceStatus(int id, UpdateLicenceStatusDto updateLicenceStatusDto)
         {
-            return await _licenceStatusRepository.UpdateAsync<UpdateLicenceStatusDto>(id, updateLicenceStatusDto);
+            return await _licenceStatusRepository.UpdateAsync<UpdateLicenceStatusDto>(id, updateLicenceStatusDto, HttpContext);
         }
 
         // POST: api/LicenceStatus
@@ -58,7 +58,7 @@ namespace MoeSystem.Server.Controllers
         public async Task<ActionResult<LicenceStatus>> PostLicenceStatus(CreateLicenceStatusDto createLicenceStatusDto)
         {
 
-            return await _licenceStatusRepository.AddAsync<CreateLicenceStatusDto,LicenceStatus>(createLicenceStatusDto);
+            return await _licenceStatusRepository.AddAsync<CreateLicenceStatusDto, LicenceStatus>(createLicenceStatusDto, HttpContext);
         }
 
         // DELETE: api/LicenceStatus/5

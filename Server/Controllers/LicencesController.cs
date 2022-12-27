@@ -28,7 +28,7 @@ namespace MoeSystem.Server.Controllers
 
         // GET: api/Licences
         [HttpGet]
-        public async Task<ActionResult<PagedResult<LicenceDto>>> GetLicences([FromQuery]SearchLicenceDto queryParameters)
+        public async Task<ActionResult<PagedResult<LicenceDto>>> GetLicences([FromQuery] SearchLicenceDto queryParameters)
         {
             return await _licenceRepository.GetPagedResult(queryParameters);
         }
@@ -91,21 +91,21 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Licence>> PutLicence(int id, UpdateLicenceDto updateLicenceDto)
         {
-            return await _licenceRepository.UpdateAsync<UpdateLicenceDto>(id, updateLicenceDto);
+            return await _licenceRepository.UpdateAsync<UpdateLicenceDto>(id, updateLicenceDto, HttpContext);
         }
 
         // POST: api/Licences
         [HttpPost]
         public async Task<ActionResult<Licence>> PostLicence(CreateLicenceDto createLicenceDto)
         {
-            return await _licenceRepository.AddAsync<CreateLicenceDto,Licence>(createLicenceDto);
+            return await _licenceRepository.AddAsync<CreateLicenceDto, Licence>(createLicenceDto, HttpContext);
         }
 
         // POST: api/Licences/GenerateLicence
         [HttpPost("GenerateLicence")]
         public async Task<ActionResult<CreateLicenceDto>> GenerateLicence(CreateLicenceDto createLicenceDto)
         {
-            return await _licenceRepository.CreateLicence(createLicenceDto);
+            return await _licenceRepository.CreateLicence(createLicenceDto, HttpContext);
         }
 
         // DELETE: api/Licences/5

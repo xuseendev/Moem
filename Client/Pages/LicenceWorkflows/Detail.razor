@@ -16,8 +16,8 @@
                 @if (loading) { }
                 else
                 {
-                    <h3 class="nk-block-title page-title">Licence WorkFlow <strong
-                        class="text-primary small">@Licence.LicenceId</strong></h3>
+                    <h3 class="nk-block-title page-title">Licence WorkFlow <strong class="text-primary small">=>
+                            @Licence.LicenceId</strong></h3>
                     <div class="nk-block-des text-soft">
                         <ul class="list-inline">
                             <li>Licence ID: <span class="text-base">@Licence.Id</span></li>
@@ -98,6 +98,16 @@
                                                         @onclick="(()=>Reject(LicenceWorkFlow.Id))" Color="Color.Error">
                                                                     Reject
                                                                 </MudButton>
+                                                                @if (LicenceWorkFlow.WorkFlowName == "Delivered")
+                                                                {
+                                                                    <MudButton Variant="Variant.Filled" class="ml-1"
+                                                        StartIcon="@Icons.Material.Filled.Print" Color="Color.Info"
+                                                        Href="@($"/licenceworkflows/print/{Licence.Id}")">
+                                                                        Print
+                                                                    </MudButton>
+                                                                }
+
+
                                                             }
                                                         </AuthorizeView>
 

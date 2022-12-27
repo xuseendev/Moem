@@ -1,0 +1,22 @@
+@inject IHttpRepository<SignatureDetailDto> signatureService
+
+
+
+<img width="1300" height="700" src="@file" />
+
+@code {
+
+    [Parameter]
+    public int Id { get; set; }
+    private string file;
+    private SignatureDetailDto signatureDetail = new SignatureDetailDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        signatureDetail = await signatureService.Get($"{EndPoints.SignatureEndPoint}Details/", Id);
+        var base64String = Convert.ToBase64String(signatureDetail.File, 0, signatureDetail.File.Length);
+        file = $"data:image/png;base64,{base64String}";
+
+    }
+
+}

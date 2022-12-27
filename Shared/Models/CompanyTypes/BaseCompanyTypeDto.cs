@@ -10,5 +10,6 @@ namespace MoeSystem.Shared.Models.CompanyTypes
     {
         public string Name { get; set; }
         public bool Active { get; set; }
+
     }
 }

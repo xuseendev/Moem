@@ -52,14 +52,12 @@ namespace MoeSystem.Server.Migrations
                         new
                         {
                             Id = "4cfa23fd-542d-4ade-951e-a3da08eff315",
-                            ConcurrencyStamp = "02c93165-97ff-439c-adb7-0f7ef85f7308",
                             Name = "Administrator",
                             NormalizedName = "ADMINISTRATOR"
                         },
                         new
                         {
                             Id = "bbb0aca2-2d5f-4466-b8df-52f12467afe5",
-                            ConcurrencyStamp = "2fac193d-1741-4a40-a960-1533eac430ee",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -1224,7 +1222,7 @@ namespace MoeSystem.Server.Migrations
                         {
                             Id = "2419fb85-daf3-47a6-9af3-1c1bc5dfd248",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "05eaa921-fb23-48fe-891d-a320d8c610cf",
+                            ConcurrencyStamp = "827951c3-736e-4eac-93eb-ccb0cedd54b0",
                             Email = "admin@moem.com",
                             EmailConfirmed = false,
                             FirstName = "System",
@@ -1232,9 +1230,9 @@ namespace MoeSystem.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MOEM.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHBEK2HkHKGJJe568wh+DQujPDTgcut8EAthFia9g1+8Erdol+Cjlzn74p/IMfawBg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKD5UfIQqklVdtaK1iu2EOHpfFCG+ZUYetajr3y93PnVlnoJ2Kg4lTTo8NXQg0+5VQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2ce28faa-11ae-413b-8c14-d9f9c7619e30",
+                            SecurityStamp = "6fad0d1e-d189-47bd-8a51-98d8d3fcdaf6",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -1433,10 +1431,22 @@ namespace MoeSystem.Server.Migrations
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("LicenceTypeId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("ShowCordinate")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SignatureId")
+                        .HasColumnType("int");
+
                     b.Property<string>("SubNote")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SubTitle")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
@@ -1449,6 +1459,10 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LicenceTypeId");
+
+                    b.HasIndex("SignatureId");
 
                     b.ToTable("LicenceTypeTemplates");
                 });
@@ -1771,6 +1785,25 @@ namespace MoeSystem.Server.Migrations
                     b.Navigation("LicenceType");
 
                     b.Navigation("UserGroup");
+                });
+
+            modelBuilder.Entity("Server.Data.LicenceTypeTemplate", b =>
+                {
+                    b.HasOne("MoeSystem.Server.Data.LicenceType", "LicenceType")
+                        .WithMany()
+                        .HasForeignKey("LicenceTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MoeSystem.Server.Data.Signature", "Signature")
+                        .WithMany()
+                        .HasForeignKey("SignatureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LicenceType");
+
+                    b.Navigation("Signature");
                 });
 
             modelBuilder.Entity("MoeSystem.Server.Data.Company", b =>

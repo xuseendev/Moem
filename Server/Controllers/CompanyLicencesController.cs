@@ -16,7 +16,7 @@ namespace MoeSystem.Server.Controllers
     {
         private readonly IGenericRepository<CompanyLicence> _companyOwnershipRepository;
 
-        public CompanyLicencesController(IGenericRepository<CompanyLicence>  companyOwnershipRepository)
+        public CompanyLicencesController(IGenericRepository<CompanyLicence> companyOwnershipRepository)
         {
             _companyOwnershipRepository = companyOwnershipRepository;
         }
@@ -39,14 +39,14 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<CompanyLicence>> PutCompanyOwnership(int id, UpdateCompanyLicenceDto updateCompanyLicence)
         {
-            return await _companyOwnershipRepository.UpdateAsync<UpdateCompanyLicenceDto>(id, updateCompanyLicence);
+            return await _companyOwnershipRepository.UpdateAsync<UpdateCompanyLicenceDto>(id, updateCompanyLicence, HttpContext);
         }
 
         // POST: api/CompanyOwnerships
         [HttpPost]
         public async Task<ActionResult<CompanyLicence>> PostCompanyOwnership(CreateCompanyLicenceDto createCompanyLicence)
         {
-            return await _companyOwnershipRepository.AddAsync<CreateCompanyLicenceDto, CompanyLicence>(createCompanyLicence);
+            return await _companyOwnershipRepository.AddAsync<CreateCompanyLicenceDto, CompanyLicence>(createCompanyLicence, HttpContext);
         }
 
         // DELETE: api/CompanyOwnerships/5

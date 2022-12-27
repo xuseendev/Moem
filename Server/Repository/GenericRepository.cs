@@ -8,6 +8,8 @@ using MoeSystem.Server.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using MoeSystem.Shared.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace MoeSystem.Server.Repository
 {
@@ -15,26 +17,50 @@ namespace MoeSystem.Server.Repository
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> userManager;
 
-        public GenericRepository(ApplicationDbContext context, IMapper mapper)
+        public GenericRepository(ApplicationDbContext context, IMapper mapper, UserManager<User> userManager)
         {
             _context = context;
             this._mapper = mapper;
+            this.userManager = userManager;
         }
 
-        public async Task<TResult> AddAsync<TSource, TResult>(TSource source)
+        public async Task<TResult> AddAsync<TSource, TResult>(TSource source, HttpContext context)
         {
             var entity = _mapper.Map<T>(source);
             await _context.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            await Save(context);
             return _mapper.Map<TResult>(entity);
         }
 
-        public async Task<T> AddAsync(T entity)
+        public async Task<T> AddAsync(T entity, HttpContext context)
         {
             await _context.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            await Save(context);
             return entity;
+        }
+
+        public async Task Save(HttpContext httpContext)
+        {
+            //var user = httpContext.User.Identity.Name;
+            var userId = httpContext.User.FindFirst("uid").Value;
+            var user = await userManager.FindByIdAsync(userId);
+            var entries = _context.ChangeTracker.Entries()
+                .Where(q => q.State == EntityState.Modified || q.State == EntityState.Added);
+            foreach (var entry in entries)
+            {
+                ((BaseModel)entry.Entity).UpdatedOn = DateTime.Now;
+                ((BaseModel)entry.Entity).UpdateBy = user.UserName;
+                if (entry.State == EntityState.Added)
+                {
+                    ((BaseModel)entry.Entity).CreatedOn = DateTime.Now;
+                    ((BaseModel)entry.Entity).CreatedBy = user.UserName;
+
+                }
+
+            }
+            await _context.SaveChangesAsync();
         }
 
 
@@ -91,9 +117,9 @@ namespace MoeSystem.Server.Repository
             return await _context.Set<T>().ToListAsync();
         }
 
-     
 
-     
+
+
 
         public async Task<T> GetAsync(int? id)
         {
@@ -114,14 +140,14 @@ namespace MoeSystem.Server.Repository
             return _mapper.Map<TResult>(result);
         }
 
-        public async Task<T> UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity, HttpContext context)
         {
             _context.Update(entity);
-            await _context.SaveChangesAsync();
+            await Save(context);
             return entity;
         }
 
-        public async Task<T> UpdateAsync<TSource>(int? id, TSource source)
+        public async Task<T> UpdateAsync<TSource>(int? id, TSource source, HttpContext context)
         {
             if (id == null)
             {
@@ -134,7 +160,7 @@ namespace MoeSystem.Server.Repository
             }
             _mapper.Map(source, entity);
             _context.Update(entity);
-            await _context.SaveChangesAsync();
+            await Save(context);
             return entity;
         }
     }

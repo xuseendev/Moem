@@ -52,14 +52,14 @@ namespace MoeSystem.Server.Controllers
         public async Task<ActionResult<Area>> PutArea(int id, UpdateAreaDto updateAreaDto)
         {
 
-            return await _genericRepository.UpdateAsync<UpdateAreaDto>(id, updateAreaDto);
+            return await _genericRepository.UpdateAsync<UpdateAreaDto>(id, updateAreaDto, HttpContext);
         }
 
         // POST: api/Areas
         [HttpPost]
         public async Task<ActionResult<Area>> PostArea(CreateAreaDto createAreaDto)
         {
-            return await _genericRepository.AddAsync<CreateAreaDto, Area>(createAreaDto);
+            return await _genericRepository.AddAsync<CreateAreaDto, Area>(createAreaDto, HttpContext);
         }
 
         // DELETE: api/Areas/5

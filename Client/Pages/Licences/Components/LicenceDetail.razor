@@ -30,6 +30,10 @@
                                         <td> Term </td>
                                         <td>@Licence.TermOfTheLicence</td>
                                     </tr>
+                                    <tr>
+                                        <td> Status </td>
+                                        <td>@Licence.Status</td>
+                                    </tr>
 
                                 </tbody>
                             </table>
@@ -171,7 +175,25 @@
             </div>
             <div class="card-body">
 
-                <LicenceWorkflows LicenceId="Licence.Id" />
+                <LicenceWorkflows  LicenceId="Licence.Id" />
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<div class="row">
+    <div class="col-12">
+        <div class="card card-bordered">
+            <div class="card-header  clearfix" style="background-color: lightblue;">
+                <h5 class="card-title" style="color: white;">
+
+                    Licence Documents
+                </h5>
+
+            </div>
+            <div class="card-body">
+
+                <LicenceDocuments DialogOptions="maxWidth" LicenceId="Licence.Id" />
             </div>
         </div>
     </div>
@@ -189,7 +211,8 @@
             </div>
             <div class="card-body">
 
-                <MoeSystem.Client.Pages.Companies.Component.CompanyDocuments CompanyId="Licence.CompanyId" />
+                <MoeSystem.Client.Pages.Companies.Component.CompanyDocuments DialogOptions="maxWidth"
+                    CompanyId="Licence.CompanyId" />
             </div>
         </div>
     </div>
@@ -234,4 +257,12 @@
 @code {
     [Parameter]
     public LicenceDetailDto Licence { get; set; }
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Medium,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+
+
+    };
 }

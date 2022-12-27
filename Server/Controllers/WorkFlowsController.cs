@@ -38,21 +38,21 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<WorkFlow>> PutWorkFlow(int id, UpdateWorkFlowDto updateWorkFlowDto)
         {
-            return await _workFlowRepository.UpdateAsync(id, updateWorkFlowDto);
+            return await _workFlowRepository.UpdateAsync(id, updateWorkFlowDto, HttpContext);
         }
 
         // POST: api/WorkFlows
         [HttpPost]
         public async Task<ActionResult<WorkFlow>> PostWorkFlow(CreateWorkFlowDto createWorkFlowDto)
         {
-            return await _workFlowRepository.AddAsync<CreateWorkFlowDto,WorkFlow>(createWorkFlowDto);
+            return await _workFlowRepository.AddAsync<CreateWorkFlowDto, WorkFlow>(createWorkFlowDto, HttpContext);
         }
 
         // DELETE: api/WorkFlows/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteWorkFlow(int id)
         {
-            await _workFlowRepository.DeleteAsync(id);  
+            await _workFlowRepository.DeleteAsync(id);
 
             return NoContent();
         }

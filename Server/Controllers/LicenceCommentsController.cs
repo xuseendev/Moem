@@ -32,28 +32,28 @@ namespace MoeSystem.Server.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<LicenceCommentDto>> GetLicenceComments(int id)
         {
-            return await _licenceCommentRepository.GetAsync< LicenceCommentDto>(id);    
+            return await _licenceCommentRepository.GetAsync<LicenceCommentDto>(id);
         }
 
         // PUT: api/LicenceComments/5
         [HttpPut]
         public async Task<ActionResult<LicenceComments>> PutLicenceComments(int id, UpdateLicenceCommentDto updateLicenceCommentDto)
         {
-            return await _licenceCommentRepository.UpdateAsync<UpdateLicenceCommentDto>(id, updateLicenceCommentDto);
+            return await _licenceCommentRepository.UpdateAsync<UpdateLicenceCommentDto>(id, updateLicenceCommentDto, HttpContext);
         }
 
         // POST: api/LicenceComments
         [HttpPost]
         public async Task<ActionResult<LicenceComments>> PostLicenceComments(CreateLicenceCommentDto createLicenceCommentDto)
         {
-            return await _licenceCommentRepository.AddAsync<CreateLicenceCommentDto,LicenceComments>(createLicenceCommentDto);
+            return await _licenceCommentRepository.AddAsync<CreateLicenceCommentDto, LicenceComments>(createLicenceCommentDto, HttpContext);
         }
 
         // DELETE: api/LicenceComments/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLicenceComments(int id)
         {
-             await _licenceCommentRepository.DeleteAsync(id);
+            await _licenceCommentRepository.DeleteAsync(id);
 
             return NoContent();
         }

@@ -82,4 +82,4 @@ namespace MoeSystem.Server.Controllers
             return Ok(authResponse);
         }
     }
-    }
+}

@@ -44,21 +44,21 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<CompanyDocument>> PutCompanyDocument(int id, UpdateCompanyDocumentDto updateCompanyDocumentDto)
         {
-            return await _companyDocumentRepository.UpdateAsync<UpdateCompanyDocumentDto>(id, updateCompanyDocumentDto);
+            return await _companyDocumentRepository.UpdateAsync<UpdateCompanyDocumentDto>(id, updateCompanyDocumentDto, HttpContext);
         }
 
         // POST: api/CompanyDocuments
         [HttpPost]
         public async Task<ActionResult<CompanyDocument>> PostCompanyDocument(CreateCompanyDocumentDto createCompanyDocumentDto)
         {
-            return await _companyDocumentRepository.AddAsync<CreateCompanyDocumentDto,CompanyDocument>(createCompanyDocumentDto);
+            return await _companyDocumentRepository.AddAsync<CreateCompanyDocumentDto, CompanyDocument>(createCompanyDocumentDto, HttpContext);
         }
 
         // DELETE: api/CompanyDocuments/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCompanyDocument(int id)
         {
-             await _companyDocumentRepository.DeleteAsync(id);
+            await _companyDocumentRepository.DeleteAsync(id);
             return NoContent();
         }
 

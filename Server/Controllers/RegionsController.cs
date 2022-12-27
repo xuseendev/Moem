@@ -44,7 +44,7 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Region>> PutRegion(int id, UpdateRegionDto updateRegionDto)
         {
-            return await _regionRepository.UpdateAsync<UpdateRegionDto>(id, updateRegionDto);
+            return await _regionRepository.UpdateAsync<UpdateRegionDto>(id, updateRegionDto, HttpContext);
         }
 
         // POST: api/Regions
@@ -52,7 +52,7 @@ namespace MoeSystem.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<CreateRegionDto>> PostRegion(CreateRegionDto createRegionDto)
         {
-            return await _regionRepository.AddAsync<CreateRegionDto,CreateRegionDto>(createRegionDto);
+            return await _regionRepository.AddAsync<CreateRegionDto, CreateRegionDto>(createRegionDto, HttpContext);
         }
 
         // DELETE: api/Regions/5

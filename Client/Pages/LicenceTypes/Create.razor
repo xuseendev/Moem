@@ -25,7 +25,7 @@
 
                     <MudItem xs="12">
                         <MudGrid>
-                            <MudItem xs="6">
+                            <MudItem xs="5">
 
                                 <MudTextField Label="Licence Period" HelperText="Max. 12 number"
                                     @bind-Value="model.LicencePeriod" Variant="Variant.Outlined" class="mb-3"
@@ -33,7 +33,7 @@
                             </MudItem>
 
 
-                            <MudItem xs="6">
+                            <MudItem xs="5">
                                 <MudSelect T="string" Label="Licence Period Type" @bind-Value="model.LicencePeriodType"
                                     AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" class="mb-3">
 
@@ -46,28 +46,14 @@
                                     }
                                 </MudSelect>
                             </MudItem>
-                        </MudGrid>
-                    </MudItem>
-                    <MudItem xs="12">
-                        <MudGrid>
-                            <MudItem xs="4">
-
-                                <MudTextField Label="Title" HelperText="Max. 12 characters" @bind-Value="model.Title"
-                                    Variant="Variant.Outlined" class="mb-3" For="@(() => model.Title)" />
-                            </MudItem>
-
-
-                            <MudItem xs="4">
-                                <MudTextField Label="SubTitle" @bind-Value="model.SubTitle" Variant="Variant.Outlined"
-                                    class="mb-3" For="@(() => model.SubTitle)" />
-                            </MudItem>
-                            <MudItem xs="4">
+                            <MudItem xs="2">
                                 <MudCheckBox @bind-Checked="@model.Active" Size="Size.Small" Color="Color.Tertiary">
                                     Active
                                 </MudCheckBox>
                             </MudItem>
                         </MudGrid>
                     </MudItem>
+             
                     <MudItem xs="12">
                         <MudGrid>
                             <MudItem xs="12">

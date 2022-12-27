@@ -50,7 +50,7 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<DocumentType>> PutDocumentType(int id, UpdateDocumentTypeDto updateDocumentTypeDto)
         {
-            return await _documentTypeRepository.UpdateAsync<UpdateDocumentTypeDto>(id, updateDocumentTypeDto);
+            return await _documentTypeRepository.UpdateAsync<UpdateDocumentTypeDto>(id, updateDocumentTypeDto, HttpContext);
         }
 
         // POST: api/DocumentTypes
@@ -58,7 +58,7 @@ namespace MoeSystem.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<DocumentType>> PostDocumentType(CreateDocumentTypeDto createDocumentTypeDto)
         {
-            return await _documentTypeRepository.AddAsync<CreateDocumentTypeDto, DocumentType>(createDocumentTypeDto);
+            return await _documentTypeRepository.AddAsync<CreateDocumentTypeDto, DocumentType>(createDocumentTypeDto, HttpContext);
         }
 
         // DELETE: api/DocumentTypes/5

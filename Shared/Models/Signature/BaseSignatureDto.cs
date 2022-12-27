@@ -1,0 +1,17 @@
+using MoeSystem.Shared.Models.UserGroup;
+
+namespace MoeSystem.Shared.Models.Signature
+{
+    public class BaseSignatureDto
+    {
+        public int UserGroupId { get; set; }
+        public UserGroupDto UserGroup { get; set; }
+        public string Title { get; set; }
+        public string Name { get; set; }
+        public string CreatedBy { get; set; }
+
+        public DateTime CreatedOn { get; set; }
+
+
+    }
+}

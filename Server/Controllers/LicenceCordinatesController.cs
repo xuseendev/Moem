@@ -38,21 +38,21 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<LicenceCordinates>> PutLicenceCordinates(int id, UpdateLicenceCordinateDto updateLicenceCordinateDto)
         {
-            return await _licenceCordinateRepository.UpdateAsync<UpdateLicenceCordinateDto>(id, updateLicenceCordinateDto);
+            return await _licenceCordinateRepository.UpdateAsync<UpdateLicenceCordinateDto>(id, updateLicenceCordinateDto, HttpContext);
         }
 
         // POST: api/LicenceCordinates
         [HttpPost]
         public async Task<ActionResult<LicenceCordinates>> PostLicenceCordinates(CreateLicenceCordinateDto createLicenceCordinateDto)
         {
-            return await _licenceCordinateRepository.AddAsync<CreateLicenceCordinateDto, LicenceCordinates>(createLicenceCordinateDto);
+            return await _licenceCordinateRepository.AddAsync<CreateLicenceCordinateDto, LicenceCordinates>(createLicenceCordinateDto, HttpContext);
         }
 
         // DELETE: api/LicenceCordinates/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLicenceCordinates(int id)
         {
-           await _licenceCordinateRepository.DeleteAsync(id);
+            await _licenceCordinateRepository.DeleteAsync(id);
 
             return NoContent();
         }

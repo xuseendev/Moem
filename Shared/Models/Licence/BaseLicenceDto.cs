@@ -36,6 +36,7 @@ namespace MoeSystem.Shared.Models.Licence
         public int RegionId { get; set; }
         public int CityId { get; set; }
         public int AreaId { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
 
     }
 }

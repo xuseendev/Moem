@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MoeSystem.Server.Contracts;
 using MoeSystem.Server.Data;
@@ -25,7 +26,7 @@ namespace MoeSystem.Server.Repository
         private readonly IGenericRepository<Logs> logsRepository;
         private readonly ISendMessage sendMessage;
 
-        public LicenceRepository(ApplicationDbContext context, IMapper mapper, IGenericRepository<Logs> logsRepository, ISendMessage sendMessage) : base(context, mapper)
+        public LicenceRepository(ApplicationDbContext context, IMapper mapper, IGenericRepository<Logs> logsRepository, ISendMessage sendMessage, UserManager<User> userManager) : base(context, mapper, userManager)
         {
             _context = context;
             _mapper = mapper;
@@ -54,7 +55,7 @@ namespace MoeSystem.Server.Repository
 
 
 
-        public async Task<LicenceWorkFlowDto> ApproveLicence(int? id)
+        public async Task<LicenceWorkFlowDto> ApproveLicence(int? id, HttpContext context)
         {
             var workflow = await GetLicenceWorkFlow(id);
             var licence = await GetAsync(workflow.LicenceId);
@@ -88,13 +89,13 @@ namespace MoeSystem.Server.Repository
                 licence.LicenceStatus = licenceWorkFlow.LicenceStatus.Name;
             }
             licence.Status = licenceWorkFlow.LicenceStatus.Name;
-            await logsRepository.AddAsync(new Logs { Description = $"Approved workflow of {licenceWorkFlow.LicenceStatus.Name} on {DateTime.Now}", Dated = DateTime.Now, LicenceId = licence.Id });
+            await logsRepository.AddAsync(new Logs { Description = $"Approved workflow of {licenceWorkFlow.LicenceStatus.Name} on {DateTime.Now}", Dated = DateTime.Now, LicenceId = licence.Id }, context);
             await _context.SaveChangesAsync();
             return _mapper.Map<LicenceWorkFlowDto>(workflow);
 
 
         }
-        public async Task<LicenceWorkFlowDto> RejectLicence(int? id)
+        public async Task<LicenceWorkFlowDto> RejectLicence(int? id, HttpContext context)
         {
             var workflow = await GetLicenceWorkFlow(id);
             if (workflow is null)
@@ -104,12 +105,12 @@ namespace MoeSystem.Server.Repository
             workflow.Status = false;
             workflow.Reject = true;
             await _context.SaveChangesAsync();
-            await logsRepository.AddAsync(new Logs { Description = $"Rejected licence id of {workflow.LicenceId} on {DateTime.Now}", Dated = DateTime.Now, LicenceId = workflow.LicenceId });
+            await logsRepository.AddAsync(new Logs { Description = $"Rejected licence id of {workflow.LicenceId} on {DateTime.Now}", Dated = DateTime.Now, LicenceId = workflow.LicenceId }, context);
             return _mapper.Map<LicenceWorkFlowDto>(workflow);
 
 
         }
-        public async Task<LicenceWorkFlowDto> ApproveRejectLicence(int? id)
+        public async Task<LicenceWorkFlowDto> ApproveRejectLicence(int? id, HttpContext context)
         {
             var workflow = await GetLicenceWorkFlow(id);
             if (workflow is null)
@@ -118,14 +119,14 @@ namespace MoeSystem.Server.Repository
             }
             workflow.Reject = false;
             await _context.SaveChangesAsync();
-            await logsRepository.AddAsync(new Logs { Description = $"Approved from rejected licence on {DateTime.Now}", Dated = DateTime.Now, LicenceId = workflow.LicenceId });
+            await logsRepository.AddAsync(new Logs { Description = $"Approved from rejected licence on {DateTime.Now}", Dated = DateTime.Now, LicenceId = workflow.LicenceId }, context);
 
             return _mapper.Map<LicenceWorkFlowDto>(workflow);
 
 
         }
 
-        public async Task<CreateLicenceDto> CreateLicence(CreateLicenceDto createLicenceDto)
+        public async Task<CreateLicenceDto> CreateLicence(CreateLicenceDto createLicenceDto, HttpContext context)
         {
             var licence = _mapper.Map<Licence>(createLicenceDto);
             _context.Licences.Add(licence);
@@ -142,13 +143,13 @@ namespace MoeSystem.Server.Repository
             });
             licence.Status = licenceWorkFlow.LicenceStatus.Name;
 
-            await _context.SaveChangesAsync();
+            await Save(context);
             await logsRepository.AddAsync(new Logs
             {
                 Description = $"Licence registered workflow of {licenceWorkFlow.LicenceStatus.Name} on {DateTime.Now}",
                 Dated = DateTime.Now,
                 LicenceId = licence.Id
-            });
+            }, context);
 
             //await SendMessage("Licence Registration", licence.Id);
             return createLicenceDto;

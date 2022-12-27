@@ -12,10 +12,7 @@ namespace MoeSystem.Shared.Models.CompanyDocument
         public string DocumentName { get; set; }
 
         public int? CompanyId { get; set; }
-      
-
-
-
         public string FileExtension { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
     }
 }

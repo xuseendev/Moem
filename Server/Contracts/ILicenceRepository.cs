@@ -11,7 +11,7 @@ using MoeSystem.Shared.Models.Logs;
 
 namespace MoeSystem.Server.Contracts
 {
-    public interface ILicenceRepository: IGenericRepository<Licence>
+    public interface ILicenceRepository : IGenericRepository<Licence>
     {
         Task<LicenceDetailDto> GetLicenceDetail(int? id);
         Task<List<LicenceWorkFlowDto>> GetTaskLicences(int? userGroupId);
@@ -22,14 +22,14 @@ namespace MoeSystem.Server.Contracts
         Task<List<LicenceCordinateDto>> GetLicenceCordinates(int? licenceId);
         Task<List<LicenceWorkFlowDto>> GetLicenceWorkflows(int? licenceId);
         Task<LicenceWorkFlowDetailDto> GetLicenceWorkFlowDetail(int? id);
-        Task<LicenceWorkFlowDto> ClaimTask(int? id,string user);
+        Task<LicenceWorkFlowDto> ClaimTask(int? id, string user);
         Task<LicenceWorkFlowDto> UnClaimTask(int? id);
-        Task<LicenceWorkFlowDto> ApproveLicence(int? id);
-        Task<LicenceWorkFlowDto> RejectLicence(int? id);
-        Task<LicenceWorkFlowDto> ApproveRejectLicence(int? id);
+        Task<LicenceWorkFlowDto> ApproveLicence(int? id, HttpContext context);
+        Task<LicenceWorkFlowDto> RejectLicence(int? id, HttpContext context);
+        Task<LicenceWorkFlowDto> ApproveRejectLicence(int? id, HttpContext context);
         Task<List<LicenceWorkFlowDto>> RejectedLicences();
         Task<List<LicenceDto>> ApprovedLicences();
-        Task<CreateLicenceDto> CreateLicence(CreateLicenceDto createLicenceDto);
+        Task<CreateLicenceDto> CreateLicence(CreateLicenceDto createLicenceDto, HttpContext context);
         Task<PagedResult<LicenceDto>> GetPagedResult(SearchLicenceDto queryParameters);
         Task<List<PendingWorkflowsDto>> CalculateWorkflow();
         Task<List<TopLicenceGrouping>> TopLicences();

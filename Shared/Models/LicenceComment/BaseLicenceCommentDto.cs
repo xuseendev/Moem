@@ -11,6 +11,7 @@ namespace MoeSystem.Shared.Models.LicenceComment
         public string Comment { get; set; }
         public int LicenceId { get; set; }
         public string Type { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
 
     }
 }

@@ -74,7 +74,7 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Company>> PutCompany(int id, UpdateCompanyDto updateCompanyDto)
         {
-            return await _companyRepository.UpdateAsync<UpdateCompanyDto>(id, updateCompanyDto);
+            return await _companyRepository.UpdateAsync<UpdateCompanyDto>(id, updateCompanyDto, HttpContext);
         }
 
         [HttpGet("GetLogs/{id}")]
@@ -107,7 +107,7 @@ namespace MoeSystem.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Company>> PostCompany(CreateCompanyDto createCompanyDto)
         {
-            return await _companyRepository.AddAsync<CreateCompanyDto, Company>(createCompanyDto);
+            return await _companyRepository.AddAsync<CreateCompanyDto, Company>(createCompanyDto, HttpContext);
         }
 
         // DELETE: api/Companies/5

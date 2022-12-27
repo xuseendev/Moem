@@ -14,6 +14,7 @@ namespace MoeSystem.Shared.Models.CompanyOwnership
         public string Title { get; set; }
         public string Phone { get; set; }
         public string IdType { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
 
     }
 }

@@ -38,7 +38,7 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Messages>> PutMessages(int id, UpdateMessageDto updateMessageDto)
         {
-            return await _messageRepository.UpdateAsync<UpdateMessageDto>(id, updateMessageDto);
+            return await _messageRepository.UpdateAsync<UpdateMessageDto>(id, updateMessageDto, HttpContext);
         }
 
         // POST: api/Messages
@@ -46,7 +46,7 @@ namespace MoeSystem.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<Messages>> PostMessages(CreateMessageDto createMessageDto)
         {
-            return await _messageRepository.AddAsync<CreateMessageDto,Messages>(createMessageDto);
+            return await _messageRepository.AddAsync<CreateMessageDto, Messages>(createMessageDto, HttpContext);
         }
 
         // DELETE: api/Messages/5

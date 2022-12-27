@@ -32,8 +32,8 @@ namespace MoeSystem.Server.Controllers
         [HttpGet("LookUp/{id}")]
         public async Task<ActionResult<IEnumerable<BaseLookUpDto>>> LookUp(int id)
         {
-      
-            return await _cityRepository.GetAllAsync<BaseLookUpDto>(x=>x.RegionId==id);
+
+            return await _cityRepository.GetAllAsync<BaseLookUpDto>(x => x.RegionId == id);
         }
 
         // GET: api/Cities/5
@@ -47,14 +47,14 @@ namespace MoeSystem.Server.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<City>> PutCity(int id, UpdateCityDto updateCityDto)
         {
-            return await _cityRepository.UpdateAsync<UpdateCityDto>(id, updateCityDto);
+            return await _cityRepository.UpdateAsync<UpdateCityDto>(id, updateCityDto, HttpContext);
         }
 
         // POST: api/Cities
         [HttpPost]
         public async Task<ActionResult<CreateCityDto>> PostCity(CreateCityDto createCityDto)
         {
-            return await _cityRepository.AddAsync<CreateCityDto,CreateCityDto>(createCityDto);
+            return await _cityRepository.AddAsync<CreateCityDto, CreateCityDto>(createCityDto, HttpContext);
         }
 
         // DELETE: api/Cities/5

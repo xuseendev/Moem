@@ -10,5 +10,6 @@ namespace MoeSystem.Shared.Models.DocumentType
     {
         public string Name { get; set; }
         public bool Active { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
     }
 }

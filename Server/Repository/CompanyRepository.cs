@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MoeSystem.Server.Contracts;
 using MoeSystem.Server.Data;
@@ -19,7 +20,7 @@ namespace MoeSystem.Server.Repository
         private readonly IMapper _mapper;
         private readonly IGenericRepository<Logs> logsRepository;
 
-        public CompanyRepository(ApplicationDbContext context, IMapper mapper, IGenericRepository<Logs> logsRepository) : base(context, mapper)
+        public CompanyRepository(ApplicationDbContext context, IMapper mapper, IGenericRepository<Logs> logsRepository, UserManager<User> userManager) : base(context, mapper, userManager)
         {
             _context = context;
             _mapper = mapper;

@@ -14,7 +14,7 @@
         <MudSpacer />
         <AuthorizeView>
 
-        <CancelNotification />
+            <CancelNotification />
         </AuthorizeView>
         <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/"
             Target="_blank" />
@@ -72,7 +72,7 @@
             </div>
         </li>
     </MudAppBar>
-    <MudDrawer @bind-Open="_drawerOpen" Elevation="1">
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="1" class="@NavBarClass">
         <MudDrawerHeader style="background-color: green;">
             <MudImage Src="images/som.png" class="mr-5" Height="40"></MudImage>
             <MudText Typo="Typo.h6" Class="mt-2 ml-5"></MudText>
@@ -106,9 +106,19 @@
 
 @code {
     bool _drawerOpen = true;
+    public Action OnChanged { get; set; }
 
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
+        if (OnChanged != null) OnChanged();//Callback for reload
+    }
+    public string NavBarClass
+    {
+        get
+        {
+            if (_drawerOpen) return String.Empty;//No additional css class for show nav bar
+            return "d-none";//d-none class will hide the div
+        }
     }
 }
