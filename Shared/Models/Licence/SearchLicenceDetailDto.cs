@@ -1,0 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace MoeSystem.Shared.Models.Licence
+{
+    public class SearchLicenceDetailDto
+    {
+        public string Name { get; set; }
+        public string LicenceId { get; set; }
+        public string LicenceStatus { get; set; }
+
+        public DateTime? From { get; set; }
+
+        public DateTime? To { get; set; }
+    }
+}

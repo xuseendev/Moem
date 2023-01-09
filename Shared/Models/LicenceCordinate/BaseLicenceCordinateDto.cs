@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
@@ -9,9 +10,17 @@ namespace MoeSystem.Shared.Models.LicenceCordinate
 {
     public class BaseLicenceCordinateDto
     {
+        [Required]
+
         public int LicenceId { get; set; }
+        [Required]
+
         public string Name { get; set; }
+        [Required]
+
         public double Lat { get; set; }
+        [Required]
+
         public double Lng { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;

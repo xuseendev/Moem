@@ -71,6 +71,13 @@ namespace MoeSystem.Client.Services
             await client.PutAsJsonAsync($"{url}{id}", obj);
         }
 
+        public async Task<T> Get(string url, string id)
+        {
+            await GetBearerToken();
+            interceptor.MonitorEvent();
+            return await client.GetFromJsonAsync<T>($"{url}{id}");
+        }
+
         //public async Task<T> GetAll(string url, QueryParameters query)
         //{
         //    await GetBearerToken();

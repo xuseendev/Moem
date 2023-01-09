@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MoeSystem.Server.Contracts;
+using MoeSystem.Server.Data;
 using MoeSystem.Shared.Models.User;
+
 
 namespace MoeSystem.Server.Controllers
 {
@@ -80,6 +83,75 @@ namespace MoeSystem.Server.Controllers
             }
 
             return Ok(authResponse);
+        }
+
+
+        [HttpGet("getDetail/{id}")]
+        public async Task<ActionResult<User>> GetDetail(string id)
+        {
+            return await _authManger.GetById(id);
+        }
+        [HttpGet("AddRoles/{id}")]
+        public async Task<ActionResult<User>> AddRoles(string id, string role)
+        {
+            return await _authManger.AddToRolesAsync(id, role);
+
+        }
+
+        // [HttpPost("ResetPassword/{id}")]
+        // public async Task<ActionResult<User>> ResetPassword(string id,string password)
+        // {
+        //     try
+        //     {
+        //         var user = await _userManager.FindByIdAsync(id);
+        //         if (user == null) return NotFound();
+        //         var hasher = new PasswordHasher<ApplicationUser>();
+        //         var newPassword = hasher.HashPassword(user,password);
+        //         user.PasswordHash = newPassword;
+        //         var res = await _userManager.UpdateAsync(user);
+        //         if (!res.Succeeded) return BadRequest(res.Errors);
+
+        //         return Ok(user);
+        //     }
+        //     catch (Exception ex)
+        //     {
+
+        //         return BadRequest(ex.Message);
+        //     }
+        // }
+
+        [HttpGet("GetUsers")]
+        public async Task<ActionResult<List<UserDto>>> GetUsers()
+        {
+            return await _authManger.GetUsers();
+        }
+
+        [HttpGet("GetRoles")]
+        public async Task<ActionResult<List<IdentityRole>>> GetRoles()
+        {
+            return await _authManger.GetRoles();
+
+        }
+
+        [HttpGet("GetUserRoles/{userId}")]
+        public async Task<ActionResult<List<string>>> GetUserRoles(string userId)
+        {
+            return await _authManger.GetUserRoles(userId);
+
+        }
+
+
+        [HttpPut("DeactivateOrActivateUser/{id}")]
+        public async Task<ActionResult<UserDto>> DeactivateUser(string id)
+        {
+            return await _authManger.DeactivateUser(id);
+        }
+
+        [HttpDelete("DeleteRole/{userId}")]
+        public async Task<ActionResult> DeleteRole(string userId, string name)
+        {
+            await _authManger.DeleteUserRoles(userId, name);
+            return Ok();
         }
     }
 }

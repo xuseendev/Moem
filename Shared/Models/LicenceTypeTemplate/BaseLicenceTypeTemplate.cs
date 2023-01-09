@@ -1,17 +1,32 @@
+using System.ComponentModel.DataAnnotations;
 using MoeSystem.Shared.Models.LicenceTypes;
 
 namespace MoeSystem.Shared.Models.LicenceTypeTemplate
 {
     public class BaseLicenceTypeTemplate
     {
+        [Required]
+
         public int LicenceTypeId { get; set; }
         public LicenceTypeDto LicenceType { get; set; }
+        [Required]
+
         public string Title { get; set; }
+        [Required]
+
         public string SubTitle { get; set; }
+        [Required]
+
 
         public string Note { get; set; }
+        [Required]
+
         public string SubNote { get; set; }
+
+
         public bool ShowCordinate { get; set; }
+        [Required]
+
 
         public int SignatureId { get; set; }
         public bool Active { get; set; }

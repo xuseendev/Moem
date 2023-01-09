@@ -17,7 +17,12 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("MoeDbConnectionString");
-builder.Services.AddDbContext<ApplicationDbContext>(options => { options.UseSqlServer(connectionString); });
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(connectionString,
+options => options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+);
+});
 
 builder.Services.AddIdentityCore<User>()
     .AddRoles<IdentityRole>()

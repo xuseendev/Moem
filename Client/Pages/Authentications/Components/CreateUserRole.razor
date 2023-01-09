@@ -1,5 +1,5 @@
-@inject IHttpRepository<CreateCityDto> cityService
-@inject IHttpRepository<RegionDto> regionService
+@inject IHttpRepository<UserDto> userService
+@inject IHttpRepository<RolesDto> rolesService
 @inject ISnackbar snackbarService
 <EditForm Model="@model" OnValidSubmit="CreateRegion">
     <DataAnnotationsValidator />
@@ -8,20 +8,9 @@
             <MudCard>
                 <MudCardContent>
 
-                    <MudTextField    Variant="Variant.Outlined"class="mb-3" Label="Name" HelperText="Max. 12 characters" @bind-Value="model.Name"
-                        For="@(() => model.Name)" />
-                    <MudSelect  For="@(() => model.RegionId)"  Variant="Variant.Outlined"class="mb-3" T="int" Label="Region" @bind-Value="model.RegionId" AnchorOrigin="Origin.BottomCenter">
 
-                        @foreach (var region in Regions)
-                        {
-
-                            <MudSelectItem Value="@(region.Id)">@region.Name</MudSelectItem>
-
-
-                        }
-                    </MudSelect>
-                    <MudCheckBox @bind-Checked="@model.Active" Size="Size.Small" Color="Color.Tertiary">Active
-                    </MudCheckBox>
+                    @* <MudCheckBox Size="Size.Small" Color="Color.Tertiary">Active
+                        </MudCheckBox> *@
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
@@ -52,17 +41,22 @@
 
 
 @code {
-    CreateCityDto model = new CreateCityDto();
+    private RolesDto model = new RolesDto();
+    private List<RolesDto> Roles { get; set; }
     bool loading = false;
     [Parameter]
     public EventCallback Areas { get; set; }
+    [Parameter]
+    public UserDto User { get; set; }
+    [Parameter]
+    public List<string> UserRoles { get; set; }
     private IEnumerable<RegionDto> Regions = new List<RegionDto>();
     private async Task CreateRegion()
     {
         loading = true;
         Console.WriteLine("Hello");
         //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
-        await cityService.Post($"{EndPoints.RegionEndPoint}", model);
+        await rolesService.Post($"{EndPoints.AccountEndPoint}", model);
         SnackMessage("Succesfully Saved Record", Severity.Success);
         await Areas.InvokeAsync();
         loading = false;
@@ -70,7 +64,7 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        Regions = await regionService.GetAll($"{EndPoints.RegionEndPoint}LookUp");
+        Roles = await rolesService.GetAll($"{EndPoints.AccountEndPoint}GetRoles");
 
     }
     private void SnackMessage(string text, Severity type)

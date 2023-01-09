@@ -1,57 +1,26 @@
-@inject IHttpRepository<CreateCompanyDto> companyService
 
+@inject IHttpRepository<ApiUserDto> authService
 @inject IHttpRepository<BaseLookUpDto> lookupService
 @inject ISnackbar snackbarService
 @inject NavigationManager navManager
-<EditForm Model="@model" OnValidSubmit="CreateLicenceType">
+<EditForm Model="@model" OnValidSubmit="CreateUser">
     <DataAnnotationsValidator />
     <MudGrid>
         <MudItem xs="12" sm="12">
             <MudCard>
                 <MudCardContent>
 
-                    <MudItem xs="12">
-                        <MudGrid>
-                            <MudItem xs="6">
-
-                          <MudTextField Label="CompanyId" Variant="Variant.Outlined"  @bind-Value="model.CompanyId"
-                        For="@(() => model.CompanyId)" />
-                            </MudItem>
-
-
-                            <MudItem xs="6">
-                                                              <MudSelect T="int" Variant="Variant.Outlined" Label="Company Type" @bind-Value="model.CompanyTypeId" AnchorOrigin="Origin.BottomCenter" For="@(() => model.CompanyTypeId)">
-
-                        @foreach (var type in CompanyTypes)
-                        {
-
-                            <MudSelectItem Value="@(type.Id)">@type.Name</MudSelectItem>
-
-
-                        }
-                                                              </MudSelect>
-                            </MudItem>
-                        </MudGrid>
-                    </MudItem>
+                 
 
                     <MudItem xs="12">
                         <MudGrid>
                                           <MudItem xs="6">
-                  <MudTextField Label="Company Name" Variant="Variant.Outlined" HelperText="Max. 12 characters" @bind-Value="model.Name"
-                        For="@(() => model.Name)" />
+                  <MudTextField Label="First Name" Variant="Variant.Outlined" HelperText="Max. 12 characters" @bind-Value="model.FirstName"
+                        For="@(() => model.FirstName)" />
                             </MudItem>
-                            <MudItem xs="6">
-
-                                                                                          <MudSelect Variant="Variant.Outlined" T="string" Label="Type" @bind-Value="model.Type" AnchorOrigin="Origin.BottomCenter">
-
-                        @foreach (var type in Types)
-                        {
-
-                            <MudSelectItem Value="@(type)">@type</MudSelectItem>
-
-
-                        }
-                                                              </MudSelect>
+                                 <MudItem xs="6">
+                  <MudTextField Label="Last Name" Variant="Variant.Outlined" HelperText="Max. 12 characters" @bind-Value="model.LastName"
+                        For="@(() => model.LastName)" />
                             </MudItem>
 
 
@@ -67,22 +36,40 @@
                             </MudItem>
                             <MudItem xs="6">
 
-  <MudTextField Label="Tellphone" HelperText="Max. 10 characters" Variant="Variant.Outlined" @bind-Value="model.TellPhone"
-                        For="@(() => model.TellPhone)" />
+  <MudTextField Label="Tellphone" HelperText="Max. 10 characters" Variant="Variant.Outlined" @bind-Value="model.PhoneNumber"
+                        For="@(() => model.PhoneNumber)" />
                             </MudItem>
 
 
               
                         </MudGrid>
                     </MudItem>
-                     <h6 class="overline-title text-primary-alt mt-2 mb-3">Address Information</h6>
+
+                            <MudItem xs="12">
+                        <MudGrid>
+                                          <MudItem xs="6">
+                  <MudTextField InputType="InputType.Password" Label="Password"   Variant="Variant.Outlined" @bind-Value="model.Password"
+                        For="@(() => model.Password)" />
+                            </MudItem>
+                            <MudItem xs="6">
+
+  <MudTextField Label="Confirm Password" InputType="InputType.Password" HelperText="Max. 10 characters" Variant="Variant.Outlined" @bind-Value="model.ConfirmPassword"
+                        For="@(() => model.ConfirmPassword)" />
+                            </MudItem>
+
+
+              
+                        </MudGrid>
+                    </MudItem>
+                    
+                     @* <h6 class="overline-title text-primary-alt mt-2 mb-3">Address Information</h6> *@
                       <MudItem xs="12" class="mb-1">
                         <MudGrid>
                         
 
-                            <MudItem xs="6" >
+                            <MudItem xs="4" >
                  
-                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="Region"  ValueChanged="value => RegionOnChange(value)" AnchorOrigin="Origin.BottomCenter">
+                                                                                          <MudSelect For="@(() => model.Region)" Variant="Variant.Outlined" T="int" Label="Region"  ValueChanged="value => RegionOnChange(value)" AnchorOrigin="Origin.BottomCenter">
 
                         @foreach (var region in Regions)
                         {
@@ -93,9 +80,9 @@
                         }
                                                               </MudSelect>
                             </MudItem>
-                                  <MudItem xs="6">
+                                  <MudItem xs="4">
                      
-                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="City" @bind-Value="model.CityId" AnchorOrigin="Origin.BottomCenter">
+                                                                                          <MudSelect For="@(() => model.City)" Variant="Variant.Outlined" T="int" Label="City" @bind-Value="model.City" AnchorOrigin="Origin.BottomCenter">
 
                         @foreach (var city in Cities)
                         {
@@ -106,7 +93,19 @@
                         }
                                                               </MudSelect>
                             </MudItem>
-               
+                                        <MudItem xs="4" >
+                 
+                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="User Group"  @bind-Value="model.UserGroupId" AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var userGroup in UserGroups)
+                        {
+
+                            <MudSelectItem Value="@(userGroup.Id)" >@userGroup.Name</MudSelectItem>
+
+
+                        }
+                                                              </MudSelect>
+                            </MudItem>
                         </MudGrid>
                     </MudItem>
                 </MudCardContent>
@@ -139,54 +138,54 @@
 
 
 @code {
-    CreateCompanyDto model = new CreateCompanyDto();
+    ApiUserDto model = new ApiUserDto();
     [Parameter] 
-    public int? Id { get; set; }
+    public string Id { get; set; }=string.Empty;
     [Parameter]
     public string ButtonText { get; set; }
     bool loading = false;
     [Parameter]
-    public EventCallback Workflows { get; set; }
+    public EventCallback UserEventCallBack { get; set; }
         private List<string> Types = new List<string>(){
 "Indivudual",
 "Group"
 };
 
-        protected async override Task OnParametersSetAsync()
+        @* protected async override Task OnParametersSetAsync()
         {
-            if(Id.HasValue)
-            model=await companyService.Get($"{EndPoints.CompaniesEndPoint}",Id.Value);
+            if(!string.IsNullOrEmpty(Id))
+            //model=await authService.Get($"{EndPoints.AccountEndPoint}",Id);
 
-        }
+        } *@
     
-    private async Task CreateLicenceType()
+    private async Task CreateUser()
     {
         loading = true;
         Console.WriteLine("Hello");
         //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
-        if(Id==null){
-        await companyService.Post($"{EndPoints.CompaniesEndPoint}", model);
+        if(string.IsNullOrEmpty(Id)){
+        await authService.Post($"{EndPoints.AccountEndPoint}Register", model);
         SnackMessage("Succesfully Saved Record", Severity.Success);
 
         }else{
-            model.Id=Id.Value;
-            await companyService.Update($"{EndPoints.CompaniesEndPoint}",model,Id.Value);
+            //model.Id=Id;
+            //await authService.Update($"{EndPoints.CompaniesEndPoint}",model,Id);
         SnackMessage("Succesfully Updated Record", Severity.Success);
 
         }
-        await Workflows.InvokeAsync();
-        model=new CreateCompanyDto();
+        await UserEventCallBack.InvokeAsync();
+        model=new ApiUserDto();
         //navManager.NavigateTo("/companies/detail/{context.Id}");
         loading = false;
 
     }
-     private IEnumerable<BaseLookUpDto> CompanyTypes = new List<BaseLookUpDto>();
+
      private IEnumerable<BaseLookUpDto> Regions = new List<BaseLookUpDto>();
      private IEnumerable<BaseLookUpDto> Cities = new List<BaseLookUpDto>();
-     private IEnumerable<BaseLookUpDto> Areas = new List<BaseLookUpDto>();
+     private IEnumerable<BaseLookUpDto> UserGroups = new List<BaseLookUpDto>();
         protected override async Task OnInitializedAsync()
     {
-        CompanyTypes = await lookupService.GetAll($"{EndPoints.CompanyTypeEndPoint}LookUp");
+        UserGroups = await lookupService.GetAll($"{EndPoints.UserGroupEndPoint}LookUp");
         Regions = await lookupService.GetAll($"{EndPoints.RegionEndPoint}LookUp");
      
 
@@ -194,16 +193,11 @@
 
         private async Task RegionOnChange(int value)
     {
-        model.RegionId =value;
-        Cities = await lookupService.GetAll($"{EndPoints.CityEndPoint}LookUp/{model.RegionId}");
+        model.Region =value;
+        Cities = await lookupService.GetAll($"{EndPoints.CityEndPoint}LookUp/{model.Region}");
         
     }
-            private async Task CityOnChange(int value)
-    {
-        model.CityId =value;
-        Areas = await lookupService.GetAll($"{EndPoints.AreaEndPoint}LookUp/{model.CityId}");
-        
-    }
+ 
 
     private void SnackMessage(string text, Severity type)
     {

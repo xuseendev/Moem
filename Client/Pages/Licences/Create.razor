@@ -10,28 +10,7 @@
         <MudItem xs="12" sm="12">
             <MudCard>
                 <MudCardContent>
-                    <MudItem xs="12">
-                        <MudGrid>
-                            <MudItem xs="6">
-
-                          <MudTextField Label="LicenceId" Variant="Variant.Outlined"  @bind-Value="model.LicenceId"
-                        For="@(() => model.LicenceId)" />
-                            </MudItem>
-
-
-                            <MudItem xs="6">
-                                                              <MudSelect Variant="Variant.Outlined" T="int" Label="Mineral Type" @bind-Value="model.MineralTypeId" AnchorOrigin="Origin.BottomCenter"    For="@(() => model.MineralTypeId)">
-                        @foreach (var type in MineralTypes)
-                        {
-
-                            <MudSelectItem Value="@(type.Id)">@type.Name</MudSelectItem>
-
-                        }                                 </MudSelect>
-                            </MudItem>
-                        </MudGrid>
-                    </MudItem>
-
-        <h6 class="overline-title text-primary-alt mt-5">Company Information</h6>
+                           <h6 class="overline-title text-primary-alt ">Company Information</h6>
    
                     <MudItem xs="12">
                         <MudGrid>
@@ -57,7 +36,7 @@
                         </MudGrid>
                     </MudItem>
                          <h6 class="overline-title text-primary-alt mt-5">Licence Information</h6>
-                          <MudItem xs="12">
+                          <MudItem xs="12" class="mb-2">
                         <MudGrid>
                                           <MudItem xs="3">
                                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="Licence Type" ValueChanged="value => LicenceOnChange(value)"  AnchorOrigin="Origin.BottomCenter"    For="@(() => model.LicenceTypeId)">
@@ -86,6 +65,28 @@
                             </MudItem>
                         </MudGrid>
                     </MudItem>
+                    <MudItem xs="12">
+                        <MudGrid>
+                            <MudItem xs="6">
+
+                          <MudTextField Label="LicenceId" Variant="Variant.Outlined"  @bind-Value="model.LicenceId"
+                        For="@(() => model.LicenceId)" />
+                            </MudItem>
+
+
+                            <MudItem xs="6">
+                                                              <MudSelect Variant="Variant.Outlined" T="int" Label="Mineral Type" @bind-Value="model.MineralTypeId" AnchorOrigin="Origin.BottomCenter"    For="@(() => model.MineralTypeId)">
+                        @foreach (var type in MineralTypes)
+                        {
+
+                            <MudSelectItem Value="@(type.Id)">@type.Name</MudSelectItem>
+
+                        }                                 </MudSelect>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+
+ 
                      <h6 class="overline-title text-primary-alt mt-5">Address Information</h6>
                           <MudItem xs="12" class="mb-1">
                         <MudGrid>

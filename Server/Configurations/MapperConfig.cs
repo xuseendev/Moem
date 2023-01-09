@@ -25,6 +25,8 @@ using MoeSystem.Shared.Models.LicenceDocument;
 using MoeSystem.Shared.Models.Logs;
 using MoeSystem.Shared.Models.Signature;
 using MoeSystem.Shared.Models.LicenceTypeTemplate;
+using Microsoft.AspNetCore.Identity;
+
 
 namespace MoeSystem.Server.Configurations
 {
@@ -191,6 +193,9 @@ namespace MoeSystem.Server.Configurations
 
             CreateMap<ApiUserDto, User>().ReverseMap();
             CreateMap<Logs, BaseLogsDto>().ReverseMap();
+            CreateMap<User, UserDto>().ReverseMap();
+
+            CreateMap<IdentityRole, RolesDto>().ReverseMap();
         }
     }
 }

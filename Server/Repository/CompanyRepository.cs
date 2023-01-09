@@ -20,6 +20,8 @@ namespace MoeSystem.Server.Repository
         private readonly IMapper _mapper;
         private readonly IGenericRepository<Logs> logsRepository;
 
+
+
         public CompanyRepository(ApplicationDbContext context, IMapper mapper, IGenericRepository<Logs> logsRepository, UserManager<User> userManager) : base(context, mapper, userManager)
         {
             _context = context;

@@ -32,9 +32,12 @@ namespace MoeSystem.Shared.Models.Licence
         public string LicenceStatus { get; set; } = "Registered";
         [Required]
         public string Note { get; set; }
+        [Required, Range(1, int.MaxValue)]
 
         public int RegionId { get; set; }
+        [Required, Range(1, int.MaxValue)]
         public int CityId { get; set; }
+        [Required, Range(1, int.MaxValue)]
         public int AreaId { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;
 

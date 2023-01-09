@@ -41,6 +41,12 @@ namespace MoeSystem.Server.Repository
             return entity;
         }
 
+        private async Task<bool> ExistName(Expression<Func<T, bool>> expression)
+        {
+            var entity = await _context.Set<T>().FirstOrDefaultAsync(expression);
+            return entity != null;
+        }
+
         public async Task Save(HttpContext httpContext)
         {
             //var user = httpContext.User.Identity.Name;

@@ -1,5 +1,5 @@
 ﻿@page "/auth/login"
-@using MoeSystem.Client.Services.Base;
+
 @inject IAuthenticationService authService
 @inject NavigationManager navigationManager
 @layout EmptyLayout
@@ -169,7 +169,7 @@
 
 </body>
 @code {
-    private LoginDto LoginModel { get; set; } = new LoginDto();
+    private MoeSystem.Client.Services.Base.LoginDto LoginModel { get; set; } = new MoeSystem.Client.Services.Base.LoginDto();
     string message = string.Empty;
     private bool Loading { get; set; }
     private async Task HandleLogin()
@@ -183,7 +183,7 @@
 
 
         }
-        catch (ApiException ex)
+        catch (MoeSystem.Client.Services.Base.ApiException ex)
         {
             if (ex.StatusCode == 404)
             {

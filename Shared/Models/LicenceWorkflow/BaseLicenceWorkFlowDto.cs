@@ -8,6 +8,7 @@ namespace MoeSystem.Shared.Models.LicenceWorkflow
 {
     public class BaseLicenceWorkFlowDto
     {
+
         public int WorkFlowId { get; set; }
         public int LicenceId { get; set; }
         public bool Status { get; set; }

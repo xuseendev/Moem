@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MoeSystem.Server.Contracts;
@@ -19,11 +20,13 @@ namespace MoeSystem.Server.Repository
         private User _user;
         private static string _loginProvider = "MOEAPI";
         private static string _refreshToken = "RefreshToken";
-        public AuthManager(IMapper mapper, UserManager<User> userManager, IConfiguration configuration)
+        private readonly RoleManager<IdentityRole> roleManager;
+        public AuthManager(IMapper mapper, UserManager<User> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
         {
             this._mapper = mapper;
             this._userManager = userManager;
             this._configuration = configuration;
+            this.roleManager = roleManager;
         }
 
         public async Task<string> CreateRefreshToken()
@@ -121,6 +124,63 @@ namespace MoeSystem.Server.Repository
             }
             await _userManager.UpdateSecurityStampAsync(_user);
             return null;
+        }
+
+        public async Task<User> GetById(string id)
+        {
+            return await _userManager.FindByIdAsync(id);
+
+        }
+
+        public async Task<UserDto> GetUser(string id)
+        {
+            return _mapper.Map<UserDto>(await _userManager.FindByIdAsync(id));
+
+        }
+
+        public List<string> GetUserByRoles(User user)
+        {
+            return _userManager.GetRolesAsync(user).Result.ToList();
+
+        }
+
+        public async Task<User> AddToRolesAsync(string id, string role)
+        {
+            var user = await GetById(id);
+            await _userManager.AddToRoleAsync(user, role);
+            return user;
+        }
+
+        public async Task<List<UserDto>> GetUsers()
+        {
+            return _mapper.Map<List<UserDto>>(await _userManager.Users.ToListAsync());
+        }
+
+        public async Task<List<IdentityRole>> GetRoles()
+        {
+            return await roleManager.Roles.ToListAsync();
+        }
+
+        public async Task<UserDto> DeactivateUser(string id)
+        {
+            var user = await GetById(id);
+
+            user.LockoutEnd = DateTime.Now;
+            user.LockoutEnabled = !user.LockoutEnabled;
+            await _userManager.UpdateAsync(user);
+            return _mapper.Map<UserDto>(user);
+        }
+
+        public async Task DeleteUserRoles(string id, string name)
+        {
+            var user = await GetById(id);
+            await _userManager.RemoveFromRoleAsync(user, name);
+        }
+
+        public async Task<List<string>> GetUserRoles(string userId)
+        {
+            var user = await GetById(userId);
+            return _userManager.GetRolesAsync(user).Result.ToList();
         }
     }
 }

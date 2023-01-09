@@ -1,0 +1,91 @@
+<div class="row">
+    <div class="col-12">
+        <div class="card card-bordered">
+            <div class="card-header  clearfix" style="background-color: lightblue;">
+                <h5 class="card-title" style="color: white;">
+
+                    Company Details
+                </h5>
+
+            </div>
+            <div class="card-body">
+
+                <div class="row ">
+                    <div class="col-md-6">
+                        <h6>CompanyDetail Info</h6>
+                        <div class="table-responsive-lg table-responsive-sm table-responsive-md table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td> Company Id </td>
+                                        <td>
+                                            @Detail.Id
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> Company Name </td>
+                                        <td>@Detail.Name</td>
+                                    </tr>
+                                    <tr>
+                                        <td> Type </td>
+                                        <td>@Detail.Type</td>
+                                    </tr>
+                                    <tr>
+                                        <td> Tellphone </td>
+                                        <td>@Detail.TellPhone</td>
+                                    </tr>
+                                    <tr>
+                                        <td> Email </td>
+                                        <td>@Detail.Email</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Address Info</h6>
+                        <div class="table-responsive-lg table-responsive-sm table-responsive-md table-responsive">
+                            <table class="table table-bordered table-striped">
+                                <tbody>
+                                    <tr>
+                                        <td>Region</td>
+                                        <td>@Detail.Regoin</td>
+                                    </tr>
+                                    <tr>
+                                        <td>City </td>
+                                        <td>
+                                            @Detail.City
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td>Address</td>
+                                        <td>
+                                            Model.Notary.Address
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public CompanyDetailDto Detail { get; set; }
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Medium,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+
+
+    };
+}

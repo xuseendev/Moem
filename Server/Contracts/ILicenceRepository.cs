@@ -9,6 +9,7 @@ using MoeSystem.Shared.Models.LicenceDocument;
 using MoeSystem.Shared.Models.LicenceWorkflow;
 using MoeSystem.Shared.Models.Logs;
 
+
 namespace MoeSystem.Server.Contracts
 {
     public interface ILicenceRepository : IGenericRepository<Licence>
@@ -29,6 +30,7 @@ namespace MoeSystem.Server.Contracts
         Task<LicenceWorkFlowDto> ApproveRejectLicence(int? id, HttpContext context);
         Task<List<LicenceWorkFlowDto>> RejectedLicences();
         Task<List<LicenceDto>> ApprovedLicences();
+        Task<List<LicenceDto>> SearchLicence(SearchLicenceDetailDto search);
         Task<CreateLicenceDto> CreateLicence(CreateLicenceDto createLicenceDto, HttpContext context);
         Task<PagedResult<LicenceDto>> GetPagedResult(SearchLicenceDto queryParameters);
         Task<List<PendingWorkflowsDto>> CalculateWorkflow();

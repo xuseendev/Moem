@@ -47,7 +47,12 @@ namespace MoeSystem.Server.Data
         {
             base.OnModelCreating(modelBuilder);
 
-
+            modelBuilder.Entity<Licence>()
+            .HasIndex(s => s.Id);
+            modelBuilder.Entity<Company>()
+           .HasIndex(s => s.Id);
+            modelBuilder.Entity<LicenceWorkFlow>()
+            .HasIndex(s => s.Id);
             modelBuilder.Entity<IdentityRole>().HasData(
                new IdentityRole
                {

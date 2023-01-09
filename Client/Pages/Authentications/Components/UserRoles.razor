@@ -1,0 +1,106 @@
+@inject IJSRuntime jsRuntime
+@inject IDialogService Dialog
+@inject IHttpRepository<string> authService
+@inject HttpInerceptorService _interceptor
+
+@implements IDisposable
+
+
+<MudButton Variant="Variant.Filled" @onclick="()=>{}" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary">Add
+    Role
+</MudButton>
+<div class="nk-block">
+    <MudTable Loading="loading" Items="@Roles" Dense="true" Hover="@hover" Bordered="@bordered" Striped="@striped"
+        Filter="new Func<string,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
+        <ToolBarContent>
+            <MudText Typo="Typo.h6">Roles</MudText>
+            <MudSpacer />
+            <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start"
+                AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+        </ToolBarContent>
+        <HeaderContent>
+            <MudTh>Id</MudTh>
+            <MudTh>Role Name</MudTh>
+
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Nr">@User.Id</MudTd>
+            <MudTd DataLabel="Region">@context</MudTd>
+
+            <MudTd DataLabel="Actions">
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Error"
+                    Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary"
+                    Size="Size.Small" />
+
+            </MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+
+</div>
+
+
+
+@code {
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+    private bool loading = true;
+    private string searchString1 = "";
+    private string selectedItem1 = null;
+    private HashSet<string> selectedItems = new HashSet<string>();
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Medium,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter
+    };
+    [Parameter]
+    public UserDto User { get; set; }
+    private List<string> Roles { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _interceptor.MonitorEvent();
+        Roles = await authService.GetAll($"{EndPoints.AccountEndPoint}GetUserRoles/{User.Id}");
+        loading = false;
+    }
+
+
+
+    private async Task OpenCreateForm()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("UserRoles", Roles);
+        parameters.Add("User", User);
+        var dialog = Dialog.Show<Create>("Add UserRole", parameters, maxWidth);
+        var result = await dialog.Result;
+        await OnInitializedAsync();
+    }
+
+    private bool FilterFunc1(string element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(string element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
+
+
+}

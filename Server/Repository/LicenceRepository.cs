@@ -89,7 +89,7 @@ namespace MoeSystem.Server.Repository
                 licence.LicenceStatus = licenceWorkFlow.LicenceStatus.Name;
             }
             licence.Status = licenceWorkFlow.LicenceStatus.Name;
-            await logsRepository.AddAsync(new Logs { Description = $"Approved workflow of {licenceWorkFlow.LicenceStatus.Name} on {DateTime.Now}", Dated = DateTime.Now, LicenceId = licence.Id }, context);
+            await logsRepository.AddAsync(new Logs { Description = $"Approved workflow of {workflow.WorkFlow.LicenceStatus.Name} on {DateTime.Now}", Dated = DateTime.Now, LicenceId = licence.Id }, context);
             await _context.SaveChangesAsync();
             return _mapper.Map<LicenceWorkFlowDto>(workflow);
 
@@ -285,6 +285,21 @@ namespace MoeSystem.Server.Repository
 
             };
 
+        }
+
+        public async Task<List<LicenceDto>> SearchLicence(SearchLicenceDetailDto search)
+        {
+            if (search.From == null && search.To == null) return new List<LicenceDto>();
+            var data = _context.Licences
+                .ProjectTo<LicenceDto>(_mapper.ConfigurationProvider)
+                .AsQueryable();
+            data = data.Where(x => x.CreatedOn.Date >= search.From.Value.Date && x.CreatedOn <= search.To.Value.Date);
+            if (search.LicenceId != null)
+                data = data.Where(x => x.LicenceId.ToString().ToLower().Contains($"{search.LicenceId.ToLower()}"));
+
+            if (search.LicenceStatus != null) data = data.Where(x => x.Status == search.LicenceStatus);
+            data = data.OrderByDescending(x => x.Id);
+            return await data.ToListAsync();
         }
 
         public async Task<List<PendingWorkflowsDto>> CalculateWorkflow()

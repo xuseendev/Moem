@@ -1,7 +1,8 @@
-@page "/licences/index"
+@page "/licences/search"
 @inject IJSRuntime jsRuntime
 @inject IDialogService Dialog
-@inject IHttpRepository<PagedResult<LicenceDto>> licenceService
+@inject IHttpRepository<LicenceDto> licenceService
+@inject IHttpRepository<BaseLookUpDto> lookupService
 @inject HttpInerceptorService _interceptor
 
 @implements IDisposable
@@ -10,7 +11,7 @@
     <div class="nk-block-head nk-block-head-sm">
         <div class="nk-block-between">
             <div class="nk-block-head-content">
-                <h3 class="nk-block-title page-title">Licences</h3>
+                <h3 class="nk-block-title page-title">Search Licences</h3>
             </div><!-- .nk-block-head-content -->
             <div class="nk-block-head-content">
                 <div class="toggle-wrap nk-block-tools-toggle">
@@ -34,23 +35,84 @@
                                     </div>
                                 </div>
                             </li>
-                                             <li class="nk-block-tools-opt"><button @onclick="(()=>OpenCreateForm(null))" class="btn btn-primary"><em
-                                        class="icon ni ni-plus"></em><span>Add Licence</span></button></li>
-                    
+                            <li class="nk-block-tools-opt"><button @onclick="(()=>OpenCreateForm(null))"
+                                    class="btn btn-primary"><em class="icon ni ni-plus"></em><span>Add
+                                        Licence</span></button></li>
+
                         </ul>
                     </div>
                 </div>
             </div><!-- .nk-block-head-content -->
         </div><!-- .nk-block-between -->
+    <div class="card mt-3 border-0">
+        <div class="card-body">
+            <EditForm Model="SearchLicence" OnValidSubmit="LoadLicences">
+                <div class="row g-2">
+                    <div class="col-xxl-2 col-sm-6">
+                        <div class="search-box">
+                            <MudTextField Label="Licence Id" Variant="Variant.Outlined" @bind-Value="SearchLicence.LicenceId"
+                                For="@(() => SearchLicence.LicenceId)" />
+                        </div>
+                    </div>
+                    <div class="col-xxl-2 col-sm-6">
+                        <div class="search-box">
+             
+                                       <MudSelect    Variant="Variant.Outlined"  Label="Licence Status" @bind-Value="SearchLicence.LicenceStatus" AnchorOrigin="Origin.BottomCenter">
+
+                        @foreach (var status in LicenceStatus)
+                        {
+
+                            <MudSelectItem Value="@(status.Name)">@status.Name</MudSelectItem>
+
+
+                        }
+                    </MudSelect>
+                        </div>
+                    </div>
+                    <div class="col-xxl-2 col-sm-6">
+                        <div class="search-box">
+                              <MudTextField  Label="Name" Variant="Variant.Outlined"
+                                @bind-Value="SearchLicence.Name" For="@(() => SearchLicence.Name)" />
+                        </div>
+                    </div>
+
+                    <div class="col-xxl-2 col-sm-6">
+                        <div class="search-box">
+                                             <MudDatePicker Label="Date From" @bind-Date="SearchLicence.From"  Variant="Variant.Outlined" For="@(() => SearchLicence.To)" />
+
+                        </div>
+                    </div>
+                    <div class="col-xxl-2 col-sm-6">
+                        <div class="search-box">
+                                              <MudDatePicker Label="Date To" @bind-Date="SearchLicence.To" Variant="Variant.Outlined" For="@(() => SearchLicence.To)" />
+
+                        </div>
+                    </div>
+
+
+
+                    <!--end col-->
+                    <div class="col-xxl-2 col-sm-5">
+                        <div>
+                     <MudButton Color="Color.Inherit" ButtonType="ButtonType.Submit"  StartIcon="@Icons.Material.Filled.Search" Style="height: 60px;background-color:green;color:white;">
+    Filter
+</MudButton>
+                        </div>
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+            </EditForm>
+        </div>
+    </div>
     </div><!-- .nk-block-head -->
     <div class="nk-block">
-        <MudTable Loading="loading" ServerData="@(new Func<TableState, Task<TableData<LicenceDto>>>(LoadCompanies))" @ref="table" Dense="true" Hover="@hover" Bordered="@bordered"
-            Striped="@striped">
+        <MudTable Loading="loading" Items="@Licences" Dense="true" Hover="@hover" Bordered="@bordered"
+            Striped="@striped" @bind-SelectedItem="selectedItem1">
             <ToolBarContent>
                 <MudText Typo="Typo.h6">List</MudText>
                 <MudSpacer />
-                <MudTextField T="string" ValueChanged="@(searchTerm => OnSearch(searchTerm))" Placeholder="Search" Adornment="Adornment.Start"
-                    AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
             </ToolBarContent>
             <HeaderContent>
                 <MudTh>Id</MudTh>
@@ -80,13 +142,12 @@
                 <MudTd DataLabel="Actions">
                     <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Variant="Variant.Outlined" Color="Color.Info"
                         Size="Size.Small" Href="@($"/licences/detail/{context.Id}")" Target="" />
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" @onclick="(()=>OpenCreateForm(id:context.Id))" Variant="Variant.Outlined" Color="Color.Primary"
-                        Size="Size.Small" />
+              
 
                 </MudTd>
             </RowTemplate>
             <PagerContent>
-                <MudTablePager PageSizeOptions="pageSizeOptions"></MudTablePager>
+                <MudTablePager />
             </PagerContent>
         </MudTable>
 
@@ -95,90 +156,69 @@
 
 
 @code {
- 
-    private MudTable<LicenceDto> table;
-    private int[] pageSizeOptions = new int[] { 5, 10, 15 };
+
+
+
     private bool dense = false;
     private bool hover = true;
     private bool striped = false;
     private bool bordered = false;
     private bool loading = true;
-    private string searchString1 = "";
+    private SearchLicenceDetailDto SearchLicence = new SearchLicenceDetailDto();
     private LicenceDto selectedItem1 = null;
-    private HashSet<LicenceDto> selectedItems = new HashSet<LicenceDto>();
+
+
     DialogOptions maxWidth = new DialogOptions()
     {
         MaxWidth = MaxWidth.Large,
         FullWidth = true,
         Position = DialogPosition.TopCenter,
-         CloseOnEscapeKey = true
+        CloseOnEscapeKey = true
     };
 
-    private void OnSearch(string searchTerm)
-{
-    searchString1 = searchTerm;
-    table.ReloadServerData();
-}
-
-
-
-
-
-
-
-
-    protected override Task OnAfterRenderAsync(bool firstRender)
-    {
-        table.SetRowsPerPage(10);
-        return base.OnAfterRenderAsync(firstRender);
-    }
-
-       private async Task OpenCreateForm(int? id=null)
+    private async Task OpenCreateForm(int? id = null)
     {
         IDialogReference dialog;
         var parameters = new DialogParameters();
-        if(id!=null){
-        parameters.Add("Id", id.Value);
-        parameters.Add("ButtonText", "Update Licence");
-        dialog= Dialog.Show<Create>("Update Licence",parameters, maxWidth);
-        }else{
-        parameters.Add("ButtonText", "Register Licence");
+        if (id != null)
+        {
+            parameters.Add("Id", id.Value);
+            parameters.Add("ButtonText", "Update Licence");
+            dialog = Dialog.Show<Create>("Update Licence", parameters, maxWidth);
+        }
+        else
+        {
+            parameters.Add("ButtonText", "Register Licence");
 
-        dialog= Dialog.Show<Create>("Add New Licence",parameters, maxWidth);
+            dialog = Dialog.Show<Create>("Add New Licence", parameters, maxWidth);
         }
         var result = await dialog.Result;
-        
+        await LoadLicences();
 
-        await table.ReloadServerData();
-        
     }
+    private List<LicenceDto> Licences = new List<LicenceDto>();
+    private List<BaseLookUpDto> LicenceStatus=new List<BaseLookUpDto>();
 
-     public async Task<TableData<LicenceDto>> LoadCompanies(TableState state)
+    public async Task LoadLicences()
     {
-        System.Console.WriteLine("Hello there");
-         _interceptor.MonitorEvent();
-        var response = await licenceService.GetPagined($"{EndPoints.LicencesEndPoint}?startIndex={(state.Page + 1)}&pageNumber={state.PageSize}&name={searchString1}");
+        loading = true;
+        _interceptor.MonitorEvent();
+        Licences = await
+        licenceService.GetAll($"{EndPoints.LicencesEndPoint}SearchLicence?licenceId={SearchLicence.LicenceId}&licenceStatus={SearchLicence.LicenceStatus}&from={SearchLicence.From}&to={SearchLicence.To}");
         loading = false;
- 
-        return new TableData<LicenceDto>() { Items = response.Data, TotalItems =response.TotalCount };
     }
 
-    private bool FilterFunc1(LicenceDto element) => FilterFunc(element, searchString1);
-
-    private bool FilterFunc(LicenceDto element, string searchString)
+    protected override async Task OnInitializedAsync()
     {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (element.LicenceId.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        table.ReloadServerData();
-        return false;
+        await LoadLicences();
+        LicenceStatus=await lookupService.GetAll($"{EndPoints.LicenceStatusEndPoint}Lookup");
     }
+
 
     public void Dispose()
     {
         _interceptor.DisposeEvent();
     }
+
+
 }

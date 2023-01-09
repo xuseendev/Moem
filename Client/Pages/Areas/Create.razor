@@ -10,7 +10,7 @@
                     <MudTextField Label="Name" HelperText="Max. 12 characters" @bind-Value="model.Name"
                         Variant="Variant.Outlined" class="mb-3" For="@(() => model.Name)" />
                     <MudSelect Variant="Variant.Outlined" class="mb-3" T="int" Label="City" @bind-Value="model.CityId"
-                        AnchorOrigin="Origin.BottomCenter">
+                        AnchorOrigin="Origin.BottomCenter" For="@(() => model.CityId)">
 
                         @foreach (var city in Cities)
                         {

@@ -38,10 +38,6 @@
                             </li>
                             <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-primary"><em
                                         class="icon ni ni-plus"></em><span>Add Licence</span></button></li>
-                            <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-info"><em
-                                        class="icon ni ni-plus"></em><span>Add Company</span></button></li>
-                            <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-warning"><em
-                                        class="icon ni ni-plus"></em><span>Add LicenceType</span></button></li>
                         </ul>
                     </div>
                 </div>
@@ -96,8 +92,12 @@
                 </MudTd>
                 <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
                 <MudTd DataLabel="Actions">
-                    <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Href="@($"/licenceworkflows/detail/{context.Id}")"
+                    @if (Workflows.First() == context)
+                    {
+                        <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Href="@($"/licenceworkflows/detail/{context.Id}")"
                         Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
+                    }
+
                     <MudButton Variant="Variant.Outlined" @onclick="(()=>UnClaim(context.Id))" Color="Color.Error"
                         class="ml-1" Size="Size.Small">UnClaim</MudButton>
 

@@ -8,18 +8,42 @@
 <MudLayout>
     <MudAppBar Elevation="0" style="background-color: green;">
 
-
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
             OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer />
+        <MudHidden Breakpoint="Breakpoint.Lg" Invert="true">
+
+
+            <MudButton StartIcon="@Icons.Filled.Dashboard" Href="/" Color="Color.Inherit">Dashboard
+            </MudButton>
+            <MudButton StartIcon="@Icons.Filled.TaskAlt" Href="/licenceworkflows/index" Color="Color.Inherit">My
+                Worksheet</MudButton>
+            @* <MudMenu StartIcon="@Icons.Material.Filled.MergeType" Label="Licence Types" Color="Color.Inherit">
+                <MudMenuItem>Detail Licence Types</MudMenuItem>
+                <MudMenuItem>Detail Licence Template</MudMenuItem>
+
+                </MudMenu> *@
+            <MudButton StartIcon="@Icons.Filled.MergeType" Href="/licencetypes/index" Color="Color.Inherit">
+                Licence Types</MudButton>
+
+            <MudButton StartIcon="@Icons.Filled.Home" Href="/companies/index" Color="Color.Inherit">Detail Companies
+            </MudButton>
+
+            <MudButton StartIcon="@Icons.Filled.Search" Href="/licences/search" Color="Color.Inherit">Search
+                Licence
+            </MudButton>
+            <MudButton StartIcon="@Icons.Filled.MenuBook" Href="/licences/index" Color="Color.Inherit">
+                Detail Licences
+            </MudButton>
+        </MudHidden>
+
+
         <MudSpacer />
         <AuthorizeView>
 
             <CancelNotification />
         </AuthorizeView>
-        <MudIconButton Icon="@Icons.Custom.Brands.MudBlazor" Color="Color.Inherit" Link="https://mudblazor.com/"
-            Target="_blank" />
-        <MudIconButton Icon="@Icons.Custom.Brands.GitHub" Color="Color.Inherit"
-            Link="https://github.com/MudBlazor/MudBlazor/" Target="_blank" />
+
 
         <li class="dropdown user-dropdown">
             <a href="#" class="dropdown-toggle me-n1" data-bs-toggle="dropdown">
@@ -56,10 +80,7 @@
                     <ul class="link-list">
                         <li><a href="html/user-profile-regular.html"><em class="icon ni ni-user-alt"></em><span>View
                                     Profile</span></a></li>
-                        <li><a href="html/user-profile-setting.html"><em
-                                    class="icon ni ni-setting-alt"></em><span>Account Setting</span></a></li>
-                        <li><a href="html/user-profile-activity.html"><em
-                                    class="icon ni ni-activity-alt"></em><span>Login Activity</span></a></li>
+
                         <li><a class="dark-switch" href="#"><em class="icon ni ni-moon"></em><span>Dark Mode</span></a>
                         </li>
                     </ul>
@@ -105,8 +126,9 @@
 </MudLayout>
 
 @code {
-    bool _drawerOpen = true;
+    bool _drawerOpen = false;
     public Action OnChanged { get; set; }
+
 
     void DrawerToggle()
     {

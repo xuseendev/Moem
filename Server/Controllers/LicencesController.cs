@@ -33,6 +33,12 @@ namespace MoeSystem.Server.Controllers
             return await _licenceRepository.GetPagedResult(queryParameters);
         }
 
+        [HttpGet("SearchLicence")]
+        public async Task<ActionResult<List<LicenceDto>>> SearchLicence([FromQuery] SearchLicenceDetailDto search)
+        {
+            return await _licenceRepository.SearchLicence(search);
+        }
+
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<LicenceDto>>> GetAll()
         {
