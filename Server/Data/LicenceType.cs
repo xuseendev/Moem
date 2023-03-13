@@ -2,7 +2,9 @@
 {
     public class LicenceType : BaseModel
     {
-
+        public int? LicenceTypeTemplateId { get; set; }
+        public LicenceTypeTemplate LicenceTypeTemplate { get; set; }
+        public string Code { get; set; }
         public string Name { get; set; }
         public string TermOfLicence { get; set; }
         public int LicencePeriod { get; set; }

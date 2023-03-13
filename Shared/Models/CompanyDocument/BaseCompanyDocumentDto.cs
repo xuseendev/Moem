@@ -9,7 +9,8 @@ namespace MoeSystem.Shared.Models.CompanyDocument
 {
     public class BaseCompanyDocumentDto
     {
-        [Required]
+        [Required, Range(1, int.MaxValue)]
+
         public int DocumentTypeId { get; set; }
         [Required]
         public string DocumentName { get; set; }

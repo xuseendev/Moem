@@ -1,5 +1,6 @@
 @page "/companies/detail/{id:int}"
 @using Component
+@attribute [Authorize]
 @using MoeSystem.Client.Pages.Companies.Component
 
 @inject IHttpRepository<CompanyDetailDto> companyService

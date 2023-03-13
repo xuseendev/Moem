@@ -77,6 +77,7 @@ namespace MoeSystem.Server.Configurations
             CreateMap<LicenceTypeTemplate, LicenceTypeTemplateDto>().ReverseMap();
             CreateMap<LicenceTypeTemplate, CreateUpdateLicenceTypeTemplateDto>().ReverseMap();
             CreateMap<LicenceTypeTemplate, BaseLookUpDto>().ReverseMap();
+            CreateMap<LicenceTypeTemplate, BaseLookUpDto>().ReverseMap();
 
             CreateMap<CompanyDocument, CompanyDocumentDto>()
                                 .ForMember(src => src.DocumentType, dest => dest.MapFrom(x => x.DocumentType.Name))
@@ -145,11 +146,22 @@ namespace MoeSystem.Server.Configurations
                 .ForMember(src => src.LicenceType, dest => dest.MapFrom(x => x.LicenceType.Name))
                 .ForMember(src => src.MineralType, dest => dest.MapFrom(x => x.LicenceType.Name))
                 .ForMember(src => src.CompanyName, dest => dest.MapFrom(x => x.Company.Name))
+                .ForMember(src => src.TellPhone, dest => dest.MapFrom(x => x.Company.TellPhone))
                 .ReverseMap();
             CreateMap<Licence, LicenceDetailDto>()
-    .ForMember(src => src.LicenceType, dest => dest.MapFrom(x => x.LicenceType.Name))
-    .ForMember(src => src.MineralType, dest => dest.MapFrom(x => x.LicenceType.Name))
-    .ReverseMap();
+                .ForMember(src => src.MineralType, dest => dest.MapFrom(x => x.MineralType.Name))
+                .ForMember(src => src.Region, dest => dest.MapFrom(x => x.Region.Name))
+                .ForMember(src => src.City, dest => dest.MapFrom(x => x.City.Name))
+                .ForMember(src => src.Area, dest => dest.MapFrom(x => x.Area.Name))
+                .ReverseMap();
+
+            CreateMap<Licence, LicenceDetailPrintDto>()
+           .ForMember(src => src.MineralType, dest => dest.MapFrom(x => x.MineralType.Name))
+           .ForMember(src => src.Region, dest => dest.MapFrom(x => x.Region.Name))
+           .ForMember(src => src.RegionCode, dest => dest.MapFrom(x => x.Region.Code))
+           .ForMember(src => src.City, dest => dest.MapFrom(x => x.City.Name))
+           .ForMember(src => src.Area, dest => dest.MapFrom(x => x.Area.Name))
+           .ReverseMap();
 
             CreateMap<LicenceWorkFlow, GetLicenceWorkflowDto>()
                 .ForMember(src => src.WorkFlowName, dest => dest.MapFrom(x => x.WorkFlow.LicenceStatus.Name))
@@ -166,7 +178,8 @@ namespace MoeSystem.Server.Configurations
                 .ForMember(src => src.UserGroup, dest => dest.MapFrom(x => x.UserGroup.Name))
                 .ReverseMap();
 
-            CreateMap<Licence, CreateLicenceDto>().ReverseMap();
+            CreateMap<Licence, CreateLicenceDto>().ReverseMap()
+            .ForMember(d => d.Company, o => o.Ignore());
             CreateMap<Licence, UpdateLicenceDto>().ReverseMap();
             //CreateMap<Licence, LicenceDetailDto>().ReverseMap();
 
@@ -182,8 +195,6 @@ namespace MoeSystem.Server.Configurations
                 .ForMember(src => src.Regoin, dest => dest.MapFrom(x => x.Regoin.Name))
                 .ForMember(src => src.City, dest => dest.MapFrom(x => x.City.Name))
                 .ForMember(src => src.CompanyType, dest => dest.MapFrom(x => x.CompanyType.Name))
-
-
                 .ReverseMap();
             CreateMap<Company, BaseLookUpDto>().ReverseMap();
 
@@ -193,7 +204,9 @@ namespace MoeSystem.Server.Configurations
 
             CreateMap<ApiUserDto, User>().ReverseMap();
             CreateMap<Logs, BaseLogsDto>().ReverseMap();
-            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<User, UserDto>()
+            .ForMember(x => x.UserGroup, dest => dest.MapFrom(x => x.UserGroup.Name))
+            .ReverseMap();
 
             CreateMap<IdentityRole, RolesDto>().ReverseMap();
         }

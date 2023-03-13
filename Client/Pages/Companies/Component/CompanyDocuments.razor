@@ -68,8 +68,6 @@
         MaxWidth = MaxWidth.Medium,
         FullWidth = true,
         Position = DialogPosition.TopCenter
-
-
     };
     private async Task OpenDocumentForm()
     {
@@ -83,6 +81,7 @@
     private void GetDocument(int id)
     {
         DialogOptions.MaxWidth = MaxWidth.Large;
+        Console.WriteLine($"Id:{id.ToString()}");
         var parameters = new DialogParameters();
         parameters.Add("Id", id);
         var dialog = Dialog.Show<ShowDocument>("Documents", parameters, DialogOptions);

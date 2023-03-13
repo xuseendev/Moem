@@ -15,6 +15,8 @@ namespace MoeSystem.Server.Contracts
     public interface ILicenceRepository : IGenericRepository<Licence>
     {
         Task<LicenceDetailDto> GetLicenceDetail(int? id);
+        Task<LicenceDetailPrintDto> GetLicenceDetailPrint(int? id);
+        Task<LicenceDetailDto> GetLicence(int? id);
         Task<List<LicenceWorkFlowDto>> GetTaskLicences(int? userGroupId);
         Task<List<LicenceWorkFlowDto>> GetToClaimLicences(int? userGroupId);
         Task<List<BaseLogsDto>> GetLogs(int? licenceId);

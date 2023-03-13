@@ -3,6 +3,7 @@
 @inject IDialogService Dialog
 @inject IHttpRepository<PagedResult<CompanyLicenceDto>> companyService
 @inject HttpInerceptorService _interceptor
+@attribute [Authorize]
 
 @implements IDisposable
 

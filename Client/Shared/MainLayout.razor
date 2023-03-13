@@ -11,31 +11,31 @@
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
             OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
-        <MudHidden Breakpoint="Breakpoint.Lg" Invert="true">
+        @* <MudHidden Breakpoint="Breakpoint.Sm" Invert="true"> *@
 
 
-            <MudButton StartIcon="@Icons.Filled.Dashboard" Href="/" Color="Color.Inherit">Dashboard
-            </MudButton>
-            <MudButton StartIcon="@Icons.Filled.TaskAlt" Href="/licenceworkflows/index" Color="Color.Inherit">My
-                Worksheet</MudButton>
-            @* <MudMenu StartIcon="@Icons.Material.Filled.MergeType" Label="Licence Types" Color="Color.Inherit">
-                <MudMenuItem>Detail Licence Types</MudMenuItem>
-                <MudMenuItem>Detail Licence Template</MudMenuItem>
+        <MudButton StartIcon="@Icons.Filled.Dashboard" Href="/" Color="Color.Inherit">Dashboard
+        </MudButton>
+        <MudButton StartIcon="@Icons.Filled.TaskAlt" Href="/licenceworkflows/index" Color="Color.Inherit">My
+            Worksheet</MudButton>
+        @* <MudMenu StartIcon="@Icons.Material.Filled.MergeType" Label="Licence Types" Color="Color.Inherit">
+            <MudMenuItem>Detail Licence Types</MudMenuItem>
+            <MudMenuItem>Detail Licence Template</MudMenuItem>
 
-                </MudMenu> *@
-            <MudButton StartIcon="@Icons.Filled.MergeType" Href="/licencetypes/index" Color="Color.Inherit">
-                Licence Types</MudButton>
+            </MudMenu> *@
+        <MudButton StartIcon="@Icons.Filled.MergeType" Href="/licencetypes/index" Color="Color.Inherit">
+            Licence Types</MudButton>
 
-            <MudButton StartIcon="@Icons.Filled.Home" Href="/companies/index" Color="Color.Inherit">Detail Companies
-            </MudButton>
+        <MudButton StartIcon="@Icons.Filled.Home" Href="/companies/index" Color="Color.Inherit">Detail Companies
+        </MudButton>
 
-            <MudButton StartIcon="@Icons.Filled.Search" Href="/licences/search" Color="Color.Inherit">Search
-                Licence
-            </MudButton>
-            <MudButton StartIcon="@Icons.Filled.MenuBook" Href="/licences/index" Color="Color.Inherit">
-                Detail Licences
-            </MudButton>
-        </MudHidden>
+        <MudButton StartIcon="@Icons.Filled.Search" Href="/licences/search" Color="Color.Inherit">Search
+            Licence
+        </MudButton>
+        <MudButton StartIcon="@Icons.Filled.MenuBook" Href="/licences/index" Color="Color.Inherit">
+            Detail Licences
+        </MudButton>
+        @* </MudHidden> *@
 
 
         <MudSpacer />

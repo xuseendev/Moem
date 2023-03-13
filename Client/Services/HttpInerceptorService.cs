@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Client.Services;
+using Microsoft.AspNetCore.Components;
 using System.Net;
+using System.Net.Http.Headers;
 using Toolbelt.Blazor;
 
 namespace MoeSystem.Client.Services
@@ -14,9 +16,25 @@ namespace MoeSystem.Client.Services
             _interceptor = interceptor;
             _navManager = navManager;
 
+
         }
 
         public void MonitorEvent() => _interceptor.AfterSend += InterceptResponse;
+
+        //public void RegisterEvent() => _interceptor.BeforeSendAsync += InterceptBeforeHttpAsync;
+
+        // public async Task InterceptBeforeHttpAsync(object sender, HttpClientInterceptorEventArgs e)
+        // {
+        //     var absPath = e.Request.RequestUri.AbsolutePath;
+        //     if (!absPath.Contains("token") && !absPath.Contains("accounts"))
+        //     {
+        //         var token = await _refreshTokenService.TryRefreshToken();
+        //         if (!string.IsNullOrEmpty(token))
+        //         {
+        //             e.Request.Headers.Authorization = new AuthenticationHeaderValue("bearer", token);
+        //         }
+        //     }
+        // }
 
         private void InterceptResponse(object sender, HttpClientInterceptorEventArgs e)
         {
@@ -46,7 +64,12 @@ namespace MoeSystem.Client.Services
             }
         }
 
-        public void DisposeEvent() => _interceptor.AfterSend -= InterceptResponse;
+        public void DisposeEvent()
+        {
+            _interceptor.AfterSend -= InterceptResponse;
+            // _interceptor.BeforeSendAsync -= InterceptBeforeHttpAsync;
+
+        }
 
 
 

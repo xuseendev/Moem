@@ -58,6 +58,12 @@ namespace MoeSystem.Server.Controllers
             return await _licenceRepository.GetLicenceDetail(id);
         }
 
+        [HttpGet("GetLicencePrintDetail/{id}")]
+        public async Task<ActionResult<LicenceDetailPrintDto>> GetLicencePrintDetail(int id)
+        {
+            return await _licenceRepository.GetLicenceDetailPrint(id);
+        }
+
         [HttpGet("GetLogs/{id}")]
         public async Task<ActionResult<List<BaseLogsDto>>> GetLogs(int id)
         {
@@ -91,15 +97,12 @@ namespace MoeSystem.Server.Controllers
             return await _licenceRepository.TopLicences();
         }
 
-
-
         // PUT: api/Licences/5
         [HttpPut("{id}")]
         public async Task<ActionResult<Licence>> PutLicence(int id, UpdateLicenceDto updateLicenceDto)
         {
             return await _licenceRepository.UpdateAsync<UpdateLicenceDto>(id, updateLicenceDto, HttpContext);
         }
-
         // POST: api/Licences
         [HttpPost]
         public async Task<ActionResult<Licence>> PostLicence(CreateLicenceDto createLicenceDto)

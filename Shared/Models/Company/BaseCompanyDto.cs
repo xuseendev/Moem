@@ -29,6 +29,9 @@ namespace MoeSystem.Shared.Models.Company
         public int CityId { get; set; }
         [Required]
 
+        public string Address { get; set; }
+        [Required]
+
 
         public string Email { get; set; }
         [Required]

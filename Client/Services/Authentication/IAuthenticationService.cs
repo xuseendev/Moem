@@ -5,6 +5,7 @@ namespace MoeSystem.Client.Services.Authentication
     public interface IAuthenticationService
     {
         Task<bool> AuthenticateAsync(LoginDto loginModel);
+        Task<string> RefreshToken();
         //Task<Response<List<ApplicationUser>>> GetAll();
         //Task<Response<List<IdentityRole>>> GetRoles();
         //Task<Response<UserDto>> Create(UserDto create);

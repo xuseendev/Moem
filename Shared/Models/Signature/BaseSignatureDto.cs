@@ -5,7 +5,8 @@ namespace MoeSystem.Shared.Models.Signature
 {
     public class BaseSignatureDto
     {
-        [Required]
+        [Required, Range(1, int.MaxValue)]
+
 
         public int UserGroupId { get; set; }
 

@@ -19,7 +19,7 @@ namespace MoeSystem.Shared.Models.Licence
     {
         public int Id { get; set; }
         public CompanyDto Company { get; set; }
-        public string LicenceType { get; set; }
+        public LicenceTypeDto LicenceType { get; set; }
 
         public string MineralType { get; set; }
 
@@ -29,9 +29,11 @@ namespace MoeSystem.Shared.Models.Licence
         public List<LicenceStatusDto> LicenceStatuses { get; set; }
         //public List<LicenceDocumentDto> LicenceDocuments { get; set; }
         //public List<BaseLogsDto> Logs { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime CreatedOn { get; set; }
+
         public DateTime UpdatedOn { get; set; }
         public string UpdatedBy { get; set; }
+        public string Region { get; set; }
+        public string City { get; set; }
+        public string Area { get; set; }
     }
 }

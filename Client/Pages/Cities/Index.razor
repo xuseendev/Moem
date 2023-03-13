@@ -3,6 +3,8 @@
 @inject IDialogService Dialog
 @inject IHttpRepository<CityDto> cityService
 @inject HttpInerceptorService _interceptor
+@inject ISnackbar snackbarService
+@attribute [Authorize]
 
 @implements IDisposable
 
@@ -34,8 +36,9 @@
                                     </div>
                                 </div>
                             </li>
-                            <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-primary"><em
-                                        class="icon ni ni-plus"></em><span>Add</span></button></li>
+                            <li class="nk-block-tools-opt"><button @onclick="(()=>OpenCreateForm(null))"
+                                    class="btn btn-primary"><em class="icon ni ni-plus"></em><span>Add</span></button>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -68,10 +71,10 @@
                 <MudTd DataLabel="CreatedBy">@context.CreatedBy</MudTd>
                 <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
                 <MudTd DataLabel="Actions">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Error"
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" @onclick="(()=>Delete(context.Id))"Variant="Variant.Outlined" Color="Color.Error"
                         Size="Size.Small" />
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary"
-                        Size="Size.Small" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" @onclick="(()=>OpenCreateForm(id:context.Id))"
+                        Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
 
                 </MudTd>
             </RowTemplate>
@@ -100,6 +103,26 @@
         Position = DialogPosition.TopCenter
     };
 
+    private async Task Delete(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Do you really want to delete these records?");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = Dialog.Show<ConfirmDialog>("Delete", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            System.Console.WriteLine("Hello");
+            await cityService.Delete($"{EndPoints.CityEndPoint}", id);
+            snackbarService.Add("Successfully Deleted Record", Severity.Success);
+            await OnInitializedAsync();
+        }
+    }
+
     private List<CityDto> Cities = new List<CityDto>();
 
     protected override async Task OnInitializedAsync()
@@ -109,9 +132,24 @@
         loading = false;
     }
 
-    private void OpenCreateForm()
+    private async Task OpenCreateForm(int? id)
     {
-        Dialog.Show<Create>("Add New City", maxWidth);
+        IDialogReference dialog;
+        var parameters = new DialogParameters();
+        if (id != null)
+        {
+            parameters.Add("Id", id.Value);
+            parameters.Add("ButtonText", "Update City");
+            dialog = Dialog.Show<Create>("Update City", parameters, maxWidth);
+        }
+        else
+        {
+            parameters.Add("ButtonText", "Register City");
+
+            dialog = Dialog.Show<Create>("Add New City", parameters, maxWidth);
+        }
+        var result = await dialog.Result;
+        await OnInitializedAsync();
     }
 
     private bool FilterFunc1(CityDto element) => FilterFunc(element, searchString1);

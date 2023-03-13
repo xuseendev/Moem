@@ -8,7 +8,7 @@
             <MudCard>
                 <MudCardContent>
                     <MudSelect T="string" Label="Type" Variant="Variant.Outlined" @bind-Value="model.Type"
-                        AnchorOrigin="Origin.BottomCenter">
+                        AnchorOrigin="Origin.BottomCenter" For="@(() => model.Type)">
 
                         @foreach (var type in Types)
                         {

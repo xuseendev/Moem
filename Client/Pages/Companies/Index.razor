@@ -3,6 +3,7 @@
 @inject IDialogService Dialog
 @inject IHttpRepository<PagedResult<CompanyDto>> companyService
 @inject HttpInerceptorService _interceptor
+@attribute [Authorize]
 
 @implements IDisposable
 
@@ -170,6 +171,8 @@
         if (string.IsNullOrWhiteSpace(searchString))
             return true;
         if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+            if (element.TellPhone.Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;
         if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
             return true;

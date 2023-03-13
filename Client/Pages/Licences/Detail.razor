@@ -5,6 +5,7 @@
 @inject IHttpRepository<LicenceDetailDto> licenceService
 @inject IHttpRepository<LicenceDocumentDetailDto> LicenceDocumentService
 @inject IDialogService Dialog
+@attribute [Authorize]
 
 <div class="nk-content-body">
     <div class="nk-block-head nk-block-head-sm">
@@ -22,11 +23,9 @@
                 </div>
             </div>
             <div class="nk-block-head-content">
-                <a href="html/user-list-regular.html" class="btn btn-outline-light bg-white d-none d-sm-inline-flex"><em
+                <a href="/licences/index" class="btn btn-outline-light bg-white d-none d-sm-inline-flex"><em
                         class="icon ni ni-arrow-left"></em><span>Back</span></a>
-                <a href="html/user-list-regular.html"
-                    class="btn btn-icon btn-outline-light bg-white d-inline-flex d-sm-none"><em
-                        class="icon ni ni-arrow-left"></em></a>
+          
             </div>
         </div>
     </div><!-- .nk-block-head -->
@@ -42,7 +41,8 @@
                     }
                     else
                     {
-                        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+                        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6"
+                        Color="@Color.Success">
 
                             <MudTabPanel Text="Licence" Icon="@Icons.Filled.AccountBox">
 

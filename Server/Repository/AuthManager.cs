@@ -56,13 +56,14 @@ namespace MoeSystem.Server.Repository
                 new Claim(JwtRegisteredClaimNames.Name,_user.FirstName),
                 new Claim("userGroup",_user.UserGroupId.ToString()),
                 new Claim("uid",_user.Id),
+                new Claim("sid",_user.Id),
             }.Union(userClaims).Union(roleClaims);
 
             var token = new JwtSecurityToken(
                issuer: _configuration["JwtSettings:Issuer"],
                audience: _configuration["JwtSettings:Audience"],
                claims: claims,
-               expires: DateTime.Now.AddHours(Convert.ToInt32(_configuration["JwtSettings:DurationInMinutes"])),
+               expires: DateTime.Now.AddDays(Convert.ToInt32(_configuration["JwtSettings:DurationInMinutes"])),
                signingCredentials: credentials
 
                 );
@@ -134,8 +135,7 @@ namespace MoeSystem.Server.Repository
 
         public async Task<UserDto> GetUser(string id)
         {
-            return _mapper.Map<UserDto>(await _userManager.FindByIdAsync(id));
-
+            return _mapper.Map<UserDto>(await _userManager.Users.Include(x => x.UserGroup).FirstOrDefaultAsync(x => x.Id == id));
         }
 
         public List<string> GetUserByRoles(User user)
@@ -153,7 +153,7 @@ namespace MoeSystem.Server.Repository
 
         public async Task<List<UserDto>> GetUsers()
         {
-            return _mapper.Map<List<UserDto>>(await _userManager.Users.ToListAsync());
+            return _mapper.Map<List<UserDto>>(await _userManager.Users.Include(x => x.UserGroup).ToListAsync());
         }
 
         public async Task<List<IdentityRole>> GetRoles()

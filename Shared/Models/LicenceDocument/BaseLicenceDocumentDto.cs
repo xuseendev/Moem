@@ -9,20 +9,15 @@ namespace MoeSystem.Shared.Models.LicenceDocument
 {
     public class BaseLicenceDocumentDto
     {
-        [Required]
+        [Required, Range(1, int.MaxValue)]
 
         public int DocumentTypeId { get; set; }
         [Required]
 
         public string DocumentName { get; set; }
-        [Required]
-
-
         public int? LicenceId { get; set; }
 
-
         public DateTime CreatedOn { get; set; } = DateTime.Now;
-
         public string FileExtension { get; set; }
     }
 }

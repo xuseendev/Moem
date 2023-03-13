@@ -22,6 +22,7 @@ namespace MoeSystem.Client.Providers
 
             if (savedToken == null)
             {
+
                 return new AuthenticationState(user);
             }
 
@@ -29,6 +30,8 @@ namespace MoeSystem.Client.Providers
             var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(savedToken);
             if (tokenContent.ValidTo < DateTime.Now)
             {
+                Console.WriteLine(tokenContent.ValidTo);
+                Console.WriteLine("token is expired");
                 return new AuthenticationState(user);
             }
             var claims = await GetClaims();

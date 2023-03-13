@@ -8,6 +8,8 @@
                 <MudCardContent>
                     <MudTextField Label="Name" HelperText="Max. 12 characters" Variant="Variant.Outlined" class="mb-3"
                         @bind-Value="model.Name" For="@(() => model.Name)" />
+                          <MudTextField Label="Code" HelperText="Max. 3 characters" Variant="Variant.Outlined" class="mb-3"
+                        @bind-Value="model.Code" For="@(() => model.Code)" />
                     <MudCheckBox @bind-Checked="@model.Active" Size="Size.Small" Color="Color.Tertiary">Active
                     </MudCheckBox>
                 </MudCardContent>
@@ -54,6 +56,8 @@
         if (Id != null)
             model = await regionService.Get($"{EndPoints.RegionEndPoint}", Id.Value);
     }
+
+
 
 
 

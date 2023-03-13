@@ -29,13 +29,23 @@ namespace MoeSystem.Client.Services
         {
             await GetBearerToken();
             interceptor.MonitorEvent();
+            //interceptor.RegisterEvent();
             await client.PostAsJsonAsync(url, obj);
+        }
+        public async Task<T> PostAsync(string url, T obj)
+        {
+            await GetBearerToken();
+            interceptor.MonitorEvent();
+            //interceptor.RegisterEvent();
+            var response = await client.PostAsJsonAsync<T>(url, obj);
+            return await response.Content.ReadFromJsonAsync<T>();
         }
 
         public async Task Delete(string url, int id)
         {
             await GetBearerToken();
             interceptor.MonitorEvent();
+            //interceptor.RegisterEvent();
             await client.DeleteAsync($"{url}{id}");
         }
 
@@ -48,6 +58,7 @@ namespace MoeSystem.Client.Services
         {
             await GetBearerToken();
             interceptor.MonitorEvent();
+            //interceptor.RegisterEvent();
             return await client.GetFromJsonAsync<T>($"{url}{id}");
         }
 
@@ -55,12 +66,14 @@ namespace MoeSystem.Client.Services
         {
             await GetBearerToken();
             interceptor.MonitorEvent();
+            // interceptor.RegisterEvent();
             return await client.GetFromJsonAsync<List<T>>($"{url}");
         }
         public async Task<T> GetPagined(string url)
         {
             await GetBearerToken();
             interceptor.MonitorEvent();
+            //interceptor.RegisterEvent();
             return await client.GetFromJsonAsync<T>($"{url}");
         }
 
@@ -68,6 +81,7 @@ namespace MoeSystem.Client.Services
         {
             await GetBearerToken();
             interceptor.MonitorEvent();
+            //interceptor.RegisterEvent();
             await client.PutAsJsonAsync($"{url}{id}", obj);
         }
 
@@ -75,6 +89,7 @@ namespace MoeSystem.Client.Services
         {
             await GetBearerToken();
             interceptor.MonitorEvent();
+            //interceptor.RegisterEvent();
             return await client.GetFromJsonAsync<T>($"{url}{id}");
         }
 

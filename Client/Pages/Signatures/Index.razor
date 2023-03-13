@@ -3,6 +3,7 @@
 @inject IJSRuntime jsRuntime
 @inject IDialogService Dialog
 @inject HttpInerceptorService _interceptor
+@attribute [Authorize]
 
 @implements IDisposable
 @inject IHttpRepository<SignatureDto> signatureService

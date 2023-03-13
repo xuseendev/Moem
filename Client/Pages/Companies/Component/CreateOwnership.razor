@@ -8,7 +8,7 @@
             <MudCard>
                 <MudCardContent>
                     <MudSelect class="mb-3" T="string" Label="Identity Type" Variant="Variant.Outlined"
-                        @bind-Value="model.IdType" AnchorOrigin="Origin.BottomCenter">
+                        @bind-Value="model.IdType" AnchorOrigin="Origin.BottomCenter" For="@(() => model.IdType)">
 
                         @foreach (var type in Types)
                         {
@@ -18,8 +18,8 @@
 
                         }
                     </MudSelect>
-                    <MudTextField class="mb-3" Label="Person Id" Variant="Variant.Outlined" HelperText="Max. 12 characters"
-                        @bind-Value="model.PersonId" For="@(() => model.PersonId)" />
+                    <MudTextField class="mb-3" Label="Person Id" Variant="Variant.Outlined"
+                        HelperText="Max. 12 characters" @bind-Value="model.PersonId" For="@(() => model.PersonId)" />
                     <MudTextField class="mb-3" Label="Name" Variant="Variant.Outlined" HelperText="Max. 12 characters"
                         @bind-Value="model.Name" For="@(() => model.Name)" />
                     <MudTextField class="mb-3" Label="Phone" Variant="Variant.Outlined" InputType="InputType.Number"

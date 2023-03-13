@@ -9,13 +9,11 @@ namespace MoeSystem.Shared.Models.Licence
 {
     public class BaseLicenceDto
     {
-        [Required, Range(1, int.MaxValue)]
-
         public int LicenceId { get; set; }
+
         [Required, Range(1, int.MaxValue)]
-
-
         public int CompanyId { get; set; }
+
         [Required, Range(1, int.MaxValue)]
 
         public int LicenceTypeId { get; set; }
@@ -40,6 +38,7 @@ namespace MoeSystem.Shared.Models.Licence
         [Required, Range(1, int.MaxValue)]
         public int AreaId { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;
+        public string CreatedBy { get; set; }
 
     }
 }

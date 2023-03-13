@@ -1,5 +1,6 @@
 @inject IHttpRepository<CreateLicenceTypeDto> licenceTypeService
 @inject ISnackbar snackbarService
+@inject IHttpRepository<LookUpLicenceTypeTemplate> lookupService
 <EditForm Model="@model" OnValidSubmit="CreateLicenceType">
     <DataAnnotationsValidator />
     <MudGrid>
@@ -9,14 +10,18 @@
 
                     <MudItem xs="12">
                         <MudGrid>
-                            <MudItem xs="6">
+                            <MudItem xs="4">
 
                                 <MudTextField Label="Name" HelperText="Max. 12 characters" @bind-Value="model.Name"
                                     Variant="Variant.Outlined" class="mb-3" For="@(() => model.Name)" />
                             </MudItem>
+   <MudItem xs="4">
 
+                                <MudTextField Label="Code" HelperText="Max. 3 characters" @bind-Value="model.Code"
+                                    Variant="Variant.Outlined" class="mb-3" For="@(() => model.Code)" />
+                            </MudItem>
 
-                            <MudItem xs="6">
+                            <MudItem xs="4">
                                 <MudTextField Label="Term Of Licence" @bind-Value="model.TermOfLicence"
                                     Variant="Variant.Outlined" class="mb-3" For="@(() => model.TermOfLicence)" />
                             </MudItem>
@@ -25,7 +30,7 @@
 
                     <MudItem xs="12">
                         <MudGrid>
-                            <MudItem xs="5">
+                            <MudItem xs="3">
 
                                 <MudTextField Label="Licence Period" HelperText="Max. 12 number"
                                     @bind-Value="model.LicencePeriod" Variant="Variant.Outlined" class="mb-3"
@@ -33,16 +38,25 @@
                             </MudItem>
 
 
-                            <MudItem xs="5">
+                            <MudItem xs="3">
                                 <MudSelect T="string" Label="Licence Period Type" @bind-Value="model.LicencePeriodType"
-                                    AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" class="mb-3">
+                                    AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" class="mb-3"
+                                    For="@(() => model.LicencePeriodType)">
 
                                     @foreach (var type in LicencePeriodTypes)
                                     {
-
                                         <MudSelectItem Value="@(type)">@type</MudSelectItem>
+                                    }
+                                </MudSelect>
+                            </MudItem>
+                            <MudItem xs="3">
+                                <MudSelect T="int" Label="Licence Template" @bind-Value="model.LicenceTypeTemplateId"
+                                    AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" class="mb-3"
+                                    For="@(() => model.LicenceTypeTemplateId)">
 
-
+                                    @foreach (var type in LicenceTemplates)
+                                    {
+                                        <MudSelectItem Value="@(type.Id)">@type.Title</MudSelectItem>
                                     }
                                 </MudSelect>
                             </MudItem>
@@ -53,7 +67,7 @@
                             </MudItem>
                         </MudGrid>
                     </MudItem>
-             
+
                     <MudItem xs="12">
                         <MudGrid>
                             <MudItem xs="12">
@@ -78,7 +92,7 @@
                         }
                         else
                         {
-                            <MudText>Register</MudText>
+                            <MudText>@ButtonText</MudText>
                         }
                     </MudButton>
                     <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
@@ -100,7 +114,12 @@
     CreateLicenceTypeDto model = new CreateLicenceTypeDto();
     bool loading = false;
     [Parameter]
+    public string ButtonText { get; set; }
+    [Parameter]
     public EventCallback Areas { get; set; }
+
+    [Parameter]
+    public int? Id { get; set; }
     private List<string> LicencePeriodTypes = new List<string>(){
 "Year",
 "Month"
@@ -109,13 +128,35 @@
     {
         loading = true;
         Console.WriteLine("Hello");
-        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
-        await licenceTypeService.Post($"{EndPoints.LicenceTypesEndPoint}", model);
+         if (Id == null)
+        {
+
+            await licenceTypeService.Post($"{EndPoints.LicenceTypesEndPoint}", model);
         SnackMessage("Succesfully Saved Record", Severity.Success);
+        }
+        else
+        {
+            model.Id = Id.Value;
+            await licenceTypeService.Update($"{EndPoints.LicenceTypesEndPoint}", model, Id.Value);
+            SnackMessage("Succesfully Updated Record", Severity.Success);
+        }
+        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+       
         await Areas.InvokeAsync();
         model = new CreateLicenceTypeDto();
         loading = false;
 
+    }
+
+ 
+
+    private List<LookUpLicenceTypeTemplate> LicenceTemplates = new List<LookUpLicenceTypeTemplate>();
+    protected async override Task OnParametersSetAsync()
+    {
+        if (Id.HasValue)
+            model = await licenceTypeService.Get($"{EndPoints.LicenceTypesEndPoint}", Id.Value);
+
+        LicenceTemplates = await lookupService.GetAll($"{EndPoints.LicenceTypesTemplateEndPoint}");
     }
 
     private void SnackMessage(string text, Severity type)

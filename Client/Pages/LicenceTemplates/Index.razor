@@ -3,6 +3,7 @@
 @inject IDialogService Dialog
 @inject IHttpRepository<LicenceTypeTemplateDto> licenceTypeService
 @inject HttpInerceptorService _interceptor
+@attribute [Authorize]
 
 @implements IDisposable
 
@@ -54,7 +55,6 @@
             </ToolBarContent>
             <HeaderContent>
                 <MudTh>Id</MudTh>
-                <MudTh>Licence Type</MudTh>
                 <MudTh>Title</MudTh>
                 <MudTh>SubTitle</MudTh>
                 <MudTh>ShowCordinate</MudTh>
@@ -65,7 +65,6 @@
             </HeaderContent>
             <RowTemplate>
                 <MudTd DataLabel="Nr">@context.Id</MudTd>
-                <MudTd DataLabel="Region">@context.LicenceType.Name</MudTd>
                 <MudTd DataLabel="Name">@context.Title</MudTd>
                 <MudTd DataLabel="Name">@context.SubTitle</MudTd>
                 <MudTd DataLabel="Name">@context.ShowCordinate</MudTd>

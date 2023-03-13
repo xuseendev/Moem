@@ -2,11 +2,11 @@
 @inject IJSRuntime jsRuntime
 @inject IDialogService Dialog
 @inject HttpInerceptorService _interceptor
+@inject ISnackbar snackbarService
 @attribute [Authorize]
 
 @implements IDisposable
-@using System.Net.Http.Json
-@inject HttpClient httpClient
+@inject IHttpRepository<RegionDto> regionService
 <div class="nk-content-body">
     <div class="nk-block-head nk-block-head-sm">
         <div class="nk-block-between">
@@ -45,7 +45,7 @@
         </div><!-- .nk-block-between -->
     </div><!-- .nk-block-head -->
     <div class="nk-block">
-        <MudTable Loading="loading" Items="@Elements" Dense="true" Hover="@hover" Bordered="@bordered"
+        <MudTable Loading="loading" Items="@Regions" Dense="true" Hover="@hover" Bordered="@bordered"
             Striped="@striped" Filter="new Func<RegionDto,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
             <ToolBarContent>
                 <MudText Typo="Typo.h6">Regions</MudText>
@@ -56,6 +56,7 @@
             <HeaderContent>
                 <MudTh>Id</MudTh>
                 <MudTh>Regoin</MudTh>
+                <MudTh>Code</MudTh>
                 <MudTh>Active</MudTh>
                 <MudTh>CreatedBy</MudTh>
                 <MudTh>CreatedOn</MudTh>
@@ -64,11 +65,12 @@
             <RowTemplate>
                 <MudTd DataLabel="Nr">@context.Id</MudTd>
                 <MudTd DataLabel="Sign">@context.Name</MudTd>
+                <MudTd DataLabel="Sign">@context.Code</MudTd>
                 <MudTd DataLabel="Name">@context.Active</MudTd>
                 <MudTd DataLabel="Position">@context.CreatedBy</MudTd>
                 <MudTd DataLabel="Molar mass">@context.CreatedOn</MudTd>
                 <MudTd DataLabel="Actions">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Error"
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" @onclick="(()=>Delete(context.Id))"Variant="Variant.Outlined" Color="Color.Error"
                         Size="Size.Small" />
                     <MudIconButton Icon="@Icons.Material.Filled.Edit" @onclick="(()=>OpenCreateForm(context.Id))"
                         Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
@@ -100,13 +102,33 @@
         Position = DialogPosition.TopCenter
     };
 
-    private IEnumerable<RegionDto> Elements = new List<RegionDto>();
+    private IEnumerable<RegionDto> Regions = new List<RegionDto>();
 
     protected override async Task OnInitializedAsync()
     {
         _interceptor.MonitorEvent();
-        Elements = await httpClient.GetFromJsonAsync<List<RegionDto>>("api/v1/regions");
+        Regions = await regionService.GetAll($"{EndPoints.RegionEndPoint}");
         loading = false;
+    }
+
+    private async Task Delete(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Do you really want to delete these records?");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = Dialog.Show<ConfirmDialog>("Delete", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            System.Console.WriteLine("Hello");
+            await regionService.Delete($"{EndPoints.RegionEndPoint}", id);
+            snackbarService.Add("Successfully Deleted Record", Severity.Success);
+            await OnInitializedAsync();
+        }
     }
 
     private async Task OpenCreateForm(int? id = null)

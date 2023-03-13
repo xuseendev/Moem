@@ -1,0 +1,222 @@
+@model MoeSystem.Shared.Models.Licence.LicenceDetailPrintDto
+@using QRCoder;
+@using System.Drawing;
+@using System.Drawing.Imaging;
+@using System.IO;
+@{
+    ViewData["Title"] = "Home Page";
+    string qrCodeString = "";
+    using (MemoryStream ms = new MemoryStream())
+    {
+        QRCodeGenerator qRCodeGenerator = new QRCodeGenerator();
+        QRCodeData qRCodeData =
+        qRCodeGenerator.CreateQrCode(Model.LicenceId.ToString(),
+        QRCodeGenerator.ECCLevel.Q);
+        QRCode qrCode = new QRCode(qRCodeData);
+        using (Bitmap bitmap = qrCode.GetGraphic(20))
+        {
+            bitmap.Save(ms, ImageFormat.Png);
+            qrCodeString = "data:image/png;base64," + Convert.ToBase64String(ms.ToArray());
+        }
+    }
+}
+<title>Print Licence</title>
+<link
+    href="https://somalilandcovid19.com/Content/app-assets/css/bootstrap.css"
+    rel="stylesheet">
+
+<style>
+    @* .watermark{
+    position: relative;
+    z-index: 0;
+    min-height: 40%;
+    min-width: 100%;
+    height: 200px;
+}
+
+p{margin:0}
+
+.watermark:after{
+    background-image: url('/images/moe.jpg');
+    /* text-align: center; */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity:0.1
+} *@
+</style>
+<body onload="window.print();"
+    style="border-color:green;border-style:solid;font-family:Consolas;">
+    <div class="app-content content " id="printWithoutCertificate">
+        <div class="content-overlay"></div>
+        <div class="header-navbar-shadow"></div>
+
+        <div class="content-body container card-body">
+
+            <!-- invoice functionality start -->
+            <section class="invoice-print mb-1">
+            </section>
+            <!-- invoice functionality end -->
+            <!-- invoice page -->
+
+            <div id="invoice-template">
+                <!-- Invoice Company Details -->
+                <div id="invoice-customer-details" class="row pt-2">
+                    <div class="col-sm-3 col-12 text-left">
+                        <img src="/images/som.png"
+                            width="100" height="100" id="clicked" />
+                    </div>
+                    <div class="col-md-6">
+                        <center>
+                            <h3 style="color:green"><b>REPUBLIC OF
+                                    SOMALILAND
+                                </b></h3>
+                            <h4>MINISTER OF ENERGY AND MINERALS</h4>
+                        </center>
+                    </div>
+                    <div class="col-sm-2 col-12 text-right">
+                        <img src="/images/moe.jpg"
+                            width="100" height="100" id="clicked" />
+                        @*<div class="company-contact">
+                        <p>
+                        <i class="feather icon-mail"></i>
+                        hello@pixinvent.net
+                        </p>
+                        <p>
+                        <i class="feather icon-phone"></i>
+                        +91 999 999 9999
+                        </p>
+                        </div>*@
+                    </div>
+                </div>
+                <center>
+                    @*<h2><b>NATIONAL REFERENCE LABORATORY</b></h2>*@
+                    <h3><b>@Model.LicenceType.Name</b></h3>
+
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-7 col-12">
+
+
+
+
+
+                        </div>
+                        <div class="col-sm-5 col-12 text-right">
+                            @{
+                                var
+                                licenceCode = string.Format("{0}-{1}-{2}",
+                                Model.LicenceType.Code, Model.RegionCode,
+                                Model.LicenceId);
+                            }
+                            <h6>Reference No: @licenceCode</h6>
+                            <img src="@qrCodeString" width="50"
+                                height="50" />
+
+                        </div>
+                    </div>
+                </center>
+            </div>
+            <div class="watermark">
+                <br>
+                <br>
+                <p style="font-size: 20;">@Model.LicenceType.LicenceTypeTemplate.SubTitle.Replace("(COMPANYNAME)",Model.Company.Name)</p>
+                <br>
+                <br>
+                <table class="table table-borderless "
+                    style="font-size:large;font-weight:bold;color:black">
+
+                    <tr>
+
+                        <td>Company Name</td>
+                        <td>@Model.Company.Name</td>
+
+                    </tr>
+                    <tr>
+
+                        <td>Physical Address</td>
+                        <td>@Model.Company.Address</td>
+
+                    </tr>
+                    <tr>
+
+                        <td>Region</td>
+                        <td>@Model.Region</td>
+
+                    </tr>
+                    <tr>
+
+                        <td>Working Area</td>
+                        <td>@Model.Area</td>
+
+                    </tr>
+                    <tr>
+                        <td>Type Of Mineral</td>
+                        <td>@Model.MineralType</td>
+                    </tr>
+
+
+                </table>
+
+                <p style="font-size: 18;">@Model.LicenceType.LicenceTypeTemplate.Note.Replace("(MINERALTYPE)",Model.MineralType)</p>
+                <table class="table table-borderless "
+                    style="font-size:large;font-weight:bold;color:black">
+                    <tr>
+
+                        <td>Term Of The Licence</td>
+                        <td>@Model.TermOfTheLicence</td>
+
+                    </tr>
+                    <tr>
+
+                        <td>Term commence on</td>
+                        <td>@Model.LicenceStartDate.Value.ToString("dd-MM-yyyy")</td>
+                    </tr>
+                    <tr>
+
+                        <td>Term ends On</td>
+                        <td>@Model.LicenceEndDate.ToString("dd-MM-yyyy")</td>
+                    </tr>
+                    <tr>
+
+                        <td>Area of the licence</td>
+                        <td>@Model.Area</td>
+
+                    </tr>
+
+                </table>
+                @if (Model.LicenceType.LicenceTypeTemplate.ShowCordinate)
+                {
+                    <br />
+                    <br />
+                    <h5><b>COORDINATES OF THE MINERAL RIGHT AREA</b></h5>
+                    @foreach (var item in Model.LicenceCordinates)
+                    {
+                        <h6 class="mt-2" style="font-size: large;">@item.Lat, @item.Lng</h6>
+                    }
+                }
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+
+
+
+            <div class="row footer">
+                <div class="col-md-10">
+                    <h6><b>Abdilahi Farah Abdi</b></h6>
+                    <h6><b>Ministry Of Energy And Minerals</b></h6>
+                </div>
+                <div class="col-md-2">
+                    <h6><b>_________________</b></h6>
+                    <h6><b>(Signature)</b></h6>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+
+</body>

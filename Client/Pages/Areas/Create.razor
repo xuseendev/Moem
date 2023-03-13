@@ -16,8 +16,6 @@
                         {
 
                             <MudSelectItem Value="@(city.Id)">@city.Name</MudSelectItem>
-
-
                         }
                     </MudSelect>
                     <MudCheckBox @bind-Checked="@model.Active" Size="Size.Small" Color="Color.Tertiary">Active
@@ -33,7 +31,7 @@
                         }
                         else
                         {
-                            <MudText>Register</MudText>
+                            <MudText>@ButtonText</MudText>
                         }
                     </MudButton>
                     <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
@@ -55,15 +53,29 @@
     CreateAreaDto model = new CreateAreaDto();
     bool loading = false;
     [Parameter]
+    public int? Id { get; set; }
+    [Parameter]
+    public string ButtonText { get; set; }
+    [Parameter]
     public EventCallback Areas { get; set; }
     private IEnumerable<CityDto> Cities = new List<CityDto>();
     private async Task CreateArea()
     {
         loading = true;
-        Console.WriteLine("Hello");
         //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
-        await areaService.Post($"{EndPoints.AreaEndPoint}", model);
-        SnackMessage("Succesfully Saved Record", Severity.Success);
+        if (Id == null)
+        {
+            await areaService.Post($"{EndPoints.AreaEndPoint}", model);
+            SnackMessage("Succesfully Saved Record", Severity.Success);
+
+        }
+        else
+        {
+            model.Id = Id.Value;
+            await areaService.Update($"{EndPoints.AreaEndPoint}", model, Id.Value);
+            SnackMessage("Succesfully Updated Record", Severity.Success);
+
+        }
         await Areas.InvokeAsync();
         loading = false;
 
@@ -71,6 +83,9 @@
     protected override async Task OnInitializedAsync()
     {
         Cities = await cityService.GetAll($"{EndPoints.CityEndPoint}");
+        if (Id.HasValue)
+            model = await areaService.Get($"{EndPoints.AreaEndPoint}", Id.Value);
+
 
     }
     private void SnackMessage(string text, Severity type)

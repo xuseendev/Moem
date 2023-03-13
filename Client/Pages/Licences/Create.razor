@@ -55,7 +55,7 @@
                             </MudItem>
                                          <MudItem xs="3">
           
-                              <MudDatePicker Variant="Variant.Outlined" Label="Issue Date" DateChanged="value => IssueDateOnChange(value)" For="@(() => model.LicenceStartDate)" />
+                              <MudDatePicker Variant="Variant.Outlined" Label="Issue Date"  DateChanged="value => IssueDateOnChange(value)" For="@(() => model.LicenceStartDate)" />
                         
                             </MudItem>
                                                              <MudItem xs="3">
@@ -69,7 +69,7 @@
                         <MudGrid>
                             <MudItem xs="6">
 
-                          <MudTextField Label="LicenceId" Variant="Variant.Outlined"  @bind-Value="model.LicenceId"
+                          <MudTextField Label="LicenceId" Variant="Variant.Outlined" Disabled="true"  @bind-Value="model.LicenceId"
                         For="@(() => model.LicenceId)" />
                             </MudItem>
 
@@ -94,7 +94,7 @@
 
                             <MudItem xs="4" >
                  
-                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="Region"  ValueChanged="value => RegionOnChange(value)" AnchorOrigin="Origin.BottomCenter">
+                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="Region"  ValueChanged="value => RegionOnChange(value)" AnchorOrigin="Origin.BottomCenter" For="@(() => model.RegionId)">
 
                         @foreach (var region in Regions)
                         {
@@ -107,7 +107,7 @@
                             </MudItem>
                                   <MudItem xs="4">
                      
-                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="City" ValueChanged="value => CityOnChange(value)" AnchorOrigin="Origin.BottomCenter">
+                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="City" ValueChanged="value => CityOnChange(value)" AnchorOrigin="Origin.BottomCenter" For="@(() => model.CityId)">
 
                         @foreach (var city in Cities)
                         {
@@ -119,8 +119,7 @@
                                                               </MudSelect>
                             </MudItem>
                                             <MudItem xs="4">
-                     
-                                                                                          <MudSelect Variant="Variant.Outlined" T="int" Label="Area" @bind-Value="model.AreaId" AnchorOrigin="Origin.BottomCenter">
+                     <MudSelect Variant="Variant.Outlined" T="int" Label="Area" @bind-Value="model.AreaId" AnchorOrigin="Origin.BottomCenter" For="@(() => model.AreaId)">
 
                         @foreach (var area in Areas)
                         {
@@ -181,17 +180,18 @@
     [Parameter]
     public EventCallback Workflows { get; set; }
         private List<string> Types = new List<string>(){
-"Indivudual",
-"Group"
+         "Indivudual",
+         "Group"
 };
     private async Task CreateLicenceType()
     {
         loading = true;
-        Console.WriteLine("Hello");
+        
         if(Id==null){
 
-        await licenceService.Post($"{EndPoints.LicencesEndPoint}GenerateLicence", model);
-        SnackMessage("Succesfully Saved Record", Severity.Success);
+            await licenceService.Post($"{EndPoints.LicencesEndPoint}GenerateLicence", model);
+            SnackMessage("Succesfully Saved Record", Severity.Success);
+            //navManager.NavigateTo($"/licences/detail/{response.Id}");
         }else{
             model.Id=Id.Value;
              await licenceService.Update($"{EndPoints.LicencesEndPoint}", model,Id.Value);
@@ -200,7 +200,7 @@
         //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
         await Workflows.InvokeAsync();
         model=new CreateLicenceDto();
-        //navManager.NavigateTo("/companies/detail/{context.Id}");
+       
         loading = false;
 
     }
@@ -214,40 +214,44 @@
         Companies = await lookupService.GetAll($"{EndPoints.CompaniesEndPoint}LookUp");
         MineralTypes = await lookupService.GetAll($"{EndPoints.MineralTypeEndPoint}LookUp");
         Regions = await lookupService.GetAll($"{EndPoints.RegionEndPoint}LookUp");
-     
-
     }
+
+
 
     protected async override Task OnParametersSetAsync()
         {
-            if(Id.HasValue)
+            if(Id.HasValue){
             model=await licenceService.Get($"{EndPoints.LicencesEndPoint}",Id.Value);
+            Company.Name=model.CompanyName;
+            Company.Name=model.TellPhone;
+            }
 
         }
-         private IEnumerable<BaseLookUpDto> Regions = new List<BaseLookUpDto>();
+     private IEnumerable<BaseLookUpDto> Regions = new List<BaseLookUpDto>();
      private IEnumerable<BaseLookUpDto> Cities = new List<BaseLookUpDto>();
      private IEnumerable<BaseLookUpDto> Areas = new List<BaseLookUpDto>();
-          private async Task RegionOnChange(int value)
+    private async Task RegionOnChange(int value)
     {
         model.RegionId =value;
         Cities = await lookupService.GetAll($"{EndPoints.CityEndPoint}LookUp/{model.RegionId}");
         
     }
-            private async Task CityOnChange(int value)
+    private async Task CityOnChange(int value)
     {
         model.CityId =value;
         Areas = await lookupService.GetAll($"{EndPoints.AreaEndPoint}LookUp/{model.CityId}");
         
     }
 
-        private async Task CompanyOnChange(int value)
+     private async Task CompanyOnChange(int value)
     {
         model.CompanyId =value;
         Company=await companyService.Get($"{EndPoints.CompaniesEndPoint}",value);
         
     }
 
-            private void IssueDateOnChange(DateTime? value)
+
+    private void IssueDateOnChange(DateTime? value)
     {
         model.LicenceStartDate =value.Value;
           var days=0;
@@ -266,24 +270,12 @@
         model.LicenceEndDate=model.LicenceStartDate.Value.AddDays(days);
         
     }
-            private async Task LicenceOnChange(int value)
+    private async Task LicenceOnChange(int value)
     {
         model.LicenceTypeId =value;
         LicenceType=await licenceTypeService.Get($"{EndPoints.LicenceTypesEndPoint}",value); 
-        model.TermOfTheLicence=LicenceType.TermOfLicence;
-      
-
-        
-
-        
+        model.TermOfTheLicence=LicenceType.TermOfLicence;   
     }
-            @* private async Task CityOnChange(int value)
-    {
-        model.CityId =value;
-        Areas = await lookupService.GetAll($"{EndPoints.AreaEndPoint}LookUp/{model.CityId}");
-        
-    } *@
-
     private void SnackMessage(string text, Severity type)
     {
         snackbarService.Add(text, type);

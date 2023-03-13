@@ -4,6 +4,8 @@
 @inject IHttpRepository<LicenceWorkFlowDto> licenceWorkflowService
 @inject HttpInerceptorService _interceptor
 @inject ISnackbar snackbarService
+@using Licences
+@attribute [Authorize]
 
 
 @implements IDisposable
@@ -36,8 +38,9 @@
                                     </div>
                                 </div>
                             </li>
-                            <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-primary"><em
-                                        class="icon ni ni-plus"></em><span>Add Licence</span></button></li>
+                            <li class="nk-block-tools-opt"><button @onclick="(()=>OpenCreateForm(null))"
+                                    class="btn btn-primary"><em class="icon ni ni-plus"></em><span>Add
+                                        Licence</span></button></li>
                         </ul>
                     </div>
                 </div>
@@ -92,14 +95,14 @@
                 </MudTd>
                 <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
                 <MudTd DataLabel="Actions">
-                    @if (Workflows.First() == context)
-                    {
-                        <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Href="@($"/licenceworkflows/detail/{context.Id}")"
+
+                    <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Href="@($"/licenceworkflows/detail/{context.Id}")"
                         Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
-                    }
+
 
                     <MudButton Variant="Variant.Outlined" @onclick="(()=>UnClaim(context.Id))" Color="Color.Error"
-                        class="ml-1" Size="Size.Small">UnClaim</MudButton>
+                        class="ml-1" Size="Size.Small">UnClaim
+                    </MudButton>
 
                 </MudTd>
             </RowTemplate>
@@ -159,12 +162,12 @@
                     <MudIconButton class="mr-2" Icon="@Icons.Filled.RemoveRedEye"
                         Href="@($"/licenceworkflows/detail/{context.Id}")" Variant="Variant.Outlined"
                         Color="Color.Primary" Size="Size.Small" />
-                    @if (ClaimWorkflows.First() == context)
-                    {
 
-                        <MudButton Variant="Variant.Outlined" @onclick="(()=>Claim(context.Id))" Color="Color.Success"
-                        Size="Size.Small">Claim</MudButton>
-                    }
+
+                    <MudButton Variant="Variant.Outlined" @onclick="(()=>Claim(context.Id))" Color="Color.Success"
+                        Size="Size.Small">Claim
+                    </MudButton>
+
 
                 </MudTd>
             </RowTemplate>
@@ -196,7 +199,28 @@
 
     private List<LicenceWorkFlowDto> Workflows = new List<LicenceWorkFlowDto>();
     private List<LicenceWorkFlowDto> ClaimWorkflows = new List<LicenceWorkFlowDto>();
+    private async Task OpenCreateForm(int? id = null)
+    {
+        IDialogReference dialog;
+        var parameters = new DialogParameters();
+        if (id != null)
+        {
+            parameters.Add("Id", id.Value);
+            parameters.Add("ButtonText", "Update Licence");
+            dialog = Dialog.Show<Create>("Update Licence", parameters, maxWidth);
+        }
+        else
+        {
+            parameters.Add("ButtonText", "Register Licence");
 
+            dialog = Dialog.Show<Create>("Add New Licence", parameters, maxWidth);
+        }
+        var result = await dialog.Result;
+
+
+
+
+    }
     protected override async Task OnInitializedAsync()
     {
         await Tasks();
@@ -208,6 +232,7 @@
     private async Task Tasks()
     {
         loading = true;
+        StateHasChanged();
         Workflows = await licenceWorkflowService.GetAll($"{EndPoints.LicenceWorkflowEndPoint}GetTaskLicences");
         loading = false;
     }
@@ -215,6 +240,7 @@
     private async Task ToClaims()
     {
         loadingClaim = true;
+        StateHasChanged();
         ClaimWorkflows = await licenceWorkflowService.GetAll($"{EndPoints.LicenceWorkflowEndPoint}GetToClaimLicences");
         loadingClaim = false;
     }
@@ -269,11 +295,6 @@
 
 
         }
-    }
-
-    private void OpenCreateForm()
-    {
-        //Dialog.Show<Create>("Add New Workflow", maxWidth);
     }
 
     private bool FilterFunc1(LicenceWorkFlowDto element) => FilterFunc(element, searchString1);

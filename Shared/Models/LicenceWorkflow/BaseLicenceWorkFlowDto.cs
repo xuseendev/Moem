@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,8 +9,11 @@ namespace MoeSystem.Shared.Models.LicenceWorkflow
 {
     public class BaseLicenceWorkFlowDto
     {
+        [Required, Range(1, int.MaxValue)]
 
         public int WorkFlowId { get; set; }
+        [Required, Range(1, int.MaxValue)]
+
         public int LicenceId { get; set; }
         public bool Status { get; set; }
         public bool Reject { get; set; }

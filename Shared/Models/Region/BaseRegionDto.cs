@@ -13,6 +13,8 @@ namespace MoeSystem.Shared.Models.Region
         public string Name { get; set; }
         [Required]
         public bool Active { get; set; }
+        [Required]
+        public string Code { get; set; }
 
     }
 }

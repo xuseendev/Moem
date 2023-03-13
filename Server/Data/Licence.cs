@@ -25,8 +25,8 @@
         public string Note { get; set; }
 
         //public List<LicenceComments> LicenceComments { get; set; }
-        //public List<LicenceCordinates> LicenceCordinates { get; set; }
-       // public List<LicenceWorkFlow> LicenceWorkFlows { get; set; }
+        public List<LicenceCordinates> LicenceCordinates { get; set; }
+        // public List<LicenceWorkFlow> LicenceWorkFlows { get; set; }
         public List<LicenceStatus> LicenceStatuses { get; set; }
         //public List<LicenceDocument> LicenceDocuments{ get; set; }
         //public List<Logs> Logs{ get; set; }

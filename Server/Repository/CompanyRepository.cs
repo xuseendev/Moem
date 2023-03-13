@@ -97,6 +97,7 @@ namespace MoeSystem.Server.Repository
         {
             var totalSize = await _context.Companies.CountAsync();
             var data = _context.Companies
+                .OrderByDescending(x => x.Id)
                 .Skip((queryParameters.StartIndex - 1) * queryParameters.PageSize)
                 .Take(queryParameters.PageSize)
                 .ProjectTo<CompanyDto>(_mapper.ConfigurationProvider)

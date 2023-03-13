@@ -4,6 +4,7 @@
 @inject IHttpRepository<LicenceDto> licenceService
 @inject IHttpRepository<BaseLookUpDto> lookupService
 @inject HttpInerceptorService _interceptor
+@attribute [Authorize]
 
 @implements IDisposable
 
@@ -57,7 +58,7 @@
                     <div class="col-xxl-2 col-sm-6">
                         <div class="search-box">
              
-                                       <MudSelect    Variant="Variant.Outlined"  Label="Licence Status" @bind-Value="SearchLicence.LicenceStatus" AnchorOrigin="Origin.BottomCenter">
+                                       <MudSelect    Variant="Variant.Outlined"  Label="Licence Status" @bind-Value="SearchLicence.LicenceStatus" AnchorOrigin="Origin.BottomCenter" For="@(() => SearchLicence.LicenceStatus)">
 
                         @foreach (var status in LicenceStatus)
                         {
@@ -71,8 +72,8 @@
                     </div>
                     <div class="col-xxl-2 col-sm-6">
                         <div class="search-box">
-                              <MudTextField  Label="Name" Variant="Variant.Outlined"
-                                @bind-Value="SearchLicence.Name" For="@(() => SearchLicence.Name)" />
+                              <MudTextField  Label="Company Tellphone" Variant="Variant.Outlined" InputType="InputType.Number"
+                                @bind-Value="SearchLicence.Phone" For="@(() => SearchLicence.Phone)" />
                         </div>
                     </div>
 
@@ -204,7 +205,7 @@
         loading = true;
         _interceptor.MonitorEvent();
         Licences = await
-        licenceService.GetAll($"{EndPoints.LicencesEndPoint}SearchLicence?licenceId={SearchLicence.LicenceId}&licenceStatus={SearchLicence.LicenceStatus}&from={SearchLicence.From}&to={SearchLicence.To}");
+        licenceService.GetAll($"{EndPoints.LicencesEndPoint}SearchLicence?licenceId={SearchLicence.LicenceId}&licenceStatus={SearchLicence.LicenceStatus}&phone={SearchLicence.Phone}&from={SearchLicence.From}&to={SearchLicence.To}");
         loading = false;
     }
 

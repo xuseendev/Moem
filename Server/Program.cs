@@ -19,7 +19,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("MoeDbConnectionString");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(connectionString,
+    options.UseNpgsql(connectionString,
 options => options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
 );
 });
@@ -151,10 +151,13 @@ app.UseCors("AllowAll");
 //    }; context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] = new string[] { "Accept-Enciding" };
 //    await next();
 //});
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
-app.UseRouting();
+//app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 

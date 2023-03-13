@@ -117,16 +117,10 @@ namespace MoeSystem.Server.Repository
             };
 
         }
-
         public async Task<List<T>> GetAllAsync()
         {
             return await _context.Set<T>().ToListAsync();
         }
-
-
-
-
-
         public async Task<T> GetAsync(int? id)
         {
             if (id is null)

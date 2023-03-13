@@ -18,7 +18,8 @@
                     </MudButton>
                     <p class="text-danger">@UploadFileWarning</p>
                     <MudSelect Variant="Variant.Outlined" class="mb-3" T="int" Label="UserGroup"
-                        @bind-Value="model.UserGroupId" AnchorOrigin="Origin.BottomCenter">
+                        @bind-Value="model.UserGroupId" AnchorOrigin="Origin.BottomCenter"
+                        For="@(() => model.UserGroupId)">
 
                         @foreach (var userGroup in UserGroups)
                         {

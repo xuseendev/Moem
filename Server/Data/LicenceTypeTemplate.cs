@@ -5,8 +5,7 @@ namespace MoeSystem.Server.Data
     public class LicenceTypeTemplate : BaseModel
     {
 
-        public int LicenceTypeId { get; set; }
-        public LicenceType LicenceType { get; set; }
+
         public string Title { get; set; }
         public string SubTitle { get; set; }
 

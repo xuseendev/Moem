@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MoeSystem.Shared.Models.LicenceTypes
 {
-    public class CreateLicenceTypeDto: BaseLicenceTypeDto
+    public class CreateLicenceTypeDto : BaseLicenceTypeDto
     {
+        public int Id { get; set; }
     }
 }

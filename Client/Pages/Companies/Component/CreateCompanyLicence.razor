@@ -8,10 +8,12 @@
             <MudCard>
                 <MudCardContent>
 
-                    <MudTextField Label="Number" HelperText="Max. 12 characters" Variant="Variant.Outlined" @bind-Value="model.Number"
-                        For="@(() => model.Number)" />
-                    <MudDatePicker Label="Issue Date" @bind-Date="model.IssueDate" Variant="Variant.Outlined" For="@(() => model.IssueDate)" />
-                    <MudDatePicker Label="Expire Date" @bind-Date="model.ExpireDate" Variant="Variant.Outlined" For="@(() => model.ExpireDate)" />
+                    <MudTextField Label="Number" HelperText="Max. 12 characters" Variant="Variant.Outlined"
+                        @bind-Value="model.Number" For="@(() => model.Number)" />
+                    <MudDatePicker Label="Issue Date" class="mb-2" @bind-Date="model.IssueDate"
+                        Variant="Variant.Outlined" For="@(() => model.IssueDate)" />
+                    <MudDatePicker Label="Expire Date" @bind-Date="model.ExpireDate" Variant="Variant.Outlined"
+                        For="@(() => model.ExpireDate)" />
 
 
 

@@ -3,6 +3,9 @@
 @inject IDialogService Dialog
 @inject IHttpRepository<LicenceTypeDto> licenceTypeService
 @inject HttpInerceptorService _interceptor
+@inject IDialogService Dialog
+@inject ISnackbar snackbarService
+@attribute [Authorize]
 
 @implements IDisposable
 
@@ -34,8 +37,9 @@
                                     </div>
                                 </div>
                             </li>
-                            <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-primary"><em
-                                        class="icon ni ni-plus"></em><span>Add</span></button></li>
+                            <li class="nk-block-tools-opt"><button @onclick="(()=>OpenCreateForm(null))"
+                                    class="btn btn-primary"><em class="icon ni ni-plus"></em><span>Add</span></button>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -54,6 +58,7 @@
             <HeaderContent>
                 <MudTh>Id</MudTh>
                 <MudTh>Name</MudTh>
+                <MudTh>Code</MudTh>
                 <MudTh>Terms</MudTh>
                 <MudTh>Period</MudTh>
                 <MudTh>Period Type</MudTh>
@@ -65,6 +70,7 @@
             <RowTemplate>
                 <MudTd DataLabel="Nr">@context.Id</MudTd>
                 <MudTd DataLabel="Region">@context.Name</MudTd>
+                <MudTd DataLabel="Region">@context.Code</MudTd>
                 <MudTd DataLabel="Name">@context.TermOfLicence</MudTd>
                 <MudTd DataLabel="Name">@context.LicencePeriod</MudTd>
                 <MudTd DataLabel="Name">@context.LicencePeriodType</MudTd>
@@ -72,10 +78,10 @@
                 <MudTd DataLabel="CreatedBy">@context.CreatedBy</MudTd>
                 <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
                 <MudTd DataLabel="Actions">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Error"
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" @onclick="(()=>Delete(context.Id))" Variant="Variant.Outlined" Color="Color.Error"
                         Size="Size.Small" />
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary"
-                        Size="Size.Small" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" @onclick="(()=>OpenCreateForm(id:context.Id))"
+                        Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
 
                 </MudTd>
             </RowTemplate>
@@ -104,6 +110,26 @@
         Position = DialogPosition.TopCenter
     };
 
+         private async Task Delete(int id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Do you really want to delete these records?");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = Dialog.Show<ConfirmDialog>("Delete", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            System.Console.WriteLine("Hello");
+            await licenceTypeService.Delete($"{EndPoints.LicenceTypesEndPoint}", id);
+            snackbarService.Add("Successfully Deleted Record", Severity.Success);
+            await OnInitializedAsync();
+        }
+    }
+
     private List<LicenceTypeDto> LicenceTypes = new List<LicenceTypeDto>();
 
     protected override async Task OnInitializedAsync()
@@ -113,9 +139,24 @@
         loading = false;
     }
 
-    private void OpenCreateForm()
+    private async Task OpenCreateForm(int? id)
     {
-        Dialog.Show<Create>("Add New Licence Type", maxWidth);
+        IDialogReference dialog;
+        var parameters = new DialogParameters();
+        if (id != null)
+        {
+            parameters.Add("Id", id.Value);
+            parameters.Add("ButtonText", "Update Licence");
+            dialog = Dialog.Show<Create>("Update Licence", parameters, maxWidth);
+        }
+        else
+        {
+            parameters.Add("ButtonText", "Register Licence Type");
+
+            dialog = Dialog.Show<Create>("Add New Licence Type", parameters, maxWidth);
+        }
+        var result = await dialog.Result;
+        await OnInitializedAsync();
     }
 
     private bool FilterFunc1(LicenceTypeDto element) => FilterFunc(element, searchString1);

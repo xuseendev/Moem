@@ -10,7 +10,8 @@
                     <MudTextField class="mb-3" Label="Document Name" HelperText="Max. 12 characters"
                         @bind-Value="model.DocumentName" Variant="Variant.Outlined" For="@(() => model.DocumentName)" />
                     <MudSelect T="int" Label="Document Type" @bind-Value="model.DocumentTypeId"
-                        Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter">
+                        Variant="Variant.Outlined" AnchorOrigin="Origin.BottomCenter"
+                        For="@(() => model.DocumentTypeId)">
 
                         @foreach (var city in DocumentTypes)
                         {
@@ -74,8 +75,6 @@
         }
         model.LicenceId = LicenceId;
         loading = true;
-        Console.WriteLine("Hello");
-        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
         await licenceDocumentService.Post($"{EndPoints.LicenceDocumentEndPoint}", model);
         SnackMessage("Succesfully Saved Record", Severity.Success);
         model = new CreateLicenceDocumentDto();

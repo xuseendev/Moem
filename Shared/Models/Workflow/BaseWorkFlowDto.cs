@@ -9,13 +9,16 @@ namespace MoeSystem.Shared.Models.Workflow
 {
     public class BaseWorkFlowDto
     {
-        [Required]
+       [Required, Range(1, int.MaxValue)]
+
 
         public int LicenceStatusId { get; set; }
-        [Required]
+        [Required, Range(1, int.MaxValue)]
+
 
         public int LicenceTypeId { get; set; }
-        [Required]
+    [Required, Range(1, int.MaxValue)]
+
 
         public int UserGroupId { get; set; }
         [Required]

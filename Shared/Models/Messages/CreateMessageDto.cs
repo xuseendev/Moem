@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MoeSystem.Shared.Models.Messages
 {
-    public class CreateMessageDto:BaseMessageDto
+    public class CreateMessageDto : BaseMessageDto
     {
+        public int Id { get; set; }
     }
 }

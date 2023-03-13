@@ -7,7 +7,6 @@ using MoeSystem.Server.Data;
 using MoeSystem.Server.Exceptions;
 using MoeSystem.Server.Static;
 using MoeSystem.Shared.Models;
-using MoeSystem.Shared.Models.Company;
 using MoeSystem.Shared.Models.Licence;
 using MoeSystem.Shared.Models.LicenceComment;
 using MoeSystem.Shared.Models.LicenceCordinate;
@@ -41,7 +40,6 @@ namespace MoeSystem.Server.Repository
             }
             return await _context.LicenceWorkFlows.FindAsync(id);
         }
-
         public async Task<MessageDto> GetMessage(string type)
         {
             var message = await _context.Messages.Where(x => x.Type == type).FirstOrDefaultAsync();
@@ -52,9 +50,6 @@ namespace MoeSystem.Server.Repository
             return _mapper.Map<MessageDto>(message);
 
         }
-
-
-
         public async Task<LicenceWorkFlowDto> ApproveLicence(int? id, HttpContext context)
         {
             var workflow = await GetLicenceWorkFlow(id);
@@ -87,9 +82,10 @@ namespace MoeSystem.Server.Repository
             else
             {
                 licence.LicenceStatus = licenceWorkFlow.LicenceStatus.Name;
+                await SendMessage("Licence Finished", licence.Id);
             }
             licence.Status = licenceWorkFlow.LicenceStatus.Name;
-            await logsRepository.AddAsync(new Logs { Description = $"Approved workflow of {workflow.WorkFlow.LicenceStatus.Name} on {DateTime.Now}", Dated = DateTime.Now, LicenceId = licence.Id }, context);
+            await logsRepository.AddAsync(new Logs { Description = $"Approved workflow of {licence.Status} on {DateTime.Now}", Dated = DateTime.Now, LicenceId = licence.Id }, context);
             await _context.SaveChangesAsync();
             return _mapper.Map<LicenceWorkFlowDto>(workflow);
 
@@ -105,10 +101,9 @@ namespace MoeSystem.Server.Repository
             workflow.Status = false;
             workflow.Reject = true;
             await _context.SaveChangesAsync();
+            await SendMessage("Licence Rejected", workflow.LicenceId.Value);
             await logsRepository.AddAsync(new Logs { Description = $"Rejected licence id of {workflow.LicenceId} on {DateTime.Now}", Dated = DateTime.Now, LicenceId = workflow.LicenceId }, context);
             return _mapper.Map<LicenceWorkFlowDto>(workflow);
-
-
         }
         public async Task<LicenceWorkFlowDto> ApproveRejectLicence(int? id, HttpContext context)
         {
@@ -120,17 +115,17 @@ namespace MoeSystem.Server.Repository
             workflow.Reject = false;
             await _context.SaveChangesAsync();
             await logsRepository.AddAsync(new Logs { Description = $"Approved from rejected licence on {DateTime.Now}", Dated = DateTime.Now, LicenceId = workflow.LicenceId }, context);
-
             return _mapper.Map<LicenceWorkFlowDto>(workflow);
-
-
         }
-
         public async Task<CreateLicenceDto> CreateLicence(CreateLicenceDto createLicenceDto, HttpContext context)
         {
+            //using var transaction = _context.Database.BeginTransaction();
+            createLicenceDto.LicenceId = await GetLastId();
             var licence = _mapper.Map<Licence>(createLicenceDto);
-            _context.Licences.Add(licence);
-            await _context.SaveChangesAsync();
+            licence.CompanyId = createLicenceDto.CompanyId;
+            // licence.Company = null;
+            await _context.Licences.AddAsync(licence);
+            await Save(context);
             var licenceWorkFlow = await _context.WorkFlow.Include(x => x.LicenceStatus).Where(x => x.LicenceTypeId == licence.LicenceTypeId && x.Step == Stepper.StepOne).FirstOrDefaultAsync();
             await _context.LicenceWorkFlows.AddAsync(new LicenceWorkFlow
             {
@@ -142,7 +137,6 @@ namespace MoeSystem.Server.Repository
                 CreatedOn = DateTime.Now
             });
             licence.Status = licenceWorkFlow.LicenceStatus.Name;
-
             await Save(context);
             await logsRepository.AddAsync(new Logs
             {
@@ -150,9 +144,22 @@ namespace MoeSystem.Server.Repository
                 Dated = DateTime.Now,
                 LicenceId = licence.Id
             }, context);
+            //transaction.Commit();
+            await SendMessage("Licence Registration", licence.Id);
+            return _mapper.Map<CreateLicenceDto>(licence);
 
-            //await SendMessage("Licence Registration", licence.Id);
-            return createLicenceDto;
+        }
+
+        private async Task<int> GetLastId()
+        {
+            var licence = await _context.Licences.OrderByDescending(x => x.Id).FirstOrDefaultAsync();
+            if (licence == null)
+            {
+                return 1000;
+            }
+            var id = licence.LicenceId;
+            id++;
+            return id;
 
         }
 
@@ -173,10 +180,28 @@ namespace MoeSystem.Server.Repository
                     replace = message.Body.Replace("(CUSTOMERNAME)", licence.Company.Name).Replace("(LICENCEID)", licence.LicenceId.ToString());
                     break;
             }
-            //sendMessage.SendSms(replace, licence.Company.TellPhone);
+            await sendMessage.SendSms(replace, licence.Company.TellPhone);
+        }
+        public async Task<LicenceDetailDto> GetLicenceDetail(int? id)
+        {
+            var licence = await _context.Licences.ProjectTo<LicenceDetailDto>(_mapper.ConfigurationProvider).AsNoTracking().FirstOrDefaultAsync(q => q.Id == id.Value);
+            if (licence is null)
+            {
+                throw new NotFoundException(nameof(GetLicenceDetail), id);
+            }
+            return licence;
+        }
+        public async Task<LicenceDetailPrintDto> GetLicenceDetailPrint(int? id)
+        {
+            var licence = await _context.Licences.ProjectTo<LicenceDetailPrintDto>(_mapper.ConfigurationProvider).AsNoTracking().FirstOrDefaultAsync(q => q.Id == id.Value);
+            if (licence is null)
+            {
+                throw new NotFoundException(nameof(GetLicenceDetailPrint), id);
+            }
+            return licence;
         }
 
-        public async Task<LicenceDetailDto> GetLicenceDetail(int? id)
+        public async Task<LicenceDetailDto> GetLicence(int? id)
         {
             var licence = await _context.Licences.ProjectTo<LicenceDetailDto>(_mapper.ConfigurationProvider).FirstOrDefaultAsync(q => q.Id == id.Value);
             if (licence is null)
@@ -261,12 +286,11 @@ namespace MoeSystem.Server.Repository
         {
             return await _context.LicenceWorkFlows.Where(x => x.LicenceId == licenceId).ProjectTo<LicenceWorkFlowDto>(_mapper.ConfigurationProvider).ToListAsync();
         }
-
-
         public async Task<PagedResult<LicenceDto>> GetPagedResult(SearchLicenceDto queryParameters)
         {
             var totalSize = await _context.Licences.CountAsync();
             var data = _context.Licences
+                .OrderByDescending(x => x.Id)
                 .Skip((queryParameters.StartIndex - 1) * queryParameters.PageSize)
                 .Take(queryParameters.PageSize)
                 .ProjectTo<LicenceDto>(_mapper.ConfigurationProvider)
@@ -275,7 +299,7 @@ namespace MoeSystem.Server.Repository
             {
                 data = data.Where(x => x.LicenceId.ToString().ToLower().Contains($"{queryParameters.Name.ToLower()}"));
             }
-            data = data.OrderByDescending(x => x.Id);
+
             return new PagedResult<LicenceDto>
             {
                 Data = await data.ToListAsync(),
@@ -293,11 +317,13 @@ namespace MoeSystem.Server.Repository
             var data = _context.Licences
                 .ProjectTo<LicenceDto>(_mapper.ConfigurationProvider)
                 .AsQueryable();
-            data = data.Where(x => x.CreatedOn.Date >= search.From.Value.Date && x.CreatedOn <= search.To.Value.Date);
+            data = data.Where(x => x.CreatedOn.Date >= search.From.Value.Date && x.CreatedOn.Date <= search.To.Value.Date);
             if (search.LicenceId != null)
                 data = data.Where(x => x.LicenceId.ToString().ToLower().Contains($"{search.LicenceId.ToLower()}"));
 
             if (search.LicenceStatus != null) data = data.Where(x => x.Status == search.LicenceStatus);
+
+            if (search.Phone != null) data = data.Where(x => x.TellPhone.Contains($"{search.Phone}"));
             data = data.OrderByDescending(x => x.Id);
             return await data.ToListAsync();
         }

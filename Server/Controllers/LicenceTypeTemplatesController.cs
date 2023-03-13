@@ -4,6 +4,7 @@ using MoeSystem.Server.Contracts;
 using MoeSystem.Server.Data;
 using Microsoft.AspNetCore.Authorization;
 using MoeSystem.Shared.Models.LicenceTypeTemplate;
+using MoeSystem.Shared.Models;
 
 namespace MoeSystem.Server.Controllers
 {
@@ -25,6 +26,12 @@ namespace MoeSystem.Server.Controllers
         public async Task<ActionResult<IEnumerable<LicenceTypeTemplateDto>>> GetLicenceTypeTemplate()
         {
             return await _licenceTypeRepository.GetAllAsync<LicenceTypeTemplateDto>();
+        }
+
+        [HttpGet("LookUp")]
+        public async Task<ActionResult<IEnumerable<BaseLookUpDto>>> LookUp()
+        {
+            return await _licenceTypeRepository.GetAllAsync<BaseLookUpDto>();
         }
 
 
@@ -54,7 +61,6 @@ namespace MoeSystem.Server.Controllers
         public async Task<IActionResult> DeleteLicenceTypeTemplate(int id)
         {
             await _licenceTypeRepository.DeleteAsync(id);
-
             return NoContent();
         }
 

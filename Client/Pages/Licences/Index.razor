@@ -3,6 +3,7 @@
 @inject IDialogService Dialog
 @inject IHttpRepository<PagedResult<LicenceDto>> licenceService
 @inject HttpInerceptorService _interceptor
+@attribute [Authorize]
 
 @implements IDisposable
 
@@ -34,8 +35,8 @@
                                     </div>
                                 </div>
                             </li>
-                                             <li class="nk-block-tools-opt"><button @onclick="(()=>OpenCreateForm(null))" class="btn btn-primary"><em
-                                        class="icon ni ni-plus"></em><span>Add Licence</span></button></li>
+                                             <li class="nk-block-tools-opt"><a href="/licences/create" class="btn btn-primary"><em
+                                        class="icon ni ni-plus"></em><span>Add Licence</span></a></li>
                     
                         </ul>
                     </div>

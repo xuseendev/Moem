@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card card-bordered">
-            <div class="card-header  clearfix" style="background-color: lightblue;">
+            <div class="card-header  clearfix" style="background-color:lightseagreen;">
                 <h5 class="card-title" style="color: white;">
 
                     Licence Details
@@ -19,16 +19,20 @@
                                     <tr>
                                         <td> Licence Type </td>
                                         <td>
-                                            @Licence.LicenceType
+                                            @Licence.LicenceType.Name
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td> Mineral Type </td>
+                                        <td> Mineral Types </td>
                                         <td>@Licence.MineralType</td>
                                     </tr>
                                     <tr>
                                         <td> Term </td>
                                         <td>@Licence.TermOfTheLicence</td>
+                                    </tr>
+                                    <tr>
+                                        <td> CreatedOn </td>
+                                        <td>@Licence.CreatedOn</td>
                                     </tr>
                                     <tr>
                                         <td> Status </td>
@@ -45,6 +49,12 @@
                             <table class="table table-bordered table-striped">
                                 <tbody>
                                     <tr>
+                                        <td>Licence Id</td>
+                                        <td>
+                                            @Licence.LicenceId
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <td>Term</td>
                                         <td>@Licence.TermOfTheLicence</td>
                                     </tr>
@@ -60,12 +70,7 @@
                                             @Licence.LicenceEndDate.ToString("dd-MM-yyyy")
                                         </td>
                                     </tr>
-                                    <tr>
-                                        <td>Address</td>
-                                        <td>
-                                            Model.Notary.Address
-                                        </td>
-                                    </tr>
+
 
                                 </tbody>
                             </table>
@@ -83,7 +88,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card card-bordered">
-            <div class="card-header  clearfix" style="background-color: lightblue;">
+            <div class="card-header  clearfix" style="background-color: lightseagreen;">
                 <h5 class="card-title" style="color: white;">
 
                     Company Details
@@ -166,7 +171,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card card-bordered">
-            <div class="card-header  clearfix" style="background-color: lightblue;">
+            <div class="card-header  clearfix" style="background-color: lightseagreen;">
                 <h5 class="card-title" style="color: white;">
 
                     Licence Workflow
@@ -175,7 +180,7 @@
             </div>
             <div class="card-body">
 
-                <LicenceWorkflows  LicenceId="Licence.Id" />
+                <LicenceWorkflows LicenceId="Licence.Id" />
             </div>
         </div>
     </div>
@@ -184,7 +189,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card card-bordered">
-            <div class="card-header  clearfix" style="background-color: lightblue;">
+            <div class="card-header  clearfix" style="background-color: lightseagreen;">
                 <h5 class="card-title" style="color: white;">
 
                     Licence Documents
@@ -202,7 +207,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card card-bordered">
-            <div class="card-header  clearfix" style="background-color: lightblue;">
+            <div class="card-header  clearfix" style="background-color: lightseagreen;">
                 <h5 class="card-title" style="color: white;">
 
                     Company Documents
@@ -221,7 +226,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card card-bordered">
-            <div class="card-header  clearfix" style="background-color: lightblue;">
+            <div class="card-header  clearfix" style="background-color: lightseagreen;">
                 <h6 class="card-title" style="color: white;">
 
                     Company Ownership
@@ -239,7 +244,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card card-bordered">
-            <div class="card-header  clearfix" style="background-color: lightblue;">
+            <div class="card-header  clearfix" style="background-color: lightseagreen;">
                 <h6 class="card-title" style="color: white;">
 
                     Comments

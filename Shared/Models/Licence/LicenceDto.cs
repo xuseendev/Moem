@@ -12,8 +12,7 @@ namespace MoeSystem.Shared.Models.Licence
         public string CompanyName { get; set; }
         public string LicenceType { get; set; }
         public string MineralType { get; set; }
-        public string CreatedBy { get; set; }
-        public DateTime CreatedOn { get; set; }
+        public string TellPhone { get; set; }
 
     }
 }

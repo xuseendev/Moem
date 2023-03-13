@@ -73,23 +73,21 @@ namespace MoeSystem.Server.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult> RefreshToken([FromBody] AuthResponseDto request)
+        public async Task<ActionResult<AuthResponseDto>> RefreshToken([FromBody] AuthResponseDto request)
         {
             var authResponse = await _authManger.VerifyRefreshToken(request);
-
             if (authResponse == null)
             {
                 return Unauthorized();
             }
-
-            return Ok(authResponse);
+            return authResponse;
         }
 
 
         [HttpGet("getDetail/{id}")]
-        public async Task<ActionResult<User>> GetDetail(string id)
+        public async Task<ActionResult<UserDto>> GetDetail(string id)
         {
-            return await _authManger.GetById(id);
+            return await _authManger.GetUser(id);
         }
         [HttpGet("AddRoles/{id}")]
         public async Task<ActionResult<User>> AddRoles(string id, string role)

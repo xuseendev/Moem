@@ -12,22 +12,10 @@
                         <MudGrid>
                         
 
-                            <MudItem xs="6">
-                                <MudSelect T="int" Label="Licence Type" @bind-Value="model.LicenceTypeId"
-                                    AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" class="mb-3">
-
-                                    @foreach (var type in LicenceTypes)
-                                    {
-
-                                        <MudSelectItem Value="@(type.Id)">@type.Name</MudSelectItem>
-
-
-                                    }
-                                </MudSelect>
-                            </MudItem>
+                       
                             <MudItem xs="6">
                                 <MudSelect T="int" Label="Signature" @bind-Value="model.SignatureId"
-                                    AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" class="mb-3">
+                                    AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" class="mb-3" For="@(() => model.SignatureId)">
 
                                     @foreach (var signature in Signatures)
                                     {
@@ -157,5 +145,3 @@
 
 }
 
-
-0Size01olor1223eckedChanged3        __builder.AddAttribute(__seq4, "ChildContent", __arg4);

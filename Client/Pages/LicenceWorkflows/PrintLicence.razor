@@ -1,6 +1,8 @@
 @page "/licenceworkflows/print/{id:int}"
-@inject IHttpRepository<LicenceDto> licenceService
+@using Net.ConnectCode.BarcodeFontsStandard2D
+@inject IHttpRepository<LicenceDetailDto> licenceService
 @inject IJSRuntime jsRuntime
+@attribute [Authorize]
 
 @layout EmptyLayout
 <style>
@@ -31,125 +33,124 @@
             overflow-x: hidden;
         }
     }
+
+    }
 </style>
 
 <body>
     <div class="nk-block">
         <div class="invoice invoice-print">
-            <div class="invoice-wraps">
-                <div id="invoice-customer-details" class="row">
-                    <div class="col-sm-5 col-12 text-left">
-                        <h5><b>Jamhuuriyadda Somaliland</b></h5>
-                        <h6>Wasaarada Tamarta Iyo Macdanta</h6>
-                        <hr style="border-color:red" />
-
-                        @*<div class="recipient-contact pb-2 ">
-                            <p>
-                            <i class="feather icon-mail"></i>
-
-                            </p>
-                            <p>
-                            <i class="feather icon-phone"></i>
-                            +91 988 888 8888
-                            </p>
-                            </div>*@
-                    </div>
-                    <div class="col-md-2">
-                        <center>
-                            <img src="images/som.png" width="20" height="20" />
-
-                        </center>
-                    </div>
-                    <div class="col-sm-5 col-12 text-right">
-                        <h5><b>Republic Of Somaliland</b></h5>
-                        <h6>Ministry Of Energy And Minerals</h6>
-                        <hr style="border-color:red" />
-
-                        @*<div class="company-contact">
-                            <p>
-                            <i class="feather icon-mail"></i>
-                            hello@pixinvent.net
-                            </p>
-                            <p>
-                            <i class="feather icon-phone"></i>
-                            +91 999 999 9999
-                            </p>
-                            </div>*@
-                    </div>
+            <!-- info row -->
+            <div class="row invoice-info">
+                <div class="col-sm-4 invoice-col">
+                    <img src="images/som.png" width="100" height="100" />
                 </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
 
-                <div class="invoice-bills">
-                    <div class="table-responsive">
-                        <table class="table  table-bordered" style="font-size:medium;font-weight:bold;color:black">
 
-                            <tbody>
-                                <tr>
-                                    <td>Licence Id</td>
-                                    <td>@Licence.LicenceId</td>
+                    <address>
 
-                                </tr>
-                                <tr>
-                                    <td>Company Name</td>
-                                    <td>@Licence.CompanyName</td>
+                        <h5><b>REPUBLIC OF SOMALILAND</b></h5><br>
+                        <h5><b>MINISTRY OF ENERGY AND MINERALS</b></h5><br>
 
-                                </tr>
-                                <tr>
-                                    <td>Regoin</td>
-                                    <td></td>
+                    </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                    <img src="images/moe.jpg" width="100" height="100" />
 
-                                </tr>
-                                <tr>
-                                    <td>Type Of Mineral</td>
-                                    <td>@Licence.LicenceType</td>
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
 
-                                </tr>
-                                <tr>
-                                    <td>Term Of The Licence</td>
-                                    <td>@Licence.TermOfTheLicence</td>
 
-                                </tr>
-                                <tr>
-                                    <td>Term Commense On</td>
-                                    <td>@Licence.LicenceStartDate.Value.ToString("dd-MM-yyyy")</td>
 
-                                </tr>
-                                <tr>
-                                    <td>Term Commense On</td>
-                                    <td>@Licence.LicenceEndDate.ToString("dd-MM-yyyy")</td>
 
-                                </tr>
-                                <tr>
-                                    <td>Area</td>
-                                    <td>@Licence.LicenceStartDate.Value.ToString("dd-MM-yyyy")</td>
 
-                                </tr>
-                            </tbody>
-                            @* <tfoot>
-                                <tr>
-                                <td colspan="2"></td>
-                                <td colspan="2">Subtotal</td>
-                                <td>$435.00</td>
-                                </tr>
-                                <tr>
-                                <td colspan="2"></td>
-                                <td colspan="2">Processing fee</td>
-                                <td>$10.00</td>
-                                </tr>
-                                <tr>
-                                <td colspan="2"></td>
-                                <td colspan="2">TAX</td>
-                                <td>$43.50</td>
-                                </tr>
-                                <tr>
-                                <td colspan="2"></td>
-                                <td colspan="2">Grand Total</td>
-                                <td>$478.50</td>
-                                </tr>
-                                </tfoot> *@
-                        </table>
-                    </div>
-                </div><!-- .invoice-bills -->
-            </div><!-- .invoice-wrap -->
+
+
+
+
+            <div class="invoice-bills">
+                <div class="table-responsive">
+                    <table class="table  table-bordered" style="font-size:medium;font-weight:bold;color:black">
+
+                        <tbody>
+                            <tr>
+                                <td>Licence Id</td>
+                                <td>@Licence.LicenceId</td>
+
+                            </tr>
+                            <tr>
+                                <td>Company Name</td>
+                                <td>@Licence.Company.Name</td>
+
+                            </tr>
+                            <tr>
+                                <td>Regoin</td>
+                                <td>@Licence.Region</td>
+
+                            </tr>
+                            <tr>
+                                <td>Type Of Mineral</td>
+                                <td>@Licence.LicenceType.Name</td>
+
+                            </tr>
+                            <tr>
+                                <td>Term Of The Licence</td>
+                                <td>@Licence.TermOfTheLicence</td>
+
+                            </tr>
+                            <tr>
+                                <td>Term Commense On</td>
+                                <td>
+                                    @Licence.LicenceStartDate.Value.ToString("dd-MM-yyyy")
+
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Term Commense On</td>
+                                <td>
+                                    @Licence.LicenceEndDate.ToString("dd-MM-yyyy")
+
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td>Area</td>
+                                <td>@Licence.Area</td>
+
+                            </tr>
+                        </tbody>
+                        @* <tfoot>
+                            <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">Subtotal</td>
+                            <td>$435.00</td>
+                            </tr>
+                            <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">Processing fee</td>
+                            <td>$10.00</td>
+                            </tr>
+                            <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">TAX</td>
+                            <td>$43.50</td>
+                            </tr>
+                            <tr>
+                            <td colspan="2"></td>
+                            <td colspan="2">Grand Total</td>
+                            <td>$478.50</td>
+                            </tr>
+                            </tfoot> *@
+                    </table>
+                </div>
+            </div><!-- .invoice-bills -->
+
         </div><!-- .invoice -->
     </div><!-- .nk-block -->
     @* <script>
@@ -163,7 +164,7 @@
     [Parameter]
     public int Id { get; set; }
     private bool loading = false;
-    private LicenceDto Licence = new LicenceDto();
+    private LicenceDetailDto Licence = new LicenceDetailDto();
     protected async override Task OnParametersSetAsync()
     {
 
@@ -172,6 +173,13 @@
     private async Task PrintContent()
     {
         await jsRuntime.InvokeVoidAsync("printContent", "printContent");
+    }
+
+
+
+    protected override void OnInitialized()
+    {
+
     }
 
     private async Task GetLicence()

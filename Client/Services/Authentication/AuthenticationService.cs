@@ -28,6 +28,7 @@ namespace MoeSystem.Client.Services.Authentication
 
                 //Store Token
                 await localStorage.SetItemAsync("accessToken", response.Token);
+                await localStorage.SetItemAsync("refreshToken", response.RefreshToken);
 
                 //Change auth state of app
                 await ((ApiAuthenticationStateProvider)authenticationStateProvider).LoggedIn();
@@ -39,6 +40,18 @@ namespace MoeSystem.Client.Services.Authentication
 
                 throw;
             }
+        }
+
+        public async Task<string> RefreshToken()
+        {
+            var token = await localStorage.GetItemAsync<string>("accessToken");
+            var refreshToken = await localStorage.GetItemAsync<string>("refreshToken");
+            var authResponseDto = new AuthResponseDto { Token = token, RefreshToken = refreshToken };
+            var response = await _client.RefreshtokenAsync(authResponseDto);
+            await localStorage.SetItemAsync("accessToken", response.Token);
+            await localStorage.SetItemAsync("refreshToken", response.RefreshToken);
+            return response.Token;
+
         }
 
         //public async Task<Response<List<ApplicationUser>>> GetAll()
@@ -213,8 +226,12 @@ namespace MoeSystem.Client.Services.Authentication
         //    return response;
         //}
 
+
+
         public async Task Logout()
         {
+            await localStorage.RemoveItemAsync("accessToken");
+            await localStorage.RemoveItemAsync("refreshToken");
             await ((ApiAuthenticationStateProvider)authenticationStateProvider).LoggedOut();
         }
     }

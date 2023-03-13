@@ -5,10 +5,7 @@ namespace MoeSystem.Shared.Models.LicenceTypeTemplate
 {
     public class BaseLicenceTypeTemplate
     {
-        [Required]
 
-        public int LicenceTypeId { get; set; }
-        public LicenceTypeDto LicenceType { get; set; }
         [Required]
 
         public string Title { get; set; }

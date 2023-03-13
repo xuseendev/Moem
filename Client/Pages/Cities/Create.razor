@@ -33,7 +33,7 @@
                         }
                         else
                         {
-                            <MudText>Register</MudText>
+                            <MudText>@ButtonText</MudText>
                         }
                     </MudButton>
                     <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
@@ -53,6 +53,10 @@
 
 @code {
     CreateCityDto model = new CreateCityDto();
+      [Parameter]
+    public string ButtonText { get; set; }
+    [Parameter] 
+    public int? Id { get; set; }
     bool loading = false;
     [Parameter]
     public EventCallback Areas { get; set; }
@@ -60,10 +64,16 @@
     private async Task CreateRegion()
     {
         loading = true;
-        Console.WriteLine("Hello");
-        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
-        await cityService.Post($"{EndPoints.RegionEndPoint}", model);
+        if(Id==null){
+        await cityService.Post($"{EndPoints.CityEndPoint}", model);
         SnackMessage("Succesfully Saved Record", Severity.Success);
+
+        }else{
+            model.Id=Id.Value;
+            await cityService.Update($"{EndPoints.CompaniesEndPoint}",model,Id.Value);
+            SnackMessage("Succesfully Updated Record", Severity.Success);
+
+        }
         await Areas.InvokeAsync();
         loading = false;
 
@@ -71,6 +81,8 @@
     protected override async Task OnInitializedAsync()
     {
         Regions = await regionService.GetAll($"{EndPoints.RegionEndPoint}LookUp");
+        if(Id.HasValue)
+            model=await cityService.Get($"{EndPoints.CityEndPoint}",Id.Value);
 
     }
     private void SnackMessage(string text, Severity type)

@@ -3,6 +3,8 @@
 @inject IDialogService Dialog
 @inject IHttpRepository<MessageDto> messageService
 @inject HttpInerceptorService _interceptor
+@inject ISnackbar snackbarService
+@attribute [Authorize]
 
 @implements IDisposable
 
@@ -34,8 +36,9 @@
                                     </div>
                                 </div>
                             </li>
-                            <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-primary"><em
-                                        class="icon ni ni-plus"></em><span>Add</span></button></li>
+                            <li class="nk-block-tools-opt"><button @onclick="(()=>OpenCreateForm(null))"
+                                    class="btn btn-primary"><em class="icon ni ni-plus"></em><span>Add</span></button>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -70,10 +73,10 @@
                 <MudTd DataLabel="CreatedBy">@context.CreatedBy</MudTd>
                 <MudTd DataLabel="CreatedOn">@context.CreatedOn.ToShortDateString()</MudTd>
                 <MudTd DataLabel="Actions">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Error"
-                        Size="Size.Small" />
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary"
-                        Size="Size.Small" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Delete" @onclick="(()=>Delete(context.Id))"
+                        Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" @onclick="(()=>OpenCreateForm(id:context.Id))"
+                        Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
 
                 </MudTd>
             </RowTemplate>
@@ -111,9 +114,44 @@
         loading = false;
     }
 
-    private void OpenCreateForm()
+    private async Task Delete(int id)
     {
-        Dialog.Show<Create>("Add New Message", maxWidth);
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Do you really want to delete these records?");
+        parameters.Add("ButtonText", "Delete");
+        parameters.Add("Color", Color.Error);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+
+        var dialog = Dialog.Show<ConfirmDialog>("Delete", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            System.Console.WriteLine("Hello");
+            await messageService.Delete($"{EndPoints.MessagesEndPoint}", id);
+            snackbarService.Add("Successfully Deleted Record", Severity.Success);
+            await OnInitializedAsync();
+        }
+    }
+
+    private async Task OpenCreateForm(int? id)
+    {
+        IDialogReference dialog;
+        var parameters = new DialogParameters();
+        if (id != null)
+        {
+            parameters.Add("Id", id.Value);
+            parameters.Add("ButtonText", "Update Message");
+            dialog = Dialog.Show<Create>("Update Message", parameters, maxWidth);
+        }
+        else
+        {
+            parameters.Add("ButtonText", "Register Message");
+
+            dialog = Dialog.Show<Create>("Add New Message", parameters, maxWidth);
+        }
+        var result = await dialog.Result;
+        await OnInitializedAsync();
     }
 
     private bool FilterFunc1(MessageDto element) => FilterFunc(element, searchString1);

@@ -12,7 +12,7 @@
                         <MudGrid>
                             <MudItem xs="6">
 
-                               <MudSelect T="int" Label="Status" @bind-Value="model.LicenceStatusId" AnchorOrigin="Origin.BottomCenter"    Variant="Variant.Outlined"class="mb-3">
+                               <MudSelect T="int" Label="Status" @bind-Value="model.LicenceStatusId" AnchorOrigin="Origin.BottomCenter"    Variant="Variant.Outlined"class="mb-3" For="@(() => model.LicenceStatusId)">
 
                         @foreach (var status in LicenceStatus)
                         {
@@ -26,7 +26,7 @@
 
 
                             <MudItem xs="6">
-                                                              <MudSelect T="int" Label="Licence Type" @bind-Value="model.LicenceTypeId" AnchorOrigin="Origin.BottomCenter"    Variant="Variant.Outlined"class="mb-3">
+                                                              <MudSelect For="@(() => model.LicenceTypeId)" T="int" Label="Licence Type" @bind-Value="model.LicenceTypeId" AnchorOrigin="Origin.BottomCenter"    Variant="Variant.Outlined"class="mb-3">
 
                         @foreach (var type in LicenceTypes)
                         {
@@ -44,7 +44,7 @@
                         <MudGrid>
                             <MudItem xs="6">
 
-                                                                                          <MudSelect T="int" Label="User Group" @bind-Value="model.UserGroupId" AnchorOrigin="Origin.BottomCenter"    Variant="Variant.Outlined"class="mb-3">
+                  <MudSelect For="@(() => model.UserGroupId)" T="int" Label="User Group" @bind-Value="model.UserGroupId" AnchorOrigin="Origin.BottomCenter"    Variant="Variant.Outlined"class="mb-3">
 
                         @foreach (var group in UserGroups)
                         {

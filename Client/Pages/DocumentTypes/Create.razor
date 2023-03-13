@@ -21,7 +21,7 @@
                         }
                         else
                         {
-                            <MudText>Register</MudText>
+                            <MudText>@ButtonText</MudText>
                         }
                     </MudButton>
                     <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
@@ -42,20 +42,41 @@
 @code {
     CreateDocumentTypeDto model = new CreateDocumentTypeDto();
     bool loading = false;
+
+    [Parameter]
+    public int? Id { get; set; }
+    [Parameter]
+    public string ButtonText { get; set; }
     [Parameter]
     public EventCallback CompanyTypes { get; set; }
 
     private async Task CreateDocumentType()
     {
         loading = true;
-        Console.WriteLine("Hello");
-        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
-        await documentTypeService.Post($"{EndPoints.DocumentTypeEndPoint}", model);
-        SnackMessage("Succesfully Saved Record", Severity.Success);
+        if (Id == null)
+        {
+            await documentTypeService.Post($"{EndPoints.DocumentTypeEndPoint}", model);
+            SnackMessage("Succesfully Saved Record", Severity.Success);
+
+        }
+        else
+        {
+            model.Id = Id.Value;
+            await documentTypeService.Update($"{EndPoints.DocumentTypeEndPoint}", model, Id.Value);
+            SnackMessage("Succesfully Updated Record", Severity.Success);
+
+        }
         await CompanyTypes.InvokeAsync();
         loading = false;
 
     }
+
+    protected async override Task OnParametersSetAsync()
+    {
+        if (Id != null)
+            model = await documentTypeService.Get($"{EndPoints.DocumentTypeEndPoint}", Id.Value);
+    }
+
 
     private void SnackMessage(string text, Severity type)
     {

@@ -76,7 +76,20 @@
         </div>
     </div>
 </div>
-
+<div class="row mt-2">
+    <div class="col-12">
+        <div class="card card-bordered">
+            <div class="card-header  clearfix" style="background-color: lightblue;">
+                <h5 class="card-title" style="color: white;">
+                    Documents
+                </h5>
+            </div>
+            <div class="card-body">
+                <CompanyDocuments DialogOptions="maxWidth" CompanyId="Detail.Id" />
+            </div>
+        </div>
+    </div>
+</div>
 @code {
     [Parameter]
     public CompanyDetailDto Detail { get; set; }
@@ -85,7 +98,5 @@
         MaxWidth = MaxWidth.Medium,
         FullWidth = true,
         Position = DialogPosition.TopCenter,
-
-
     };
 }

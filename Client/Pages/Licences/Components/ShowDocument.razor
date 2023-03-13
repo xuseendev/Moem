@@ -21,6 +21,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
+
         licenceDocumentDetail = await licenceDocumentService.Get($"{EndPoints.LicenceDocumentEndPoint}", Id);
         var base64String = Convert.ToBase64String(licenceDocumentDetail.File, 0, licenceDocumentDetail.File.Length);
         if (licenceDocumentDetail.FileExtension == ".pdf")

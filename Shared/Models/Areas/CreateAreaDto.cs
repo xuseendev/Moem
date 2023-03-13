@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MoeSystem.Shared.Models.Areas
 {
-    public class CreateAreaDto:BaseAreaDto
+    public class CreateAreaDto : BaseAreaDto
     {
+        public int Id { get; set; }
     }
 }
