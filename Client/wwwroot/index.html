@@ -8,9 +8,14 @@
     <base href="/" />
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
-    <link href="App.css" rel="stylesheet" />
-    <link rel="stylesheet" href="assets/css/dashlite.css">
-    <link id="skin-default" rel="stylesheet" href="assets/css/theme.css">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link id="style" href="assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- jvectormap -->
+    <link href="assets/css/style.css" rel="stylesheet" />
+    <link href="assets/css/skin-modes.css" rel="stylesheet" />
+
+    <!--- FONT-ICONS CSS -->
+    <link href="assets/css/icons.css" rel="stylesheet" />
 
 </head>
 
@@ -39,7 +44,6 @@
                     top: 0;
                     z-index: -1
                 }
-    
                 .mud-wasm-cont {
                     left: 50%;
                     padding: 10vmin;
@@ -54,7 +58,7 @@
                 <div class="mud-wasm" style="animation-direction:alternate-reverse;animation-duration:4s;"></div>
                 <div class="mud-wasm" style="animation-duration:5s;"></div>
                 <div class="mud-wasm-cont ">
-                    <img src="assets/images/dahabshiil-white.svg" width="230px" height="100px" alt="Logo">
+                    <img src="images/SomLogo.svg" width="230px" height="100px" alt="Logo">
                 </div>
             </div>
         </div>
@@ -65,11 +69,49 @@
         <a href="" class="reload">Reload</a>
         <a class="dismiss">🗙</a>
     </div>
-    <script src="assets/js/bundle.js"></script>
-    <script src="assets/js/scripts.js"></script>
-    <script src="assets/js/charts/chart-lms.js"></script>
+    <script src="assets/js/jquery.min.js"></script>
+
+    <!-- BOOTSTRAP JS -->
+    <script src="assets/plugins/bootstrap/js/popper.min.js"></script>
+    <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+
+
+    <!-- APEXCHART JS -->
+    <script src="assets/js/apexcharts.js"></script>
+
+    <!-- INTERNAL SELECT2 JS -->
+    <script src="assets/plugins/select2/select2.full.min.js"></script>
+
+    <!-- CHART-CIRCLE JS-->
+    <script src="assets/js/circle-progress.min.js"></script>
+
+    <!-- INTERNAL DATA-TABLES JS-->
+    <script src="assets/plugins/datatable/js/jquery.dataTables.min.js"></script>
+    <script src="assets/plugins/datatable/js/dataTables.bootstrap5.js"></script>
+    <script src="assets/plugins/datatable/dataTables.responsive.min.js"></script>
+
+    <!-- INDEX JS -->
+    
+
+    <!-- REPLY JS-->
+
+
+    <!-- PERFECT SCROLLBAR JS-->
+   
+
+
+    <!-- STICKY JS -->
+   
+
+    <!-- COLOR THEME JS -->
+    <script src="assets/js/themeColors.js"></script>
+	<script src="assets/plugins/bootstrap-datepicker/js/datepicker.js"></script>
+    <!-- CUSTOM JS -->
+    <script src="assets/js/custom.js"></script>
     <script src="js/common.js"></script>
-    <script src="assets/js/libs/datatable-btns.js"></script>
+    <script src="js/notification.js"></script>
+    <script src="assets/js/project-list.js"></script>
     <script src="_framework/blazor.webassembly.js"></script>
     <script src="_content/MudBlazor/MudBlazor.min.js"></script>
 </body>

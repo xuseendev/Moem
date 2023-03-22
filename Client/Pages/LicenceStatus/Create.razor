@@ -33,7 +33,7 @@
                         }
                         else
                         {
-                            <MudText>Register</MudText>
+                            <MudText>@ButtonText</MudText>
                         }
                     </MudButton>
                     <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
@@ -56,21 +56,40 @@
     bool loading = false;
     [Parameter]
     public EventCallback Areas { get; set; }
+        [Parameter]
+    public string ButtonText { get; set; }
     private List<string> Types = new List<string>(){
 "Normal",
 "Reject"
 };
+  [Parameter]
+    public int? Id { get; set; }
     private async Task CreateRegion()
     {
         loading = true;
-        Console.WriteLine("Hello");
+         if (Id == null)
+        {
         //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
         await licenceStatusService.Post($"{EndPoints.LicenceStatusEndPoint}", model);
         SnackMessage("Succesfully Saved Record", Severity.Success);
         await Areas.InvokeAsync();
+
+        }
+        else{
+            model.Id = Id.Value;
+            await licenceStatusService.Update($"{EndPoints.LicenceStatusEndPoint}", model,Id.Value);
+            SnackMessage("Succesfully Saved Record", Severity.Success);
+
+        }
         loading = false;
 
     }
+     protected async override Task OnParametersSetAsync()
+    {
+        if (Id != null)
+            model = await licenceStatusService.Get($"{EndPoints.LicenceStatusEndPoint}", Id.Value);
+    }
+
 
     private void SnackMessage(string text, Severity type)
     {

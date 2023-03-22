@@ -10,33 +10,22 @@
 @inject IDialogService Dialog
 @inject NavigationManager navManager
 
-<div class="nk-content-body">
-    <div class="nk-block-head nk-block-head-sm">
-        <div class="nk-block-between g-3">
-            <div class="nk-block-head-content">
-                @if (loading) { }
-                else
-                {
-                    <h3 class="nk-block-title page-title">Licence WorkFlow <strong class="text-primary small">=>
-                            @Licence.LicenceId</strong></h3>
-                    <div class="nk-block-des text-soft">
-                        <ul class="list-inline">
-                            <li>Licence ID: <span class="text-base">@Licence.Id</span></li>
-                            <li>Last Update: <span class="text-base">
-                                    @Licence.UpdatedOn.ToString("dd MMM,yyyy hh:mm tt")</span>
-                            </li>
-                        </ul>
-                    </div>
-                }
-            </div>
-            <div class="nk-block-head-content">
-                <a href="/licenceworkflows/index" class="btn btn-outline-light bg-white d-none d-sm-inline-flex"><em
-                        class="icon ni ni-arrow-left"></em><span>Back</span></a>
-
-            </div>
-        </div>
-    </div><!-- .nk-block-head -->
-    <div class="nk-block">
+<div class="side-app">
+					 <!-- CONTAINER -->
+					 <div class="main-container container-fluid">
+						<!-- PAGE-HEADER -->
+						<div class="page-header">
+								<div>
+									<h1 class="page-title">Licence Workflow </h1>
+								</div>
+								<div class="ms-auto pageheader-btn">
+									<ol class="breadcrumb">
+										<li class="breadcrumb-item">Home</li>
+										<li class="breadcrumb-item"><a href="javascript:void(0);">Licence</a></li>
+										<li class="breadcrumb-item active" aria-current="page">Detail</li>
+									</ol>
+								</div>
+							</div>
         <div class="card">
             <div class="card-aside-wrap">
                 <div class="card-content">
@@ -98,14 +87,15 @@
                                                         @onclick="(()=>Reject(LicenceWorkFlow.Id))" Color="Color.Error">
                                                                     Reject
                                                                 </MudButton>
-                                                                @if (LicenceWorkFlow.WorkFlowName == "Delivered")
-                                                                {
+                                                                    @if(Licence.Status=="Delivered"){
+
                                                                     <MudButton Variant="Variant.Filled" class="ml-1"
-                                                        StartIcon="@Icons.Material.Filled.Download" Color="Color.Info" 
+                                                        StartIcon="@Icons.Material.Filled.Print" Color="Color.Info" 
                                                         Href="@($"/print/printlicence/{Licence.Id}")" Target="_blank"> 
-                                                                        Download
+                                                                        Print Licence
                                                                     </MudButton>
-                                                                }
+                                                                    }
+                                                                
 
 
                                                             }

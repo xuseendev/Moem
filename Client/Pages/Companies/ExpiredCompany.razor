@@ -7,43 +7,24 @@
 
 @implements IDisposable
 
-<div class="nk-content-body">
-    <div class="nk-block-head nk-block-head-sm">
-        <div class="nk-block-between">
-            <div class="nk-block-head-content">
-                <h3 class="nk-block-title page-title">Companies</h3>
-            </div><!-- .nk-block-head-content -->
-            <div class="nk-block-head-content">
-                <div class="toggle-wrap nk-block-tools-toggle">
-                    <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu"><em
-                            class="icon ni ni-more-v"></em></a>
-                    <div class="toggle-expand-content" data-content="pageMenu">
-                        <ul class="nk-block-tools g-3">
-                            <li>
-                                <div class="drodown">
-                                    <a href="#" class="dropdown-toggle btn btn-white btn-dim btn-outline-light"
-                                        data-bs-toggle="dropdown"><em
-                                            class="d-none d-sm-inline icon ni ni-calender-date"></em><span><span
-                                                class="d-none d-md-inline">Import</span> Excel</span><em
-                                            class="dd-indc icon ni ni-chevron-right"></em></a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <ul class="link-list-opt no-bdr">
-                                            <li><a href="#"><span>Last 30 Days</span></a></li>
-                                            <li><a href="#"><span>Last 6 Months</span></a></li>
-                                            <li><a href="#"><span>Last 1 Years</span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="nk-block-tools-opt"><button @onclick="OpenCreateForm" class="btn btn-primary"><em
-                                        class="icon ni ni-plus"></em><span>Add</span></button></li>
-                        </ul>
-                    </div>
-                </div>
-            </div><!-- .nk-block-head-content -->
-        </div><!-- .nk-block-between -->
-    </div><!-- .nk-block-head -->
-    <div class="nk-block">
+  <div class="side-app">
+					 <!-- CONTAINER -->
+					 <div class="main-container container-fluid">
+						<!-- PAGE-HEADER -->
+						<div class="page-header">
+								<div>
+									<h1 class="page-title">Expired Company</h1>
+								</div>
+								<div class="ms-auto pageheader-btn">
+									<ol class="breadcrumb">
+										<li class="breadcrumb-item">Home</li>
+										<li class="breadcrumb-item"><a href="javascript:void(0);">Company</a></li>
+										<li class="breadcrumb-item active" aria-current="page">Expired</li>
+									</ol>
+								</div>
+							</div>
+                     
+						<!-- PAGE-HEADER END -->
         <MudTable Loading="loading" ServerData="@(new Func<TableState, Task<TableData<CompanyLicenceDto>>>(LoadCompanies))" @ref="table" Dense="true" Hover="@hover" Bordered="@bordered"
             Striped="@striped">
             <ToolBarContent>

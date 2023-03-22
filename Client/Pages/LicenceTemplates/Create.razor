@@ -92,7 +92,7 @@
                         }
                         else
                         {
-                            <MudText>Register</MudText>
+                            <MudText>@ButtonText</MudText>
                         }
                     </MudButton>
                     <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
@@ -124,18 +124,33 @@
     bool loading = false;
     [Parameter]
     public EventCallback LicenceTypesTemplate { get; set; }
+       [Parameter]
+    public int? Id { get; set; }
+    [Parameter]
+    public string ButtonText { get; set; }
 
     private async Task CreateLicenceType()
     {
         loading = true;
-        Console.WriteLine("Hello");
-        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        if (Id == null)
+        {
         await licenceTypeService.Post($"{EndPoints.LicenceTypesTemplateEndPoint}", model);
         SnackMessage("Succesfully Saved Record", Severity.Success);
         await LicenceTypesTemplate.InvokeAsync();
         model = new CreateUpdateLicenceTypeTemplateDto();
+        }else{
+            model.Id = Id.Value;
+            await licenceTypeService.Update($"{EndPoints.LicenceTypesTemplateEndPoint}", model, Id.Value);
+            SnackMessage("Succesfully Updated Record", Severity.Success);
+        }
         loading = false;
 
+    }
+
+     protected async override Task OnParametersSetAsync()
+    {
+        if (Id != null)
+        model = await licenceTypeService.Get($"{EndPoints.LicenceTypesTemplateEndPoint}", Id.Value);
     }
 
     private void SnackMessage(string text, Severity type)

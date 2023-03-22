@@ -8,54 +8,42 @@
 
 @implements IDisposable
 
-<div class="nk-content-body">
-    <div class="nk-block-head nk-block-head-sm">
-        <div class="nk-block-between">
-            <div class="nk-block-head-content">
-                <h3 class="nk-block-title page-title">Search Licences</h3>
-            </div><!-- .nk-block-head-content -->
-            <div class="nk-block-head-content">
-                <div class="toggle-wrap nk-block-tools-toggle">
-                    <a href="#" class="btn btn-icon btn-trigger toggle-expand me-n1" data-target="pageMenu"><em
-                            class="icon ni ni-more-v"></em></a>
-                    <div class="toggle-expand-content" data-content="pageMenu">
-                        <ul class="nk-block-tools g-3">
-                            <li>
-                                <div class="drodown">
-                                    <a href="#" class="dropdown-toggle btn btn-white btn-dim btn-outline-light"
-                                        data-bs-toggle="dropdown"><em
-                                            class="d-none d-sm-inline icon ni ni-calender-date"></em><span><span
-                                                class="d-none d-md-inline">Import</span> Excel</span><em
-                                            class="dd-indc icon ni ni-chevron-right"></em></a>
-                                    <div class="dropdown-menu dropdown-menu-end">
-                                        <ul class="link-list-opt no-bdr">
-                                            <li><a href="#"><span>Last 30 Days</span></a></li>
-                                            <li><a href="#"><span>Last 6 Months</span></a></li>
-                                            <li><a href="#"><span>Last 1 Years</span></a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="nk-block-tools-opt"><button @onclick="(()=>OpenCreateForm(null))"
-                                    class="btn btn-primary"><em class="icon ni ni-plus"></em><span>Add
-                                        Licence</span></button></li>
-
-                        </ul>
-                    </div>
-                </div>
-            </div><!-- .nk-block-head-content -->
-        </div><!-- .nk-block-between -->
+<div class="side-app">
+					 <!-- CONTAINER -->
+					 <div class="main-container container-fluid">
+						<!-- PAGE-HEADER -->
+						<div class="page-header">
+								<div>
+									<h1 class="page-title">Licences</h1>
+								</div>
+								<div class="ms-auto pageheader-btn">
+									<ol class="breadcrumb">
+										<li class="breadcrumb-item">Home</li>
+										<li class="breadcrumb-item"><a href="javascript:void(0);">Licences</a></li>
+										<li class="breadcrumb-item active" aria-current="page">List</li>
+									</ol>
+								</div>
+							</div>
+                               <div class="col-md-2 mb-3">
+									<div class="btn-list">
+										<a  class="btn btn-primary" href="licences/create">
+											<svg xmlns="http://www.w3.org/2000/svg"  class="w-inner-icn text-white" enable-background="new 0 0 24 24" viewBox="0 0 24 24"><path d="M16,11.5h-3.5V8c0-0.276123-0.223877-0.5-0.5-0.5S11.5,7.723877,11.5,8v3.5H8c-0.276123,0-0.5,0.223877-0.5,0.5s0.223877,0.5,0.5,0.5h3.5v3.5005493C11.5001831,16.2765503,11.723999,16.5001831,12,16.5h0.0006104C12.2765503,16.4998169,12.5001831,16.276001,12.5,16v-3.5H16c0.276123,0,0.5-0.223877,0.5-0.5S16.276123,11.5,16,11.5z M12,2C6.4771729,2,2,6.4771729,2,12s4.4771729,10,10,10c5.5202026-0.0062866,9.9937134-4.4797974,10-10C22,6.4771729,17.5228271,2,12,2z M12,21c-4.9705811,0-9-4.0294189-9-9s4.0294189-9,9-9c4.9682617,0.0056152,8.9943848,4.0317383,9,9C21,16.9705811,16.9705811,21,12,21z"></path></svg>
+											New Licence
+										</a>
+										
+									</div>
+								</div>
     <div class="card mt-3 border-0">
         <div class="card-body">
             <EditForm Model="SearchLicence" OnValidSubmit="LoadLicences">
                 <div class="row g-2">
-                    <div class="col-xxl-2 col-sm-6">
+                    <div class="col-md-2">
                         <div class="search-box">
                             <MudTextField Label="Licence Id" Variant="Variant.Outlined" @bind-Value="SearchLicence.LicenceId"
                                 For="@(() => SearchLicence.LicenceId)" />
                         </div>
                     </div>
-                    <div class="col-xxl-2 col-sm-6">
+                    <div class="col-md-2">
                         <div class="search-box">
              
                                        <MudSelect    Variant="Variant.Outlined"  Label="Licence Status" @bind-Value="SearchLicence.LicenceStatus" AnchorOrigin="Origin.BottomCenter" For="@(() => SearchLicence.LicenceStatus)">
@@ -70,20 +58,20 @@
                     </MudSelect>
                         </div>
                     </div>
-                    <div class="col-xxl-2 col-sm-6">
+                    <div class="col-md-2">
                         <div class="search-box">
                               <MudTextField  Label="Company Tellphone" Variant="Variant.Outlined" InputType="InputType.Number"
                                 @bind-Value="SearchLicence.Phone" For="@(() => SearchLicence.Phone)" />
                         </div>
                     </div>
 
-                    <div class="col-xxl-2 col-sm-6">
+                    <div class="col-md-2">
                         <div class="search-box">
                                              <MudDatePicker Label="Date From" @bind-Date="SearchLicence.From"  Variant="Variant.Outlined" For="@(() => SearchLicence.To)" />
 
                         </div>
                     </div>
-                    <div class="col-xxl-2 col-sm-6">
+                    <div class="col-md-2">
                         <div class="search-box">
                                               <MudDatePicker Label="Date To" @bind-Date="SearchLicence.To" Variant="Variant.Outlined" For="@(() => SearchLicence.To)" />
 
@@ -93,7 +81,7 @@
 
 
                     <!--end col-->
-                    <div class="col-xxl-2 col-sm-5">
+                    <div class="col-md-2">
                         <div>
                      <MudButton Color="Color.Inherit" ButtonType="ButtonType.Submit"  StartIcon="@Icons.Material.Filled.Search" Style="height: 60px;background-color:green;color:white;">
     Filter

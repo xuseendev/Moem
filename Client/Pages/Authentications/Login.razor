@@ -4,93 +4,94 @@
 @inject NavigationManager navigationManager
 @layout EmptyLayout
 
-<body class="nk-body bg-white npc-default pg-auth">
-    <div class="nk-app-root">
-        <!-- main @s -->
-        <div class="nk-main ">
-            <!-- wrap @s -->
-            <div class="nk-wrap nk-wrap-nosidebar">
-                <!-- content @s -->
-                <div class="nk-content ">
-                    <div class="nk-block  nk-auth-body  wide-xs mt-5">
-                        <div class="brand-logo pb-4 text-center">
-                            <a href="/auth/login" class="logo-link">
-                                <img class="logo-light logo-img logo-img-lg" src="images/som.png"
-                                    srcset="images/som.png 2x" alt="logo">
-                                <img class="logo-dark logo-img logo-img-lg" src="images/som.png"
-                                    srcset="images/som.png 2x" alt="logo-dark">
-                            </a>
-                        </div>
-                        <div class="card">
-                            <div class="card-inner card-inner-lg">
-                               
-                                <EditForm Model="LoginModel" OnValidSubmit="HandleLogin">
+<body class="ltr login-img" >
+
+
+
+    <!-- PAGE -->
+    <div class="page" style="background-color: white;">
+        <div>
+            <!-- CONTAINER OPEN -->
+            <div class="container-login100">
+                <div class="wrap-login100 p-0">
+                    <div class="card-body">
+            <div class="col col-login mx-auto text-center mb-5">
+                <a href="javascript:void()" class="text-center">
+                    <img src="images/som.png"
+                        class="" alt="" style="width:70px; height:70px;">
+                </a>
+            </div>
+                        <div class="login100-form validate-form">
+                           <EditForm Model="LoginModel" OnValidSubmit="HandleLogin" >
 
                                     <DataAnnotationsValidator />
-                                    @* <ValidationSummary></ValidationSummary> *@
-                                    <div class="form-group">
-                                        <div class="form-label-group">
-                                            <label class="form-label" for="default-01">Email or Username</label>
-                                        </div>
-                                        <div class="form-control-wrap">
-                                            <InputText type="email" @bind-Value="LoginModel.Email"
-                                                class="form-control form-control-lg" id="default-01"
-                                                placeholder="Enter your email address or username" />
-                                            <ValidationMessage For="@(() => LoginModel.Email)" style="color:red" />
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="form-label-group">
-                                            <label class="form-label" for="password">Password</label>
-
-                                        </div>
-                                        <div class="form-control-wrap">
-                                            <a href="#" class="form-icon form-icon-right passcode-switch lg"
-                                                data-target="password">
-                                                <em class="passcode-icon icon-show icon ni ni-eye"></em>
-                                                <em class="passcode-icon icon-hide icon ni ni-eye-off"></em>
-                                            </a>
-                                            <input type="password" @bind="LoginModel.Password"
-                                                class="form-control form-control-lg" id="password"
-                                                placeholder="Enter your password">
-                                            <ValidationMessage For="@(() => LoginModel.Password)" style="color:red" />
-                                        </div>
-                                    </div>
-                                    @if (!string.IsNullOrEmpty(message))
+                            <span class="login100-form-title">
+                                Login
+                            </span>
+                            <div class="wrap-input100 validate-input mb-5"
+                                data-bs-validate="Valid email is required:
+                                ex@abc.xyz">
+                                 
+                                           
+                                <input class="input100 mb-2" @bind="LoginModel.Email" type="text" name="email"
+                                    placeholder="Email">
+                                     <ValidationMessage For="@(() => LoginModel.Email)" style="color:red" />
+                                <span class="focus-input100"></span>
+                                <span class="symbol-input100">
+                                    <i class="zmdi zmdi-email"
+                                        aria-hidden="true"></i>
+                                </span>
+                            </div>
+                            <div class="wrap-input100 validate-input mb-5"
+                                data-bs-validate="Password is required">
+                                <input @bind="LoginModel.Password" class="input100" type="password"
+                                    name="pass" placeholder="Password">
+                                                          <ValidationMessage For="@(() => LoginModel.Password)"  style="color:red" />
+                                <span class="focus-input100"></span>
+                                <span class="symbol-input100">
+                                    <i class="zmdi zmdi-lock"
+                                        aria-hidden="true"></i>
+                                </span>
+                            </div>
+                          
+                         
+                            <div class="text-end pt-1">
+                                <p class="mb-0"><a href="javascript:void()"
+                                        class="text-primary ms-1">Forgot
+                                        Password?</a></p>
+                            </div>
+                            <div class="container-login100-form-btn">
+                                <button type="submit" disabled="@Loading" class="login100-form-btn
+                                    btn-primary">
+                                     @if (Loading)
+                                            {
+                                                <div class="spinner-border" role="status">
+                                                </div>
+                                            }else{
+                                                <span>Login</span>
+                                            }
+                                    
+                                </button>
+                            </div>
+                            <br>
+                           </EditForm>
+</div>
+                               @if (!string.IsNullOrEmpty(message))
                                     {
 
                                         <div class="alert alert-danger">
                                             <p>@message</p>
                                         </div>
                                     }
-
-                                    <div class="form-group">
-                                        <button class="btn btn-lg btn-primary btn-block" disabled="@Loading">
-                                            @if (Loading)
-                                            {
-                                                <div class="spinner-border" role="status">
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <span>Sign In</span>
-                                            }
-                                        </button>
-                                    </div>
-                                </EditForm>
-                                
-                            </div>
-                        </div>
                     </div>
-              
+
                 </div>
-                <!-- wrap @e -->
             </div>
-            <!-- content @e -->
+            <!-- CONTAINER CLOSED -->
         </div>
-        <!-- main @e -->
     </div>
 
+    <!-- End PAGE -->
 
 </body>
 @code {

@@ -25,7 +25,7 @@
                         }
                         else
                         {
-                            <MudText>Register</MudText>
+                            <MudText>@ButtonText</MudText>
                         }
                     </MudButton>
                     <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
@@ -48,17 +48,31 @@
     bool loading = false;
     [Parameter]
     public EventCallback UserGroups { get; set; }
-
+  [Parameter]
+    public int? Id { get; set; }
+            [Parameter]
+    public string ButtonText { get; set; }
     private async Task CreateRegion()
     {
         loading = true;
         Console.WriteLine("Hello");
-        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
+        if(Id==null){
         await userGroupService.Post($"{EndPoints.UserGroupEndPoint}", model);
         SnackMessage("Succesfully Saved Record", Severity.Success);
         await UserGroups.InvokeAsync();
+        }
+        else{
+            model.Id = Id.Value;
+            await userGroupService.Update($"{EndPoints.UserGroupEndPoint}", model,Id.Value);
+            SnackMessage("Succesfully Saved Record", Severity.Success);
+        }
         loading = false;
 
+    }
+    protected async override Task OnParametersSetAsync()
+    {
+        if (Id != null)
+            model = await userGroupService.Get($"{EndPoints.UserGroupEndPoint}", Id.Value);
     }
 
     private void SnackMessage(string text, Severity type)

@@ -16,7 +16,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:28725") });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<IClient, MoeSystem.Client.Services.Base.Client>();
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddTransient(typeof(IHttpRepository<>), typeof(HttpRepository<>));

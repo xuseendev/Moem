@@ -19,10 +19,14 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("MoeDbConnectionString");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
+    //     options.UseSqlServer(connectionString,
+    // options => options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
     options.UseNpgsql(connectionString,
 options => options.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
+
 );
 });
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 builder.Services.AddIdentityCore<User>()
     .AddRoles<IdentityRole>()
