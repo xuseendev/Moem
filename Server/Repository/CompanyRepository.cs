@@ -87,6 +87,25 @@ namespace MoeSystem.Server.Repository
 
         }
 
+        public async Task<List<CompanyDto>> SearchCompanies(SearchCompanyDetailDto search)
+        {
+            if (search.From == null && search.To == null) return new List<CompanyDto>();
+            var data = _context.Companies
+                .ProjectTo<CompanyDto>(_mapper.ConfigurationProvider)
+                .AsQueryable();
+            data = data.Where(x => x.CreatedOn.Date >= search.From.Value.Date && x.CreatedOn.Date <= search.To.Value.Date);
+            if (search.CompanyId != null)
+                data = data.Where(x => x.CompanyId.ToString().ToLower().Contains($"{search.CompanyId.ToLower()}"));
+
+
+
+            if (search.Name != null) data = data.Where(x => x.Name.Contains($"{search.Name}"));
+
+            if (search.Phone != null) data = data.Where(x => x.TellPhone.Contains($"{search.Phone}"));
+            data = data.OrderByDescending(x => x.Id);
+            return await data.ToListAsync();
+        }
+
         public async Task<List<BaseLogsDto>> GetLogs(int? companyId)
         {
             return await _context.Logs.Where(x => x.CompanyId == companyId).ProjectTo<BaseLogsDto>(_mapper.ConfigurationProvider).ToListAsync();
@@ -115,6 +134,11 @@ namespace MoeSystem.Server.Repository
 
             };
 
+        }
+
+        public async Task<List<CompanyOnlyDto>> GetCompanyWithIds(CancellationToken cancellationToken)
+        {
+            return await _context.Companies.AsNoTracking().ProjectTo<CompanyOnlyDto>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
         }
 
         public async Task<List<CompanyDocumentDto>> GetCompanyDocuments(int? companyId)

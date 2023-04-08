@@ -15,9 +15,12 @@ namespace MoeSystem.Server.Contracts
     public interface ILicenceRepository : IGenericRepository<Licence>
     {
         Task<LicenceDetailDto> GetLicenceDetail(int? id);
+        Task<List<LicenceOnlyDto>> GetLicenceWithIds(CancellationToken cancellationToken);
+        Task<List<LicenceOnlyDto>> GetLicenceCompletedWithIds(CancellationToken cancellationToken);
+        Task<List<LicenceOnlyDto>> GetLicencePendingWithIds(CancellationToken cancellationToken);
         Task<LicenceDetailPrintDto> GetLicenceDetailPrint(int? id);
         Task<LicenceDetailDto> GetLicence(int? id);
-        Task<List<LicenceWorkFlowDto>> GetTaskLicences(int? userGroupId);
+        Task<List<LicenceWorkFlowDto>> GetTaskLicences(string userGroupId);
         Task<List<LicenceWorkFlowDto>> GetToClaimLicences(int? userGroupId);
         Task<List<BaseLogsDto>> GetLogs(int? licenceId);
         Task<List<LicenceDocumentDto>> GetLicenceDocuments(int? licenceId);
@@ -32,9 +35,14 @@ namespace MoeSystem.Server.Contracts
         Task<LicenceWorkFlowDto> ApproveRejectLicence(int? id, HttpContext context);
         Task<List<LicenceWorkFlowDto>> RejectedLicences();
         Task<List<LicenceDto>> ApprovedLicences();
+        Task<List<LicenceDto>> GetLastLicences(CancellationToken cancellationToken);
         Task<List<LicenceDto>> SearchLicence(SearchLicenceDetailDto search);
         Task<CreateLicenceDto> CreateLicence(CreateLicenceDto createLicenceDto, HttpContext context);
         Task<PagedResult<LicenceDto>> GetPagedResult(SearchLicenceDto queryParameters);
+        Task<PagedResult<LicenceDto>> GetExpiredLicences(SearchLicenceDto queryParameters);
+        Task<PagedResult<LicenceDto>> GetExpiringLicences(SearchLicenceDto queryParameters);
+        Task<PagedResult<LicenceDto>> ProgressLicences(SearchLicenceDto queryParameters);
+        Task<PagedResult<LicenceDto>> FinishedLicences(SearchLicenceDto queryParameters);
         Task<List<PendingWorkflowsDto>> CalculateWorkflow();
         Task<List<TopLicenceGrouping>> TopLicences();
     }

@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MoeSystem.Server.Contracts;
 using MoeSystem.Server.Data;
+using MoeSystem.Server.Exceptions;
 using MoeSystem.Shared.Models.User;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -63,7 +65,7 @@ namespace MoeSystem.Server.Repository
                issuer: _configuration["JwtSettings:Issuer"],
                audience: _configuration["JwtSettings:Audience"],
                claims: claims,
-               expires: DateTime.Now.AddDays(Convert.ToInt32(_configuration["JwtSettings:DurationInMinutes"])),
+               expires: DateTime.Now.AddHours(Convert.ToInt32(_configuration["JwtSettings:DurationInMinutes"])),
                signingCredentials: credentials
 
                 );
@@ -71,6 +73,20 @@ namespace MoeSystem.Server.Repository
             return new JwtSecurityTokenHandler().WriteToken(token);
 
         }
+        public async Task<CreateRoleDto> AddToRolesAsync(CreateRoleDto role)
+        {
+            var identityRole = _mapper.Map<IdentityRole>(role);
+            await roleManager.CreateAsync(identityRole);
+            return role;
+        }
+
+        public async Task<CreateUserRoleDto> AddUserRole(CreateUserRoleDto createUserRole)
+        {
+            var user = await GetById(createUserRole.UserId);
+            await _userManager.AddToRoleAsync(user, createUserRole.Role);
+            return createUserRole;
+        }
+
 
         public async Task<AuthResponseDto> Login(LoginDto loginDto)
         {
@@ -143,22 +159,44 @@ namespace MoeSystem.Server.Repository
             return _userManager.GetRolesAsync(user).Result.ToList();
 
         }
-
-        public async Task<User> AddToRolesAsync(string id, string role)
+        public async Task<ResetPasswordDto> ResetPassword(string id, ResetPasswordDto resetPassword)
         {
             var user = await GetById(id);
-            await _userManager.AddToRoleAsync(user, role);
-            return user;
+            if (user == null) throw new NotFoundException(nameof(GetById), id);
+            resetPassword.Password = new Random().Next(000000000, 999999999).ToString();
+            var hasher = new PasswordHasher<User>();
+            var newPassword = hasher.HashPassword(user, resetPassword.Password);
+            user.PasswordHash = newPassword;
+            var res = await _userManager.UpdateAsync(user);
+            if (!res.Succeeded) throw new BadRequestException(nameof(ResetPassword), string.Format("Password reset is not updated {0}", id));
+            return resetPassword;
         }
+
+
+        public async Task<bool> ChangePassword(ChangePasswordDto changePassword, string userId)
+        {
+            var user = await GetById(userId);
+            if (user == null) throw new NotFoundException(nameof(GetById), userId);
+            var isValidUser = await _userManager.CheckPasswordAsync(user, changePassword.OldPassword);
+            if (!isValidUser) throw new BadRequestException(nameof(isValidUser), userId);
+            var hasher = new PasswordHasher<User>();
+            var newPassword = hasher.HashPassword(user, changePassword.NewPassword);
+            user.PasswordHash = newPassword;
+            var res = await _userManager.UpdateAsync(user);
+            if (!res.Succeeded) throw new BadRequestException(nameof(ResetPassword), string.Format("Password change is not updated {0}", userId));
+            return true;
+        }
+
+
 
         public async Task<List<UserDto>> GetUsers()
         {
             return _mapper.Map<List<UserDto>>(await _userManager.Users.Include(x => x.UserGroup).ToListAsync());
         }
 
-        public async Task<List<IdentityRole>> GetRoles()
+        public async Task<List<RolesDto>> GetRoles()
         {
-            return await roleManager.Roles.ToListAsync();
+            return await roleManager.Roles.ProjectTo<RolesDto>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
         public async Task<UserDto> DeactivateUser(string id)

@@ -5,7 +5,7 @@
 @inject HttpInerceptorService _interceptor
 @inject IDialogService Dialog
 @inject ISnackbar snackbarService
-@attribute [Authorize]
+@attribute [Authorize(Roles="Administrator,LicenceTypes")]
 
 @implements IDisposable
 

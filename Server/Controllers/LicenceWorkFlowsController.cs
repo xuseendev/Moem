@@ -13,14 +13,16 @@ namespace MoeSystem.Server.Controllers
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
     [ApiVersion("1.0")]
-    //[Authorize]
+    [Authorize]
     public class LicenceWorkFlowsController : ControllerBase
     {
         private readonly IGenericRepository<LicenceWorkFlow> _licenceWorkflowRepository;
         private readonly ILicenceRepository _licenceRepository;
+        private readonly ILogger<LicenceWorkFlowsController> _logger;
 
-        public LicenceWorkFlowsController(IGenericRepository<LicenceWorkFlow> licenceWorkFlow, ILicenceRepository licenceRepository)
+        public LicenceWorkFlowsController(IGenericRepository<LicenceWorkFlow> licenceWorkFlow, ILicenceRepository licenceRepository, ILogger<LicenceWorkFlowsController> logger)
         {
+            this._logger = logger;
             _licenceWorkflowRepository = licenceWorkFlow;
             _licenceRepository = licenceRepository;
         }
@@ -31,14 +33,13 @@ namespace MoeSystem.Server.Controllers
         {
             return await _licenceWorkflowRepository.GetAllAsync<LicenceWorkFlowDto>();
         }
-        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+
 
         [HttpGet("GetTaskLicences")]
         public async Task<ActionResult<IEnumerable<LicenceWorkFlowDto>>> GetTaskLicences()
         {
-            return await _licenceRepository.GetTaskLicences(User.GetUserGroupId());
+            return await _licenceRepository.GetTaskLicences(User.GetUsername());
         }
-        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 
         [HttpGet("GetToClaimLicences")]
         public async Task<ActionResult<IEnumerable<LicenceWorkFlowDto>>> GetToClaimLicences()

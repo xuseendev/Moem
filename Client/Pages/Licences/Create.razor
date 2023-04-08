@@ -158,11 +158,7 @@
             </MudCard>
         </MudItem>
 
-        <MudItem xs="12">
-            <MudText Typo="Typo.body2" Align="Align.Center">
-                Fill out the form correctly to see the success message.
-            </MudText>
-        </MudItem>
+        
     </MudGrid>
 </EditForm>
 
@@ -257,10 +253,15 @@
           var days=0;
         switch(LicenceType.LicencePeriodType){
             case "Year":
-            days=360 * LicenceType.LicencePeriod;
+            days=365 * LicenceType.LicencePeriod;
             break;
             case "Month":
-            days=30 * LicenceType.LicencePeriod;
+            days=30 * LicenceType.
+            LicencePeriod;
+            break;
+            case "End Year":
+            var endYear = new DateTime(value.Value.Year, 12, 31);
+            days=Convert.ToInt32((endYear - DateTime.Now).TotalDays);
             break;
             default:
             days=1 * LicenceType.LicencePeriod;
@@ -274,7 +275,8 @@
     {
         model.LicenceTypeId =value;
         LicenceType=await licenceTypeService.Get($"{EndPoints.LicenceTypesEndPoint}",value); 
-        model.TermOfTheLicence=LicenceType.TermOfLicence;   
+        model.TermOfTheLicence=LicenceType.TermOfLicence; 
+        model.LicenceStartDate=null;
     }
     private void SnackMessage(string text, Severity type)
     {

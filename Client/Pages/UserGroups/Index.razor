@@ -4,7 +4,8 @@
 @inject IHttpRepository<UserGroupDto> UserGroupService
 @inject HttpInerceptorService _interceptor
 @inject ISnackbar snackbarService
-@attribute [Authorize]
+@attribute [Authorize(Roles="Administrator")]
+
 
 @implements IDisposable
 

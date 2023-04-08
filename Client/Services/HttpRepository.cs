@@ -49,6 +49,14 @@ namespace MoeSystem.Client.Services
             await client.DeleteAsync($"{url}{id}");
         }
 
+        public async Task Delete(string url, string id)
+        {
+            await GetBearerToken();
+            interceptor.MonitorEvent();
+            //interceptor.RegisterEvent();
+            await client.DeleteAsync($"{url}{id}");
+        }
+
         public void Dispose()
         {
             interceptor.DisposeEvent();

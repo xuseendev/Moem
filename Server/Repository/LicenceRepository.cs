@@ -180,7 +180,7 @@ namespace MoeSystem.Server.Repository
                     replace = message.Body.Replace("(CUSTOMERNAME)", licence.Company.Name).Replace("(LICENCEID)", licence.LicenceId.ToString());
                     break;
             }
-            await sendMessage.SendSms(replace, licence.Company.TellPhone);
+            //await sendMessage.SendSms(replace, licence.Company.TellPhone);
         }
         public async Task<LicenceDetailDto> GetLicenceDetail(int? id)
         {
@@ -256,9 +256,9 @@ namespace MoeSystem.Server.Repository
 
         }
 
-        public async Task<List<LicenceWorkFlowDto>> GetTaskLicences(int? userGroupId)
+        public async Task<List<LicenceWorkFlowDto>> GetTaskLicences(string userGroupId)
         {
-            return await _context.LicenceWorkFlows.Where(x => x.UserGroupId == userGroupId && x.Status == false && x.Reject == false && x.StartedOn != null).ProjectTo<LicenceWorkFlowDto>(_mapper.ConfigurationProvider).ToListAsync();
+            return await _context.LicenceWorkFlows.Where(x => x.TaskActualOwner == userGroupId && x.Status == false && x.Reject == false && x.StartedOn != null).ProjectTo<LicenceWorkFlowDto>(_mapper.ConfigurationProvider).ToListAsync();
         }
         public async Task<List<LicenceWorkFlowDto>> GetToClaimLicences(int? userGroupId)
         {
@@ -310,6 +310,126 @@ namespace MoeSystem.Server.Repository
             };
 
         }
+        public async Task<List<LicenceOnlyDto>> GetLicenceWithIds(CancellationToken cancellationToken)
+        {
+            return await _context.Licences.AsNoTracking().ProjectTo<LicenceOnlyDto>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<LicenceOnlyDto>> GetLicenceCompletedWithIds(CancellationToken cancellationToken)
+        {
+            return await _context.Licences.Where(x => x.LicenceStatus == "Completed").AsNoTracking().ProjectTo<LicenceOnlyDto>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<LicenceOnlyDto>> GetLicencePendingWithIds(CancellationToken cancellationToken)
+        {
+            return await _context.Licences.Where(x => x.LicenceStatus != "Completed").AsNoTracking().ProjectTo<LicenceOnlyDto>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<LicenceDto>> GetLastLicences(CancellationToken cancellationToken)
+        {
+            return await _context.Licences.OrderByDescending(x => x.Id).Take(10).AsNoTracking().ProjectTo<LicenceDto>(_mapper.ConfigurationProvider).ToListAsync(cancellationToken);
+        }
+
+        public async Task<PagedResult<LicenceDto>> GetExpiredLicences(SearchLicenceDto queryParameters)
+        {
+            var totalSize = await _context.Licences.CountAsync();
+            var data = _context.Licences
+                .Skip(queryParameters.StartIndex)
+                .Take(queryParameters.PageSize)
+                .ProjectTo<LicenceDto>(_mapper.ConfigurationProvider)
+                .AsQueryable();
+            data = data.Where(q => q.LicenceEndDate < DateTime.Now);
+            if (queryParameters.Name != null)
+            {
+                data = data.Where(x => x.CompanyName.ToLower().Contains($"{queryParameters.Name.ToLower()}"));
+            }
+            return new PagedResult<LicenceDto>
+            {
+                Data = await data.ToListAsync(),
+                PageNumber = queryParameters.PageNumber,
+                RecordNumber = queryParameters.PageSize,
+                TotalCount = totalSize
+
+            };
+
+        }
+
+        public async Task<PagedResult<LicenceDto>> GetExpiringLicences(SearchLicenceDto queryParameters)
+        {
+            var totalSize = await _context.Licences.CountAsync();
+            var data = _context.Licences
+                .Skip(queryParameters.StartIndex)
+                .Take(queryParameters.PageSize)
+                .ProjectTo<LicenceDto>(_mapper.ConfigurationProvider)
+                .AsQueryable();
+            data = data.Where(q => q.LicenceEndDate.Date.AddMonths(-1) > DateTime.Now.Date);
+            if (queryParameters.Name != null)
+            {
+                data = data.Where(x => x.CompanyName.ToLower().Contains($"{queryParameters.Name.ToLower()}"));
+            }
+            return new PagedResult<LicenceDto>
+            {
+                Data = await data.ToListAsync(),
+                PageNumber = queryParameters.PageNumber,
+                RecordNumber = queryParameters.PageSize,
+                TotalCount = totalSize
+
+            };
+
+        }
+
+        public async Task<PagedResult<LicenceDto>> FinishedLicences(SearchLicenceDto queryParameters)
+        {
+            var totalSize = await _context.Licences.CountAsync();
+            var data = _context.Licences
+                .OrderByDescending(x => x.Id)
+                .Skip((queryParameters.StartIndex - 1) * queryParameters.PageSize)
+                .Take(queryParameters.PageSize)
+                .ProjectTo<LicenceDto>(_mapper.ConfigurationProvider)
+                .AsQueryable();
+            if (queryParameters.LicenceId != null)
+            {
+                data = data.Where(x => x.LicenceId.ToString().ToLower().Contains($"{queryParameters.Name.ToLower()}"));
+            }
+            data = data.Where(x => x.LicenceStatus == "Completed");
+
+            return new PagedResult<LicenceDto>
+            {
+                Data = await data.ToListAsync(),
+                PageNumber = queryParameters.PageNumber,
+                RecordNumber = queryParameters.PageSize,
+                TotalCount = totalSize
+
+            };
+
+        }
+
+        public async Task<PagedResult<LicenceDto>> ProgressLicences(SearchLicenceDto queryParameters)
+        {
+            var totalSize = await _context.Licences.CountAsync();
+            var data = _context.Licences
+                .OrderByDescending(x => x.Id)
+                .Skip((queryParameters.StartIndex - 1) * queryParameters.PageSize)
+                .Take(queryParameters.PageSize)
+                .ProjectTo<LicenceDto>(_mapper.ConfigurationProvider)
+                .AsQueryable();
+            if (queryParameters.LicenceId != null)
+            {
+                data = data.Where(x => x.LicenceId.ToString().ToLower().Contains($"{queryParameters.Name.ToLower()}"));
+            }
+
+            data = data.Where(x => x.LicenceStatus != "Completed");
+
+            return new PagedResult<LicenceDto>
+            {
+                Data = await data.ToListAsync(),
+                PageNumber = queryParameters.PageNumber,
+                RecordNumber = queryParameters.PageSize,
+                TotalCount = totalSize
+
+            };
+
+        }
 
         public async Task<List<LicenceDto>> SearchLicence(SearchLicenceDetailDto search)
         {
@@ -323,10 +443,14 @@ namespace MoeSystem.Server.Repository
 
             if (search.LicenceStatus != null) data = data.Where(x => x.Status == search.LicenceStatus);
 
+            if (search.CompanyName != null) data = data.Where(x => x.CompanyName.Contains($"{search.CompanyName}"));
+
             if (search.Phone != null) data = data.Where(x => x.TellPhone.Contains($"{search.Phone}"));
             data = data.OrderByDescending(x => x.Id);
             return await data.ToListAsync();
         }
+
+
 
         public async Task<List<PendingWorkflowsDto>> CalculateWorkflow()
         {

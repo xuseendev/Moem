@@ -1,16 +1,34 @@
-@inject IHttpRepository<UserDto> userService
-@inject IHttpRepository<RolesDto> rolesService
+@inject IAuthenticationService authService
+@inject IHttpRepository<RolesDto> roleService
+@inject IHttpRepository<CreateUserRoleDto> userRoleService
 @inject ISnackbar snackbarService
-<EditForm Model="@model" OnValidSubmit="CreateRegion">
+@inject IJSRuntime jsRuntime
+@attribute [Authorize(Roles = "Administrator")]
+
+
+
+<EditForm Model="@model" OnValidSubmit="CreateUserRoles">
     <DataAnnotationsValidator />
     <MudGrid>
         <MudItem xs="12" sm="12">
             <MudCard>
                 <MudCardContent>
-
-
-                    @* <MudCheckBox Size="Size.Small" Color="Color.Tertiary">Active
-                        </MudCheckBox> *@
+                    <MudItem xs="12">
+                   <MudGrid>
+   
+                        <MudItem xs="12">
+                    <MudSelect Variant="Variant.Outlined" T="string" Label="Role" class="mb-3" @bind-Value="model.Role"  AnchorOrigin="Origin.BottomCenter"    For="@(() => model.Role)">
+                        
+                        @foreach (var role in Roles)
+                        {
+                            <MudSelectItem Value="@(role.Name)">@role.Name</MudSelectItem>
+                        }
+                    </MudSelect>
+                        </MudItem>
+                        </MudGrid>
+                    </MudItem>
+    
+            
                 </MudCardContent>
                 <MudCardActions>
                     <MudButton ButtonType="ButtonType.Submit" Disabled="@loading" Variant="Variant.Filled"
@@ -22,7 +40,7 @@
                         }
                         else
                         {
-                            <MudText>Register</MudText>
+                            <MudText>@ButtonText</MudText>
                         }
                     </MudButton>
                     <MudButton ButtonType="ButtonType.Reset" Variant="Variant.Filled" Color="Color.Error" Class="ml-1">
@@ -40,36 +58,39 @@
 </EditForm>
 
 
+
+
 @code {
-    private RolesDto model = new RolesDto();
-    private List<RolesDto> Roles { get; set; }
-    bool loading = false;
+    private bool loading=false;
     [Parameter]
-    public EventCallback Areas { get; set; }
+    public EventCallback GetProfile { get; set; }
     [Parameter]
     public UserDto User { get; set; }
     [Parameter]
-    public List<string> UserRoles { get; set; }
-    private IEnumerable<RegionDto> Regions = new List<RegionDto>();
-    private async Task CreateRegion()
+    public List<RolesDto> Roles { get; set; }=new List<RolesDto>();
+    protected async override Task OnInitializedAsync()
     {
-        loading = true;
-        Console.WriteLine("Hello");
-        //await jsRuntime.InvokeVoidAsync("ShowToastr", "success", "Successfully Updated");
-        await rolesService.Post($"{EndPoints.AccountEndPoint}", model);
+        Roles=await roleService.GetAll($"{EndPoints.AccountEndPoint}GetRoles");
+    }
+
+        [Parameter]
+    public string ButtonText { get; set; }
+    
+    public CreateUserRoleDto model = new CreateUserRoleDto();
+    private string message = string.Empty;
+
+    private async Task CreateUserRoles()
+    {
+         loading = true;
+        model.UserId=User.Id;
+        await userRoleService.PostAsync($"{EndPoints.AccountEndPoint}AddRoles", model);
         SnackMessage("Succesfully Saved Record", Severity.Success);
-        await Areas.InvokeAsync();
         loading = false;
 
     }
-    protected override async Task OnInitializedAsync()
-    {
-        Roles = await rolesService.GetAll($"{EndPoints.AccountEndPoint}GetRoles");
 
-    }
-    private void SnackMessage(string text, Severity type)
+     private void SnackMessage(string text, Severity type)
     {
         snackbarService.Add(text, type);
     }
-
 }

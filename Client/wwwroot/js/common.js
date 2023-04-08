@@ -71,8 +71,19 @@ function printDocument(data,type) {
 
             $("#pdf_files").html(htmlPop);
             $('#print-view-modal').modal('show');
-
-
-        
-  
 };
+
+function initializeInactivityTimer(dotnetHelper) {
+    var timer;
+    document.onmousemove = resetTimer;
+    document.onkeypress = resetTimer;
+
+    function resetTimer() {
+        clearTimeout(timer);
+        timer = setTimeout(logout, 1200000);
+    }
+
+    function logout() {
+        dotnetHelper.invokeMethodAsync("Logout");
+    }
+}

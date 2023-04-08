@@ -1,0 +1,227 @@
+@page "/reports/company"
+@inject IJSRuntime jsRuntime
+@inject IDialogService Dialog
+@inject IHttpRepository<CompanyDto> companyService
+@inject IHttpRepository<BaseLookUpDto> lookupService
+@inject HttpInerceptorService _interceptor
+@attribute [Authorize(Roles="Administrator")]
+
+@implements IDisposable
+
+<div class="side-app">
+					 <!-- CONTAINER -->
+					 <div class="main-container container-fluid">
+						<!-- PAGE-HEADER -->
+						<div class="page-header">
+								<div>
+									<h1 class="page-title">Company Report</h1>
+								</div>
+								<div class="ms-auto pageheader-btn">
+									<ol class="breadcrumb">
+										<li class="breadcrumb-item">Home</li>
+										<li class="breadcrumb-item"><a href="javascript:void(0);">Companies</a></li>
+										<li class="breadcrumb-item active" aria-current="page">List</li>
+									</ol>
+								</div>
+							</div>
+                             
+    <div class="card mt-3 border-0">
+        <div class="card-body">
+              <EditForm Model="SearchCompany" OnValidSubmit="LoadCompanies">
+                <div class="row g-2">
+                    <div class="col-md-2">
+                        <div class="search-box">
+                            <MudTextField Label="Company Id" Variant="Variant.Outlined" @bind-Value="SearchCompany.CompanyId"
+                                For="@(() => SearchCompany.CompanyId)" />
+                        </div>
+                    </div>
+       
+                    <div class="col-md-2">
+                        <div class="search-box">
+                              <MudTextField  Label="Company Tellphone" Variant="Variant.Outlined" InputType="InputType.Number"
+                                @bind-Value="SearchCompany.Phone" For="@(() => SearchCompany.Phone)" />
+                        </div>
+                    </div>
+                <div class="col-md-2">
+                        <div class="search-box">
+                              <MudTextField  Label="Company Name" Variant="Variant.Outlined" 
+                                @bind-Value="SearchCompany.Name" For="@(() => SearchCompany.Name)" />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="search-box">
+                                             <MudDatePicker Label="Date From" @bind-Date="SearchCompany.From"  Variant="Variant.Outlined" For="@(() => SearchCompany.To)" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="search-box">
+                                              <MudDatePicker Label="Date To" @bind-Date="SearchCompany.To" Variant="Variant.Outlined" For="@(() => SearchCompany.To)" />
+
+                        </div>
+                    </div>
+
+
+
+                    <!--end col-->
+                    <div class="col-md-2 mt-5">
+                        <div>
+                     <MudButton Color="Color.Inherit" ButtonType="ButtonType.Submit"  StartIcon="@Icons.Material.Filled.Search" Style="background-color:green;color:white;">
+                        Filter
+                    </MudButton>
+                     <MudButton Color="Color.Inherit" @onclick="ExportExcel" StartIcon="@Icons.Material.Filled.ImportExport" Style="background-color:grey;color:white;">
+                        Excel
+                    </MudButton>
+                     <MudButton Color="Color.Inherit" ButtonType="ButtonType.Reset"  StartIcon="@Icons.Material.Filled.LockReset" Style="background-color:red;color:white;">
+                        Reset
+                    </MudButton>
+                        </div>
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+            </EditForm>
+        </div>
+    </div>
+    </div><!-- .nk-block-head -->
+    <div class="nk-block">
+        <MudTable Loading="loading" Items="@Companies" Dense="true" Hover="@hover" Bordered="@bordered"
+            Striped="@striped" @bind-SelectedItem="selectedItem1">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">List</MudText>
+                <MudSpacer />
+
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Id</MudTh>
+                <MudTh>Company #</MudTh>
+                <MudTh>Name</MudTh>
+                <MudTh>Phone</MudTh>
+                <MudTh>Company Type</MudTh>
+                <MudTh>Type</MudTh>
+                <MudTh>Region</MudTh>
+                <MudTh>City</MudTh>
+                <MudTh>CreatedBy</MudTh>
+                <MudTh>CreatedOn</MudTh>
+
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nr">@context.Id</MudTd>
+                <MudTd DataLabel="Region">@context.CompanyId</MudTd>
+                <MudTd DataLabel="Name">@context.Name</MudTd>
+                <MudTd DataLabel="Name">@context.TellPhone</MudTd>
+                <MudTd DataLabel="Name">@context.CompanyType</MudTd>
+                <MudTd DataLabel="Name">@context.Type</MudTd>
+                <MudTd DataLabel="Name">@context.Region</MudTd>
+                <MudTd DataLabel="Name">@context.City</MudTd>
+
+                <MudTd DataLabel="CreatedBy">@context.CreatedBy</MudTd>
+                <MudTd DataLabel="CreatedOn">@context.CreatedOn.ToShortDateString()</MudTd>
+    
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+
+    </div>
+</div>
+
+
+@code {
+
+
+
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+    private bool loading = true;
+    private SearchCompanyDetailDto SearchCompany = new SearchCompanyDetailDto();
+    private CompanyDto selectedItem1 = null;
+
+
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Large,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+        CloseOnEscapeKey = true
+    };
+
+
+   
+    private List<CompanyDto> Companies = new List<CompanyDto>();
+
+
+    public async Task LoadCompanies()
+    {
+        loading = true;
+        _interceptor.MonitorEvent();
+        Companies = await
+        companyService.GetAll($"{EndPoints.CompaniesEndPoint}SearchCompanies?companyId={SearchCompany.CompanyId}&phone={SearchCompany.Phone}&name={SearchCompany.Name}&from={SearchCompany.From}&to={SearchCompany.To}");
+        loading = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCompanies();
+    }
+
+         private async Task ExportExcel()
+    {
+        var wb = new XLWorkbook();
+        wb.Properties.Author = "the Author";
+        wb.Properties.Title = "the Title";
+        wb.Properties.Subject = "the Subject";
+
+        var ws = wb.Worksheets.Add("LicenceReport");
+
+        ws.Cell(1, 1).Value = "Id";
+        ws.Cell(1, 2).Value = "Company #";
+        ws.Cell(1, 3).Value = "Name";
+        ws.Cell(1, 4).Value = "Phone";
+        ws.Cell(1, 5).Value = "Company Type";
+        ws.Cell(1, 6).Value = " Type";
+        ws.Cell(1, 7).Value = "Region";
+        ws.Cell(1, 8).Value = "City";
+        ws.Cell(1, 9).Value = "CreatedOn";
+
+
+        for (int row = 0; row < Companies.Count(); row++)
+        {
+            ws.Cell(row + 1, 1).Value = Companies[row].Id;
+            ws.Cell(row + 1, 2).Value = Companies[row].CompanyId;
+            ws.Cell(row + 1, 3).Value = Companies[row].Name;
+            ws.Cell(row + 1, 4).Value = Companies[row].TellPhone;
+            ws.Cell(row + 1, 5).Value = Companies[row].CompanyType;
+            ws.Cell(row + 1, 6).Value = Companies[row].Type;
+            ws.Cell(row + 1, 7).Value = Companies[row].Region;
+            ws.Cell(row + 1, 8).Value = Companies[row].City;
+            ws.Cell(row + 1, 9).Value = Companies[row].CreatedOn;
+        }
+
+        MemoryStream XLSStream = new();
+        wb.SaveAs(XLSStream);
+        var XLSSArray = XLSStream.ToArray();
+        await SaveAs(jsRuntime, "CompanyReport" + ".xlsx", XLSSArray);
+    }
+
+      async Task SaveAs(IJSRuntime js, string fileName, byte[] data)
+    {
+        await js.InvokeAsync<object>(
+            "BlazorDownloadFile",
+            fileName,
+            Convert.ToBase64String(data)
+        );
+    }
+
+
+
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
+
+
+}

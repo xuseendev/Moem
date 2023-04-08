@@ -30,15 +30,7 @@
 
                     <MudItem xs="12">
                         <MudGrid>
-                            <MudItem xs="3">
-
-                                <MudTextField Label="Licence Period" HelperText="Max. 12 number"
-                                    @bind-Value="model.LicencePeriod" Variant="Variant.Outlined" class="mb-3"
-                                    For="@(() => model.LicencePeriod)" />
-                            </MudItem>
-
-
-                            <MudItem xs="3">
+                          <MudItem xs="3">
                                 <MudSelect T="string" Label="Licence Period Type" @bind-Value="model.LicencePeriodType"
                                     AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" class="mb-3"
                                     For="@(() => model.LicencePeriodType)">
@@ -49,6 +41,15 @@
                                     }
                                 </MudSelect>
                             </MudItem>
+                            <MudItem xs="3">
+
+                                <MudTextField Label="Licence Period" HelperText="Max. 12 number"
+                                    @bind-Value="model.LicencePeriod" Variant="Variant.Outlined" class="mb-3"
+                                    For="@(() => model.LicencePeriod)" />
+                            </MudItem>
+
+
+                          
                             <MudItem xs="3">
                                 <MudSelect T="int" Label="Licence Template" @bind-Value="model.LicenceTypeTemplateId"
                                     AnchorOrigin="Origin.BottomCenter" Variant="Variant.Outlined" class="mb-3"
@@ -122,7 +123,8 @@
     public int? Id { get; set; }
     private List<string> LicencePeriodTypes = new List<string>(){
 "Year",
-"Month"
+"Month",
+"End Year"
 };
     private async Task CreateLicenceType()
     {

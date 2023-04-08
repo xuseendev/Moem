@@ -4,7 +4,7 @@
 @inject IHttpRepository<LicenceDto> licenceService
 @inject IHttpRepository<BaseLookUpDto> lookupService
 @inject HttpInerceptorService _interceptor
-@attribute [Authorize]
+@attribute [Authorize(Roles="Administrator,SearchLicences")]
 
 @implements IDisposable
 
@@ -64,7 +64,12 @@
                                 @bind-Value="SearchLicence.Phone" For="@(() => SearchLicence.Phone)" />
                         </div>
                     </div>
-
+                <div class="col-md-2">
+                        <div class="search-box">
+                              <MudTextField  Label="Company Name" Variant="Variant.Outlined" 
+                                @bind-Value="SearchLicence.CompanyName" For="@(() => SearchLicence.CompanyName)" />
+                        </div>
+                    </div>
                     <div class="col-md-2">
                         <div class="search-box">
                                              <MudDatePicker Label="Date From" @bind-Date="SearchLicence.From"  Variant="Variant.Outlined" For="@(() => SearchLicence.To)" />
@@ -81,11 +86,14 @@
 
 
                     <!--end col-->
-                    <div class="col-md-2">
+                    <div class="col-md-2 mt-2">
                         <div>
-                     <MudButton Color="Color.Inherit" ButtonType="ButtonType.Submit"  StartIcon="@Icons.Material.Filled.Search" Style="height: 60px;background-color:green;color:white;">
-    Filter
-</MudButton>
+                     <MudButton Color="Color.Inherit" ButtonType="ButtonType.Submit"  StartIcon="@Icons.Material.Filled.Search" Style="background-color:green;color:white;">
+                        Filter
+                    </MudButton>
+                     <MudButton Color="Color.Inherit" ButtonType="ButtonType.Reset"  StartIcon="@Icons.Material.Filled.LockReset" Style="background-color:red;color:white;">
+                        Reset
+                    </MudButton>
                         </div>
                     </div>
                     <!--end col-->
@@ -193,7 +201,7 @@
         loading = true;
         _interceptor.MonitorEvent();
         Licences = await
-        licenceService.GetAll($"{EndPoints.LicencesEndPoint}SearchLicence?licenceId={SearchLicence.LicenceId}&licenceStatus={SearchLicence.LicenceStatus}&phone={SearchLicence.Phone}&from={SearchLicence.From}&to={SearchLicence.To}");
+        licenceService.GetAll($"{EndPoints.LicencesEndPoint}SearchLicence?licenceId={SearchLicence.LicenceId}&licenceStatus={SearchLicence.LicenceStatus}&phone={SearchLicence.Phone}&companyName={SearchLicence.CompanyName}&from={SearchLicence.From}&to={SearchLicence.To}");
         loading = false;
     }
 

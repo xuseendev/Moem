@@ -3,7 +3,8 @@
 @inject IDialogService Dialog
 @inject HttpInerceptorService _interceptor
 @inject ISnackbar snackbarService
-@attribute [Authorize]
+@attribute [Authorize(Roles="Administrator")]
+
 
 @implements IDisposable
 @inject IHttpRepository<MineralTypeDto> mineralTypeService

@@ -180,6 +180,8 @@ namespace MoeSystem.Server.Configurations
 
             CreateMap<Licence, CreateLicenceDto>().ReverseMap()
             .ForMember(d => d.Company, o => o.Ignore());
+            CreateMap<Licence, LicenceOnlyDto>().ReverseMap();
+
             CreateMap<Licence, UpdateLicenceDto>().ReverseMap();
             //CreateMap<Licence, LicenceDetailDto>().ReverseMap();
 
@@ -190,6 +192,7 @@ namespace MoeSystem.Server.Configurations
                 ReverseMap();
 
             CreateMap<Company, CreateCompanyDto>().ReverseMap();
+            CreateMap<Company, CompanyOnlyDto>().ReverseMap();
             CreateMap<Company, UpdateCompanyDto>().ReverseMap();
             CreateMap<Company, CompanyDetailDto>()
                 .ForMember(src => src.Regoin, dest => dest.MapFrom(x => x.Regoin.Name))
@@ -204,6 +207,9 @@ namespace MoeSystem.Server.Configurations
 
             CreateMap<ApiUserDto, User>().ReverseMap();
             CreateMap<Logs, BaseLogsDto>().ReverseMap();
+            CreateMap<IdentityRole, RolesDto>().ReverseMap();
+            CreateMap<IdentityRole, CreateUserRoleDto>().ReverseMap();
+            CreateMap<IdentityRole, CreateRoleDto>().ReverseMap();
             CreateMap<User, UserDto>()
             .ForMember(x => x.UserGroup, dest => dest.MapFrom(x => x.UserGroup.Name))
             .ReverseMap();

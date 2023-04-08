@@ -193,7 +193,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -202,7 +202,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -226,7 +226,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -238,7 +238,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -271,7 +271,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Email")
                         .HasColumnType("text");
@@ -292,7 +292,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -322,7 +322,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("DocumentName")
                         .HasColumnType("text");
@@ -340,7 +340,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -366,13 +366,13 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("ExpireDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("IssueDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("Number")
                         .HasColumnType("integer");
@@ -381,7 +381,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -405,7 +405,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("IdType")
                         .HasColumnType("text");
@@ -429,7 +429,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -453,7 +453,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -462,7 +462,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -484,7 +484,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -493,7 +493,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -521,16 +521,16 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("LicenceEndDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("LicenceId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("LicenceStartDate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("LicenceStatus")
                         .HasColumnType("text");
@@ -557,7 +557,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -593,7 +593,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("LicenceId")
                         .HasColumnType("integer");
@@ -605,7 +605,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -626,16 +626,16 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
-                    b.Property<double>("Lat")
-                        .HasColumnType("double precision");
+                    b.Property<string>("Lat")
+                        .HasColumnType("text");
 
                     b.Property<int>("LicenceId")
                         .HasColumnType("integer");
 
-                    b.Property<double>("Lng")
-                        .HasColumnType("double precision");
+                    b.Property<string>("Lng")
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -644,7 +644,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -665,7 +665,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("DocumentName")
                         .HasColumnType("text");
@@ -686,7 +686,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -712,7 +712,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("LicenceId")
                         .HasColumnType("integer");
@@ -727,7 +727,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -754,7 +754,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -778,7 +778,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -799,7 +799,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Note")
                         .HasColumnType("text");
@@ -823,7 +823,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -844,13 +844,13 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("CompletedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("CreatedBy")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("LicenceId")
                         .HasColumnType("integer");
@@ -859,7 +859,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<DateTime?>("StartedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<bool>("Status")
                         .HasColumnType("boolean");
@@ -874,7 +874,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("UserGroupId")
                         .HasColumnType("integer");
@@ -910,10 +910,10 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("Dated")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -925,7 +925,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -954,7 +954,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -966,7 +966,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -988,7 +988,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -997,7 +997,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -1019,7 +1019,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<byte[]>("File")
                         .HasColumnType("bytea");
@@ -1037,7 +1037,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -1065,7 +1065,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .HasColumnType("text");
@@ -1074,7 +1074,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -1093,7 +1093,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<byte[]>("File")
                         .HasColumnType("bytea");
@@ -1108,7 +1108,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int>("UserGroupId")
                         .HasColumnType("integer");
@@ -1132,10 +1132,10 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("ErrorType")
                         .HasColumnType("text");
@@ -1153,7 +1153,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -1172,7 +1172,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("ErrorType")
                         .HasColumnType("text");
@@ -1190,7 +1190,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -1285,7 +1285,7 @@ namespace MoeSystem.Server.Migrations
                         {
                             Id = "2419fb85-daf3-47a6-9af3-1c1bc5dfd248",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0998fc00-bd19-4a7a-902e-80c2f772ecd8",
+                            ConcurrencyStamp = "d3d514e6-029b-48ca-90d6-9735fedd6151",
                             Email = "admin@moem.com",
                             EmailConfirmed = false,
                             FirstName = "System",
@@ -1293,9 +1293,9 @@ namespace MoeSystem.Server.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MOEM.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBEI7Gc6wXuuwImO0EOb/jSR7TcjVBAFMbdy1W5c1Xq3VkcAxW198KhvYcw7XFAwEQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFe05Fk9kbnmKKjYuGS6ivAnw3Nf+VHH1UN9lhb2JaKmp1Ls6EJ6LUlAgR11B7hZDA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "96017865-53da-49e6-bb44-218fa4b7fcf9",
+                            SecurityStamp = "1fb763b1-8af6-475a-b43a-8a4ccbe52ded",
                             TwoFactorEnabled = false,
                             UserName = "Admin"
                         });
@@ -1313,19 +1313,19 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("LoggedInStatus")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("LoggedInTime")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("UpdateBy")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("UserAgent")
                         .HasColumnType("text");
@@ -1365,7 +1365,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("InSomali")
                         .HasColumnType("text");
@@ -1377,7 +1377,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.HasKey("Id");
 
@@ -1396,10 +1396,10 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasColumnType("text");
@@ -1408,13 +1408,13 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("Time")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("UpdateBy")
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("UserEventType")
                         .HasColumnType("text");
@@ -1446,7 +1446,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<bool>("LastStep")
                         .HasColumnType("boolean");
@@ -1464,7 +1464,7 @@ namespace MoeSystem.Server.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedOn")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<int?>("UserGroupId")
                         .HasColumnType("integer");

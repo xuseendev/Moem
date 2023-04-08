@@ -4,6 +4,9 @@
 @implements IDisposable
 @inject IDialogService Dialog
 @inject HttpInerceptorService _interceptor
+@inject ISnackbar snackbarService
+@inject IHttpRepository<ResetPasswordDto> resetAuthService
+@attribute [Authorize(Roles="Administrator")]
 
 
 
@@ -63,7 +66,7 @@
                 <MudTd DataLabel="Actions">
                     <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Variant="Variant.Outlined" Color="Color.Info"
                         Size="Size.Small" Href="@($"/users/detail/{context.Id}")" Target="" />
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" @onclick="(()=>OpenCreateForm(id:context.Id))"
+                    <MudIconButton Icon="@Icons.Material.Filled.LockReset" class="ml-2"  @onclick="(()=>ResetPassword(context.Id))"
                         Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
 
                 </MudTd>
@@ -99,6 +102,7 @@
     protected override async Task OnInitializedAsync()
     {
         _interceptor.MonitorEvent();
+        loading=true;
         Cities = await authService.GetAll($"{EndPoints.AccountEndPoint}GetUsers");
         loading = false;
     }
@@ -124,6 +128,25 @@
 
         await OnInitializedAsync();
 
+    }
+
+     private async Task ResetPassword(String id)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Are you sure to reset password this user?");
+        parameters.Add("ButtonText", "Yes");
+        parameters.Add("Color", Color.Warning);
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.Medium };
+
+        var dialog = Dialog.Show<ConfirmDialog>("Reset Password", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            loading = true;
+            var response=await resetAuthService.Get($"{EndPoints.AccountEndPoint}ResetPassword/",id);;
+            snackbarService.Add($"Successfully Reset Password {response.Password}", Severity.Success);
+        }
     }
 
     private bool FilterFunc1(UserDto element) => FilterFunc(element, searchString1);

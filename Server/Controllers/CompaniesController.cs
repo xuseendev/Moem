@@ -32,10 +32,22 @@ namespace MoeSystem.Server.Controllers
         {
             return await _companyRepository.GetPagedResult(queryParameters);
         }
+
+        [HttpGet("GetCompanyWithIds")]
+        public async Task<ActionResult<List<CompanyOnlyDto>>> GetCompanyWithIds(CancellationToken cancellationToken)
+        {
+            return await _companyRepository.GetCompanyWithIds(cancellationToken);
+        }
         [HttpGet("GetAll")]
         public async Task<ActionResult<IEnumerable<CompanyDto>>> GetAll()
         {
             return await _companyRepository.GetAllAsync<CompanyDto>();
+        }
+
+        [HttpGet("SearchCompanies")]
+        public async Task<ActionResult<List<CompanyDto>>> SearchCompanies([FromQuery] SearchCompanyDetailDto search)
+        {
+            return await _companyRepository.SearchCompanies(search);
         }
 
         [HttpGet("GetExpiredCompany")]

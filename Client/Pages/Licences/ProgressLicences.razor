@@ -1,0 +1,171 @@
+@page "/licences/progress"
+@inject IJSRuntime jsRuntime
+@inject IDialogService Dialog
+@inject IHttpRepository<PagedResult<LicenceDto>> licenceService
+@inject HttpInerceptorService _interceptor
+@attribute [Authorize(Roles="Administrator,ProgressLicenses")]
+
+@implements IDisposable
+
+<div class="side-app">
+					 <!-- CONTAINER -->
+					 <div class="main-container container-fluid">
+						<!-- PAGE-HEADER -->
+						<div class="page-header">
+								<div>
+									<h1 class="page-title">Progress Licences</h1>
+								</div>
+								<div class="ms-auto pageheader-btn">
+									<ol class="breadcrumb">
+										<li class="breadcrumb-item">Home</li>
+										<li class="breadcrumb-item"><a href="javascript:void(0);">Licences</a></li>
+										<li class="breadcrumb-item active" aria-current="page">List</li>
+									</ol>
+								</div>
+							</div>
+                               <div class="col-md-2 mb-3">
+									<div class="btn-list">
+										<a  class="btn btn-primary" href="licences/create">
+											<svg xmlns="http://www.w3.org/2000/svg"  class="w-inner-icn text-white" enable-background="new 0 0 24 24" viewBox="0 0 24 24"><path d="M16,11.5h-3.5V8c0-0.276123-0.223877-0.5-0.5-0.5S11.5,7.723877,11.5,8v3.5H8c-0.276123,0-0.5,0.223877-0.5,0.5s0.223877,0.5,0.5,0.5h3.5v3.5005493C11.5001831,16.2765503,11.723999,16.5001831,12,16.5h0.0006104C12.2765503,16.4998169,12.5001831,16.276001,12.5,16v-3.5H16c0.276123,0,0.5-0.223877,0.5-0.5S16.276123,11.5,16,11.5z M12,2C6.4771729,2,2,6.4771729,2,12s4.4771729,10,10,10c5.5202026-0.0062866,9.9937134-4.4797974,10-10C22,6.4771729,17.5228271,2,12,2z M12,21c-4.9705811,0-9-4.0294189-9-9s4.0294189-9,9-9c4.9682617,0.0056152,8.9943848,4.0317383,9,9C21,16.9705811,16.9705811,21,12,21z"></path></svg>
+											New Licence
+										</a>
+										
+									</div>
+								</div>
+        <MudTable Loading="loading" ServerData="@(new Func<TableState, Task<TableData<LicenceDto>>>(LoadCompanies))" @ref="table" Dense="true" Hover="@hover" Bordered="@bordered"
+            Striped="@striped">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">List</MudText>
+                <MudSpacer />
+                <MudTextField T="string" ValueChanged="@(searchTerm => OnSearch(searchTerm))" Placeholder="Search" Adornment="Adornment.Start"
+                    AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Id</MudTh>
+                <MudTh>Licence #</MudTh>
+                <MudTh>Company</MudTh>
+                <MudTh>Type</MudTh>
+                <MudTh>Mineral Type</MudTh>
+                <MudTh>Start Date</MudTh>
+                <MudTh>End Date</MudTh>
+                <MudTh>Status</MudTh>
+                <MudTh>CreatedBy</MudTh>
+                <MudTh>CreatedOn</MudTh>
+                <MudTh>Actions</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nr">@context.Id</MudTd>
+                <MudTd DataLabel="Region">@context.LicenceId</MudTd>
+                <MudTd DataLabel="Name">@context.CompanyName</MudTd>
+                <MudTd DataLabel="Name">@context.LicenceType</MudTd>
+                <MudTd DataLabel="Name">@context.MineralType</MudTd>
+                <MudTd DataLabel="Name">@context.LicenceStartDate.Value.ToShortDateString()</MudTd>
+                <MudTd DataLabel="Name">@context.LicenceEndDate.ToShortDateString()</MudTd>
+                <MudTd DataLabel="Name">@context.Status</MudTd>
+
+                <MudTd DataLabel="CreatedBy">@context.CreatedBy</MudTd>
+                <MudTd DataLabel="CreatedOn">@context.CreatedOn.ToShortDateString()</MudTd>
+                <MudTd DataLabel="Actions">
+                    <MudIconButton Icon="@Icons.Filled.RemoveRedEye" Variant="Variant.Outlined" Color="Color.Info"
+                        Size="Size.Small" Href="@($"/licences/detail/{context.Id}")" Target="" />
+                    
+
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="pageSizeOptions"></MudTablePager>
+            </PagerContent>
+        </MudTable>
+
+    </div>
+</div>
+
+
+@code {
+ 
+    private MudTable<LicenceDto> table;
+    private int[] pageSizeOptions = new int[] { 5, 10, 15 };
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+    private bool loading = true;
+    private string searchString1 = "";
+    private LicenceDto selectedItem1 = null;
+    private HashSet<LicenceDto> selectedItems = new HashSet<LicenceDto>();
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Large,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+         CloseOnEscapeKey = true
+    };
+
+    private void OnSearch(string searchTerm)
+{
+    searchString1 = searchTerm;
+    table.ReloadServerData();
+}
+
+
+
+
+
+
+
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        table.SetRowsPerPage(10);
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+       private async Task OpenCreateForm(int? id=null)
+    {
+        IDialogReference dialog;
+        var parameters = new DialogParameters();
+        if(id!=null){
+        parameters.Add("Id", id.Value);
+        parameters.Add("ButtonText", "Update Licence");
+        dialog= Dialog.Show<Create>("Update Licence",parameters, maxWidth);
+        }else{
+        parameters.Add("ButtonText", "Register Licence");
+
+        dialog= Dialog.Show<Create>("Add New Licence",parameters, maxWidth);
+        }
+        var result = await dialog.Result;
+        
+
+        await table.ReloadServerData();
+        
+    }
+
+     public async Task<TableData<LicenceDto>> LoadCompanies(TableState state)
+    {
+        System.Console.WriteLine("Hello there");
+         _interceptor.MonitorEvent();
+        var response = await licenceService.GetPagined($"{EndPoints.LicencesEndPoint}ProgressLicences?startIndex={(state.Page + 1)}&pageNumber={state.PageSize}&name={searchString1}");
+        loading = false;
+ 
+        return new TableData<LicenceDto>() { Items = response.Data, TotalItems =response.TotalCount };
+    }
+
+    private bool FilterFunc1(LicenceDto element) => FilterFunc(element, searchString1);
+
+    private bool FilterFunc(LicenceDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.LicenceId.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        table.ReloadServerData();
+        return false;
+    }
+
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
+}

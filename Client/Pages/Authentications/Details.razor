@@ -1,335 +1,197 @@
 @page "/users/detail/{id}"
-@inject IHttpRepository<UserDto> UserService
-
-
+@inject IHttpRepository<UserDto> authService
 @inject IDialogService Dialog
+@using MoeSystem.Client.Pages.Authentications.Components
 
-<div class="nk-content-body">
-    <div class="nk-block-head nk-block-head-sm">
-        <div class="nk-block-between g-3">
-            <div class="nk-block-head-content">
-                <h3 class="nk-block-title page-title">User / <strong class="text-primary small">@User.FirstName
-                        @User.LastName</strong></h3>
-                <div class="nk-block-des text-soft">
-                    <ul class="list-inline">
-                        <li>User ID: <span class="text-base">@User.Id</span></li>
-                        <li>Last Update:
-                            @* <span class="text-base"> *@
-                            @* @User.UpdatedOn.ToString("dd MMM,yyyy hh:mm tt")</span> *@
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="nk-block-head-content">
-                <a href="html/user-list-regular.html" class="btn btn-outline-light bg-white d-none d-sm-inline-flex"><em
-                        class="icon ni ni-arrow-left"></em><span>Back</span></a>
-                <a href="html/user-list-regular.html"
-                    class="btn btn-icon btn-outline-light bg-white d-inline-flex d-sm-none"><em
-                        class="icon ni ni-arrow-left"></em></a>
-            </div>
-        </div>
-    </div><!-- .nk-block-head -->
-    <div class="nk-block">
-        <div class="card">
-            <div class="card-aside-wrap">
-                <div class="card-content">
-                    @if (loading)
-                    {
+		<div class="side-app">
+						<!-- CONTAINER -->
+						<div class="main-container container-fluid">
 
-                        <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+							<!-- PAGE-HEADER -->
+							<div class="page-header">
+								<div>
+									<h1 class="page-title">User Detail</h1>
+								</div>
+								<div class="ms-auto pageheader-btn">
+									<ol class="breadcrumb">
+										<li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+										<li class="breadcrumb-item active" aria-current="page">User</li>
+									</ol>
+								</div>
+							</div>
+							<!-- PAGE-HEADER END -->
+@if (loading==true){
 
-                    }
-                    else
-                    {
-                        <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6">
+	<div class="dimmer active center">
+												<div class="lds-hourglass"></div>
+											</div>
+			}
+else{
+		
+							<!-- ROW-1 OPEN -->
+							<div class="row" id="user-profile">
+								<div class="col-lg-12">
+									<div class="card">
+										<div class="card-body">
+											<div class="row align-items-center">
+												<div class="col-lg-12 col-md-12 col-xl-6">
+													<div class="d-flex flex-wrap align-items-center">
+														<div class="profile-img-main rounded">
+															<img src="assets/images/faces/6.jpg" alt="img" class="m-0 p-1 rounded hrem-6">
+														</div>
+														<div class="ms-4">
+															<h4>@User.FirstName @User.LastName</h4>
+															<h6>@User.Email</h6>
+														
+															
+														</div>
+													</div>
+												</div>
+												<div class="col-lg-12 col-md-12 col-xl-6">
+													<div class="d-md-flex flex-wrap justify-content-lg-end">
+														<div class="media m-3">
+															<div class="media-icon bg-primary me-3 mt-1">
+																<i class="fe fe-file-plus fs-20 text-white"></i>
+															</div>
+															<div class="media-body">
+																<span class="text-muted">Total Projects</span>
+																<div class="fw-semibold fs-25">
+																	
+																</div>
+															</div>
+														</div>
+														<div class="media m-3">
+															<div class="media-icon bg-info me-3 mt-1">
+																<i class="fe fe-users  fs-20 text-white"></i>
+															</div>
+															<div class="media-body">
+																<span class="text-muted">Total Tasks</span>
+																<div class="fw-semibold fs-25">
+																
+																</div>
+															</div>
+														</div>
+														<div class="media m-3">
+															<div class="media-icon bg-warning me-3 mt-1">
+																<i class="fe fe-wifi fs-20 text-white"></i>
+															</div>
+															<div class="media-body">
+																<span class="text-muted">Total Notes</span>
+																<div class="fw-semibold fs-25">
+																	
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="border-top">
+											<div class="wideget-user-tab">
+												<div class="tab-menu-heading">
+													<div class="tabs-menu1">
+														<ul class="nav">
+															<li><a href="#profileMain" class="active show" data-bs-toggle="tab">General</a></li>
+															<li><a href="#changePassword" data-bs-toggle="tab">Change Password</a></li>
+															<AuthorizeView Roles="Administrator">
 
-                            <MudTabPanel Text="User" Icon="@Icons.Filled.AccountBox">
-                                <div class="card-inner">
-                                    <div class="nk-block">
-                                        <div class="nk-block-head">
-                                            <h5 class="title">User Information</h5>
-                                            <p>Basic info, like your name and address, that you use on Nio
-                                                Platform.
-                                            </p>
-                                        </div><!-- .nk-block-head -->
-                                    <div class="profile-ud-list">
-                                            <div class="profile-ud-item">
-                                                <div class="profile-ud wider">
-                                                    <span class="profile-ud-label">ID:</span>
-                                                    <span class="profile-ud-value">@User.Id</span>
-                                                </div>
-                                            </div>
-                                            <div class="profile-ud-item">
-                                                <div class="profile-ud wider">
-                                                    <span class="profile-ud-label">User Name:</span>
-                                                    <span class="profile-ud-value">@User.UserName</span>
-                                                </div>
-                                            </div>
-                                            <div class="profile-ud-item">
-                                                <div class="profile-ud wider">
-                                                    <span class="profile-ud-label">FirstName:</span>
-                                                    <span class="profile-ud-value">@User.FirstName</span>
-                                                </div>
-                                            </div>
-                                            <div class="profile-ud-item">
-                                                <div class="profile-ud wider">
-                                                    <span class="profile-ud-label">LastName:</span>
-                                                    <span class="profile-ud-value">@User.LastName</span>
-                                                </div>
-                                            </div>
-                                             <div class="profile-ud-item">
-                                                <div class="profile-ud wider">
-                                                    <span class="profile-ud-label">UserGroup:</span>
-                                                    <span class="profile-ud-value">@User.UserGroup</span>
-                                                </div>
-                                            </div>
-                                            <div class="profile-ud-item">
-                                                <div class="profile-ud wider">
-                                                    <span class="profile-ud-label">Type:</span>
-                                                    <span class="profile-ud-value">@User.Type</span>
-                                                </div>
-                                            </div>
-                                            <div class="profile-ud-item">
-                                                <div class="profile-ud wider">
-                                                    <span class="profile-ud-label">CreatedOn</span>
-                                                    <span class="profile-ud-value"></span>
-                                                </div>
-                                            </div>
-                                            <div class="profile-ud-item">
-                                                <div class="profile-ud wider">
-                                                    <span class="profile-ud-label">Tellphone</span>
-                                                    <span class="profile-ud-value">@User.PhoneNumber</span>
-                                                </div>
-                                            </div>
-                                            <div class="profile-ud-item">
-                                                <div class="profile-ud wider">
-                                                    <span class="profile-ud-label">Email Address</span>
-                                                    <span class="profile-ud-value">@User.Email</span>
-                                                </div>
-                                            </div>
+															<li><a href="#editProfile" data-bs-toggle="tab">Roles</a></li>
+													
+															</AuthorizeView>
+															<li><a href="#timeline" data-bs-toggle="tab">Logs</a></li>
+													
+														</ul>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="tab-content">
+										<div class="tab-pane active show" id="profileMain">
+											<div class="card">
+												<div class="card-body p-0">
+												
+													<div class="border-top"></div>
+													<div class="table-responsive p-5">
+														<h3 class="card-title">User Info</h3>
+														<table class="table row table-borderless">
+															<tbody class="col-lg-12 col-xl-6 p-0">
+																<tr>
+																	<td><strong class="mr-3">First Name :</strong> @User.FirstName</td>
+																</tr>
+                                                                <tr>
+																	<td><strong class="mr-3">Last Name :</strong> @User.LastName</td>
+																</tr>
+																<tr>
+																	<td><strong class="mr-3">Phone :</strong> @User.PhoneNumber</td>
+																</tr>
+																
+                                                                	<tr>
+																	<td><strong class="mr-3">Group :</strong> @User.UserGroup</td>
+																</tr>
+															</tbody>
+															<tbody class="col-lg-12 col-xl-6 p-0 border-top-0">
+																<tr>
+																	<td><strong class="mr-3">Email :</strong> @User.Email</td>
+																</tr>
+															<tr>
+																	<td><strong class="mr-3">Region :</strong> @User.Region</td>
+																</tr>
+                                                                	<tr>
+																	<td><strong class="mr-3">City :</strong> @User.City</td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+													
+												
+												
+												</div>
+											</div>
+										</div>
+										<div class="tab-pane" id="editProfile">
+											<MoeSystem.Client.Pages.Authentications.Components.UserRoles User="User" />
+										</div>
+										<div class="tab-pane" id="changePassword">
+											  
+											<MoeSystem.Client.Pages.Authentications.Components.ChangePassword ButtonText="Change Password" />
+											
+										</div>
+									
+										<div class="tab-pane" id="timeline">
+											
+										</div>
+									
+									
+									
+									</div>
+								</div><!-- COL-END -->
+							</div>
+}
+							<!-- ROW-1 CLOSED -->
 
-                                        </div><!-- .profile-ud-list -->
-                                </div><!-- .nk-block -->
-                                <div class="nk-block">
-                                        <div class="nk-block-head nk-block-head-line">
-                                            <h6 class="title overline-title text-base">Address Information
-                                            </h6>
-                                        </div><!-- .nk-block-head -->
-                                    <div class="profile-ud-list">
-                                            <div class="profile-ud-item">
-                                                <div class="profile-ud wider">
-                                                    <span class="profile-ud-label">Region</span>
-                                                    <span class="profile-ud-value">@User.Region</span>
-                                                </div>
-                                            </div>
-                                            <div class="profile-ud-item">
-                                                <div class="profile-ud wider">
-                                                    <span class="profile-ud-label">City</span>
-                                                    <span class="profile-ud-value">@User.City</span>
-                                                </div>
-                                            </div>
-
-                                            <div class="profile-ud-item">
-                                                <div class="profile-ud wider">
-                                                    <span class="profile-ud-label">Nationality</span>
-                                                    <span class="profile-ud-value"></span>
-                                                </div>
-                                            </div>
-                                        </div><!-- .profile-ud-list -->
-                                </div><!-- .nk-block -->
-
-
-                            </div><!-- .card-inner -->
-                        </MudTabPanel>
-                            <MudTabPanel Text="Roles" Icon="@Icons.Filled.Article">
-
-                                <MoeSystem.Client.Pages.Authentications.Components.UserRoles User="@User" />
-                            </MudTabPanel>
-                            <MudTabPanel Text="Logs" Icon="@Icons.Filled.Psychology">
-
-
-                                @* <CompanyOwnerships CompanyId="Company.Id" CompanyEventCallBack="GetComany"/> *@
-                            </MudTabPanel>
-                            @* <MudTabPanel Text="Licences" Icon="@Icons.Filled.Payments">
-
-                            </MudTabPanel>
-                            <MudTabPanel Text="Company Licence" Icon="@Icons.Filled.AccessTimeFilled">
-
-                            </MudTabPanel>
-                            <MudTabPanel Text="Activities" Icon="@Icons.Filled.Psychology">
-
-
-                            </MudTabPanel> *@
-                        </MudTabs>
-                    }
-
-
-                </div><!-- .card-content -->
-                <div class="card-aside card-aside-right user-aside toggle-slide toggle-slide-right toggle-break-xxl"
-                    data-content="userAside" data-toggle-screen="xxl" data-toggle-overlay="true"
-                    data-toggle-body="true">
-                    <div class="card-inner-group" data-simplebar>
-                        @if (loading)
-                        {
-                            <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
-
-                        }
-                        else
-                        {
-
-                            <div class="card-inner">
-                                <div class="user-card user-card-s2">
-                                    <div class="user-avatar lg bg-primary">
-
-
-                                        <span>@User.FirstName[0]@User.FirstName[1]</span>
-
-                                    </div>
-                                    <div class="user-info">
-                                        <div class="badge bg-outline-light rounded-pill ucap">@User.Type</div>
-                                        <h5>@User.UserName</h5>
-                                        <span class="sub-text">@User.Email</span>
-                                    </div>
-                                </div>
-                            </div><!-- .card-inner -->
-                        }
-                        <div class="card-inner card-inner-sm">
-                            <ul class="btn-toolbar justify-center gx-1">
-                                <li><a href="#" class="btn btn-trigger btn-icon"><em
-                                            class="icon ni ni-shield-off"></em></a></li>
-                                <li><a href="#" class="btn btn-trigger btn-icon"><em class="icon ni ni-mail"></em></a>
-                                </li>
-                                <li><a href="#" class="btn btn-trigger btn-icon"><em
-                                            class="icon ni ni-download-cloud"></em></a></li>
-                                <li><a href="#" class="btn btn-trigger btn-icon"><em
-                                            class="icon ni ni-bookmark"></em></a></li>
-                                <li><a href="#" class="btn btn-trigger btn-icon text-danger"><em
-                                            class="icon ni ni-na"></em></a></li>
-                            </ul>
-                        </div><!-- .card-inner -->
-                       
-                        <div class="card-inner">
-                            <div class="row text-center">
-                                <div class="col-4">
-                                    <div class="profile-stats">
-                                        @if (!loading)
-                                        {
-
-
-                                            <span class="amount"></span>
-                                            <span class="sub-text">Total Licence</span>
-
-                                        }
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="profile-stats">
-                                        <span class="amount">20</span>
-                                        <span class="sub-text">Complete</span>
-                                    </div>
-                                </div>
-                                <div class="col-4">
-                                    <div class="profile-stats">
-                                        <span class="amount">3</span>
-                                        <span class="sub-text">Progress</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div><!-- .card-inner -->
-
-                    </div><!-- .card-inner -->
-                </div><!-- .card-aside -->
-            </div><!-- .card-aside-wrap -->
-        </div><!-- .card -->
-    </div><!-- .nk-block -->
-</div>
-
-<div class="modal fade text-left " id="print-view-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1"
-    aria-hidden="true" style="display: none;">
-
-    <div class="modal-dialog modal-dialog-scrollable modal-xl" role="document">
-        <div class="modal-content">
-
-            <div class="modal-header badge badge-info">
-                <h4 class="modal-title" id="myModalLabel1">Documents</h4>
-
-                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-            </div>
-
-            <div class="modal-body">
-                <div class="input-group">
-                    <div id="pdf_files"></div>
-
-                </div>
-            </div>
-
-
-
-        </div>
-    </div>
-</div>
-
+						</div>
+					</div>
 @code {
     [Parameter]
     public string Id { get; set; }
-    private List<string> UserRoles = new List<string>();
 
-    private UserDto User = new UserDto();
+	  private UserDto User = new UserDto();
 
     protected async override Task OnParametersSetAsync()
     {
 
-        await GetUser();
+        await GetContract();
     }
-    private async Task GetUser()
+
+	  private bool loading = true;
+
+	  private async Task GetContract()
     {
         loading = true;
-        User = await UserService.Get($"{EndPoints.AccountEndPoint}getDetail/", Id);
-
+        User = await authService.Get($"{EndPoints.AccountEndPoint}getDetail/", Id);
         loading = false;
     }
 
-    private bool loading = true;
 
-
-
-
-    private string searchLicence = "";
-
-    private LicenceDto selectedLicenceItem = null;
-
-
-    DialogOptions maxWidth = new DialogOptions()
-    {
-        MaxWidth = MaxWidth.Medium,
-        FullWidth = true,
-        Position = DialogPosition.TopCenter,
-
-
-    };
-
-
-
-
-    @* private async Task OpenLicenceForm()
-        {
-        var parameters = new DialogParameters();
-        parameters.Add("UserId", User.Id);
-        var dialog = Dialog.Show<CreateUserLicence>("Add New User Licence", parameters, maxWidth);
-        var result = await dialog.Result;
-        await GetComany();
-        } *@
-    private bool FilterLicence(LicenceDto element) => FilterLicence1(element, searchLicence);
-
-    private bool FilterLicence1(LicenceDto element, string searchString)
-    {
-        if (string.IsNullOrWhiteSpace(searchString))
-            return true;
-        if (element.LicenceType.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
-            return true;
-
-        return false;
-    }
 }

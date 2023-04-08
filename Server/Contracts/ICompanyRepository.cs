@@ -13,11 +13,13 @@ namespace MoeSystem.Server.Contracts
     {
         Task<CompanyDetailDto> GetCompanyDetail(int? id);
         Task<PagedResult<CompanyLicenceDto>> GetExpiredCompany(SearchCompanyDto queryParameters);
+        Task<List<CompanyOnlyDto>> GetCompanyWithIds(CancellationToken cancellationToken);
         Task<PagedResult<CompanyLicenceDto>> GetExpiringCompany(SearchCompanyDto queryParameters);
         Task<PagedResult<CompanyDto>> GetPagedResult(SearchCompanyDto queryParameters);
         Task<List<BaseLogsDto>> GetLogs(int? companyId);
         Task<List<CompanyDocumentDto>> GetCompanyDocuments(int? companyId);
         Task<List<CompanyOwnershipDto>> GetCompanyOwnerships(int? companyId);
         Task<List<CompanyLicenceDto>> GetCompanyLicences(int? companyId);
+        Task<List<CompanyDto>> SearchCompanies(SearchCompanyDetailDto search);
     }
 }

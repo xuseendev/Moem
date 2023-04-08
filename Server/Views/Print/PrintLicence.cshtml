@@ -45,14 +45,37 @@ p{margin:0}
     transform: translate(-50%, -50%);
     opacity:0.1
 } *@
+.bottomText {
+    position: relative;
+    bottom: 0;
+}
+
+.bottomText span {
+    position: absolute;
+
+    text-align: center;
+
+}
 </style>
 <body onload="window.print();"
     style="border-color:green;border-style:solid;font-family:Consolas;">
     <div class="app-content content " id="printWithoutCertificate">
+<div style="position: fixed;
+            bottom: 580px;
+            left: 200px;
+            z-index: 10000;
+            font-size:100px;
+            color: red;
+            transform:rotate(-30deg);
+            opacity: 0.1;">
+  <img src="/images/moe.jpg" width="700" />
+
+</div>
         <div class="content-overlay"></div>
         <div class="header-navbar-shadow"></div>
 
         <div class="content-body container card-body">
+
 
             <!-- invoice functionality start -->
             <section class="invoice-print mb-1">
@@ -72,7 +95,7 @@ p{margin:0}
                             <h3 style="color:green"><b>REPUBLIC OF
                                     SOMALILAND
                                 </b></h3>
-                            <h4>MINISTER OF ENERGY AND MINERALS</h4>
+                            <h4>MINISTRY  OF ENERGY AND MINERALS</h4>
                         </center>
                     </div>
                     <div class="col-sm-2 col-12 text-right">
@@ -92,7 +115,7 @@ p{margin:0}
                 </div>
                 <center>
                     @*<h2><b>NATIONAL REFERENCE LABORATORY</b></h2>*@
-                    <h3><b>@Model.LicenceType.Name</b></h3>
+                    <h3><b><u>@Model.LicenceType.Name</u></b></h3>
 
                     <br />
                     <div class="row">
@@ -129,30 +152,30 @@ p{margin:0}
 
                     <tr>
 
-                        <td>Company Name</td>
+                        <td>Company Name:</td>
                         <td>@Model.Company.Name</td>
 
                     </tr>
                     <tr>
 
-                        <td>Physical Address</td>
+                        <td>Physical Address:</td>
                         <td>@Model.Company.Address</td>
 
                     </tr>
                     <tr>
 
-                        <td>Region</td>
+                        <td>Region:</td>
                         <td>@Model.Region</td>
 
                     </tr>
                     <tr>
 
-                        <td>Working Area</td>
-                        <td>@Model.Area</td>
+                        <td>City:</td>
+                        <td>@Model.City</td>
 
                     </tr>
                     <tr>
-                        <td>Type Of Mineral</td>
+                        <td>Type Of Mineral:</td>
                         <td>@Model.MineralType</td>
                     </tr>
 
@@ -164,23 +187,23 @@ p{margin:0}
                     style="font-size:large;font-weight:bold;color:black">
                     <tr>
 
-                        <td>Term Of The Licence</td>
+                        <td>Term Of The Licence:</td>
                         <td>@Model.TermOfTheLicence</td>
 
                     </tr>
                     <tr>
 
-                        <td>Term commence on</td>
+                        <td>Term commence on:</td>
                         <td>@Model.LicenceStartDate.Value.ToString("dd-MM-yyyy")</td>
                     </tr>
                     <tr>
 
-                        <td>Term ends On</td>
+                        <td>Term ends On:</td>
                         <td>@Model.LicenceEndDate.ToString("dd-MM-yyyy")</td>
                     </tr>
                     <tr>
 
-                        <td>Area of the licence</td>
+                        <td>Area of the licence:</td>
                         <td>@Model.Area</td>
 
                     </tr>
@@ -206,7 +229,7 @@ p{margin:0}
 
             <div class="row footer">
                 <div class="col-md-10">
-                    <h6><b>Abdilahi Farah Abdi</b></h6>
+                    <h6><b>Hon. Abdilahi Farah Abdi</b></h6>
                     <h6><b>Ministry Of Energy And Minerals</b></h6>
                 </div>
                 <div class="col-md-2">
@@ -214,9 +237,17 @@ p{margin:0}
                     <h6><b>(Signature)</b></h6>
                 </div>
             </div>
-        </section>
+            </section>
 
     </div>
+    <br>
+            <div class="bottomText">
+
+            <center>
+             Licensing And permitting Section-Department of Minerals MoEM
+            </center>
+           
+            </div>
 
 
 </body>

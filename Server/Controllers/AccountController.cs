@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using MoeSystem.Server.Contracts;
 using MoeSystem.Server.Data;
+using MoeSystem.Server.Extensions;
 using MoeSystem.Shared.Models.User;
 
 
@@ -21,7 +23,7 @@ namespace MoeSystem.Server.Controllers
             this._authManger = authManger;
             this._logger = logger;
         }
-
+        [Authorize]
         [HttpPost]
         [Route("register")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -83,17 +85,17 @@ namespace MoeSystem.Server.Controllers
             return authResponse;
         }
 
-
+        [Authorize]
         [HttpGet("getDetail/{id}")]
         public async Task<ActionResult<UserDto>> GetDetail(string id)
         {
             return await _authManger.GetUser(id);
         }
-        [HttpGet("AddRoles/{id}")]
-        public async Task<ActionResult<User>> AddRoles(string id, string role)
+        [Authorize]
+        [HttpPost("AddRoles")]
+        public async Task<ActionResult<CreateUserRoleDto>> AddRoles(CreateUserRoleDto create)
         {
-            return await _authManger.AddToRolesAsync(id, role);
-
+            return await _authManger.AddUserRole(create);
         }
 
         // [HttpPost("ResetPassword/{id}")]
@@ -117,34 +119,49 @@ namespace MoeSystem.Server.Controllers
         //         return BadRequest(ex.Message);
         //     }
         // }
-
+        [Authorize]
+        [HttpGet("ResetPassword/{id}")]
+        public async Task<ActionResult<ResetPasswordDto>> ResetPassword(string id)
+        {
+            return await _authManger.ResetPassword(id, new ResetPasswordDto { Id = id });
+        }
+        [Authorize]
         [HttpGet("GetUsers")]
         public async Task<ActionResult<List<UserDto>>> GetUsers()
         {
             return await _authManger.GetUsers();
         }
-
+        [Authorize]
         [HttpGet("GetRoles")]
-        public async Task<ActionResult<List<IdentityRole>>> GetRoles()
+        public async Task<ActionResult<List<RolesDto>>> GetRoles()
         {
             return await _authManger.GetRoles();
-
         }
-
+        [Authorize]
+        [HttpPost("AddRole")]
+        public async Task<ActionResult<CreateRoleDto>> AddRole(CreateRoleDto role)
+        {
+            return await _authManger.AddToRolesAsync(role);
+        }
+        [Authorize]
+        [HttpPost("ChangePassword")]
+        public async Task<ActionResult<bool>> ChangePassword(ChangePasswordDto changePassword)
+        {
+            return await _authManger.ChangePassword(changePassword, User.GetId());
+        }
+        [Authorize]
         [HttpGet("GetUserRoles/{userId}")]
         public async Task<ActionResult<List<string>>> GetUserRoles(string userId)
         {
             return await _authManger.GetUserRoles(userId);
-
         }
-
-
+        [Authorize]
         [HttpPut("DeactivateOrActivateUser/{id}")]
         public async Task<ActionResult<UserDto>> DeactivateUser(string id)
         {
             return await _authManger.DeactivateUser(id);
         }
-
+        [Authorize]
         [HttpDelete("DeleteRole/{userId}")]
         public async Task<ActionResult> DeleteRole(string userId, string name)
         {

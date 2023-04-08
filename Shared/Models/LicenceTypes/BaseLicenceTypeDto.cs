@@ -17,7 +17,7 @@ namespace MoeSystem.Shared.Models.LicenceTypes
 
 
         public string TermOfLicence { get; set; }
-        [Required, Range(1, 12)]
+        [Required, Range(0, 12)]
 
         public int LicencePeriod { get; set; }
         [Required]

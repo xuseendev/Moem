@@ -18,10 +18,10 @@ namespace MoeSystem.Shared.Models.LicenceCordinate
         public string Name { get; set; }
         [Required]
 
-        public double Lat { get; set; }
+        public string Lat { get; set; }
         [Required]
 
-        public double Lng { get; set; }
+        public string Lng { get; set; }
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;
 

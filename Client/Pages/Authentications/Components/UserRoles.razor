@@ -1,14 +1,17 @@
 @inject IJSRuntime jsRuntime
 @inject IDialogService Dialog
 @inject IHttpRepository<string> authService
+@inject IHttpRepository<string> roleService
 @inject HttpInerceptorService _interceptor
+@inject ISnackbar snackbarService
 
 @implements IDisposable
 
 
-<MudButton Variant="Variant.Filled" @onclick="()=>{}" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary">Add
+<MudButton Variant="Variant.Filled" @onclick="(()=>OpenCreateForm())" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary">Add
     Role
 </MudButton>
+<br>
 <div class="nk-block">
     <MudTable Loading="loading" Items="@Roles" Dense="true" Hover="@hover" Bordered="@bordered" Striped="@striped"
         Filter="new Func<string,bool>(FilterFunc1)" @bind-SelectedItem="selectedItem1">
@@ -76,9 +79,9 @@
     private async Task OpenCreateForm()
     {
         var parameters = new DialogParameters();
-        parameters.Add("UserRoles", Roles);
+            parameters.Add("ButtonText", "Register Role");
         parameters.Add("User", User);
-        var dialog = Dialog.Show<Create>("Add UserRole", parameters, maxWidth);
+        var dialog = Dialog.Show<CreateUserRole>("Add UserRole", parameters, maxWidth);
         var result = await dialog.Result;
         await OnInitializedAsync();
     }
@@ -95,6 +98,26 @@
             return true;
 
         return false;
+    }
+
+         private async Task DeleteRole(string role)
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Are you sure to delete this role?");
+        parameters.Add("ButtonText", "Yes");
+        parameters.Add("Color", Color.Warning);
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.Medium };
+
+        var dialog = Dialog.Show<ConfirmDialog>("Reset Password", parameters, options);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            loading = true;
+            await roleService.Delete($"{EndPoints.AccountEndPoint}DeleteRole/{User.Id}",$"?name={role}");
+            loading=false;
+            await OnInitializedAsync();
+            snackbarService.Add($"Successfully Deleted", Severity.Success);
+        }
     }
 
     public void Dispose()

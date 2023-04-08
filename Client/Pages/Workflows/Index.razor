@@ -3,7 +3,8 @@
 @inject IDialogService Dialog
 @inject IHttpRepository<WorkFlowDto> workflowService
 @inject HttpInerceptorService _interceptor
-@attribute [Authorize]
+@attribute [Authorize(Roles="Administrator")]
+
 
 @implements IDisposable
 
@@ -25,7 +26,7 @@
 							</div>
                               <div class="col-md-2 mb-3">
 									<div class="btn-list">
-										<a href="javascript:void()" class="btn btn-primary" @onclick="(()=>OpenCreateForm())">
+										<a href="javascript:void()" class="btn btn-primary"  @onclick="(()=>OpenCreateForm(null))">
 											<svg xmlns="http://www.w3.org/2000/svg"  class="w-inner-icn text-white" enable-background="new 0 0 24 24" viewBox="0 0 24 24"><path d="M16,11.5h-3.5V8c0-0.276123-0.223877-0.5-0.5-0.5S11.5,7.723877,11.5,8v3.5H8c-0.276123,0-0.5,0.223877-0.5,0.5s0.223877,0.5,0.5,0.5h3.5v3.5005493C11.5001831,16.2765503,11.723999,16.5001831,12,16.5h0.0006104C12.2765503,16.4998169,12.5001831,16.276001,12.5,16v-3.5H16c0.276123,0,0.5-0.223877,0.5-0.5S16.276123,11.5,16,11.5z M12,2C6.4771729,2,2,6.4771729,2,12s4.4771729,10,10,10c5.5202026-0.0062866,9.9937134-4.4797974,10-10C22,6.4771729,17.5228271,2,12,2z M12,21c-4.9705811,0-9-4.0294189-9-9s4.0294189-9,9-9c4.9682617,0.0056152,8.9943848,4.0317383,9,9C21,16.9705811,16.9705811,21,12,21z"></path></svg>
 											New Workflow
 										</a>
@@ -65,7 +66,7 @@
                 <MudTd DataLabel="Actions">
                     <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Outlined" Color="Color.Error"
                         Size="Size.Small" />
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Outlined" Color="Color.Primary"
+                    <MudIconButton Icon="@Icons.Material.Filled.Edit" @onclick="(()=>OpenCreateForm(id:context.Id))" Variant="Variant.Outlined" Color="Color.Primary"
                         Size="Size.Small" />
 
                 </MudTd>
@@ -104,9 +105,24 @@
         loading = false;
     }
 
-    private void OpenCreateForm()
+     private async Task OpenCreateForm(int? id)
     {
-        Dialog.Show<Create>("Add New Workflow", maxWidth);
+        IDialogReference dialog;
+        var parameters = new DialogParameters();
+        if (id != null)
+        {
+            parameters.Add("Id", id.Value);
+            parameters.Add("ButtonText", "Update Workflow");
+            dialog = Dialog.Show<Create>("Update Workflow", parameters, maxWidth);
+        }
+        else
+        {
+            parameters.Add("ButtonText", "Register Workflow");
+
+            dialog = Dialog.Show<Create>("Add New Workflow", parameters, maxWidth);
+        }
+        var result = await dialog.Result;
+        await OnInitializedAsync();
     }
 
     private bool FilterFunc1(WorkFlowDto element) => FilterFunc(element, searchString1);

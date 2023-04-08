@@ -33,6 +33,54 @@ namespace MoeSystem.Server.Controllers
             return await _licenceRepository.GetPagedResult(queryParameters);
         }
 
+        [HttpGet("GetExpiredLicences")]
+        public async Task<ActionResult<PagedResult<LicenceDto>>> GetExpiredLicences([FromQuery] SearchLicenceDto queryParameters)
+        {
+            return await _licenceRepository.GetExpiredLicences(queryParameters);
+        }
+
+        [HttpGet("GetExpiringLicences")]
+        public async Task<ActionResult<PagedResult<LicenceDto>>> GetExpiringLicences([FromQuery] SearchLicenceDto queryParameters)
+        {
+            return await _licenceRepository.GetExpiredLicences(queryParameters);
+        }
+
+        [HttpGet("GetLatestLicences")]
+        public async Task<ActionResult<List<LicenceDto>>> GetLatestLicences(CancellationToken cancellationToken)
+        {
+            return await _licenceRepository.GetLastLicences(cancellationToken);
+        }
+
+        [HttpGet("GetLicenceWithIds")]
+        public async Task<ActionResult<List<LicenceOnlyDto>>> GetLicenceWithIds(CancellationToken cancellationToken)
+        {
+            return await _licenceRepository.GetLicenceWithIds(cancellationToken);
+        }
+
+        [HttpGet("GetLicenceCompletedWithIds")]
+        public async Task<ActionResult<List<LicenceOnlyDto>>> GetLicenceCompletedWithIds(CancellationToken cancellationToken)
+        {
+            return await _licenceRepository.GetLicenceCompletedWithIds(cancellationToken);
+        }
+
+        [HttpGet("GetLicencePendingWithIds")]
+        public async Task<ActionResult<List<LicenceOnlyDto>>> GetLicencePendingWithIds(CancellationToken cancellationToken)
+        {
+            return await _licenceRepository.GetLicencePendingWithIds(cancellationToken);
+        }
+
+        [HttpGet("ProgressLicences")]
+        public async Task<ActionResult<PagedResult<LicenceDto>>> ProgressLicences([FromQuery] SearchLicenceDto queryParameters)
+        {
+            return await _licenceRepository.ProgressLicences(queryParameters);
+        }
+
+        [HttpGet("FinishedLicences")]
+        public async Task<ActionResult<PagedResult<LicenceDto>>> FinishedLicences([FromQuery] SearchLicenceDto queryParameters)
+        {
+            return await _licenceRepository.FinishedLicences(queryParameters);
+        }
+
         [HttpGet("SearchLicence")]
         public async Task<ActionResult<List<LicenceDto>>> SearchLicence([FromQuery] SearchLicenceDetailDto search)
         {

@@ -6,6 +6,8 @@
 @inject IHttpRepository<CompanyDetailDto> companyService
 @inject IHttpRepository<CompanyDocumentDetailDto> companyDocumentService
     @inject IDialogService Dialog
+@attribute [Authorize(Roles="Administrator,DetailCompanies")]
+
   <div class="side-app">
 					 <!-- CONTAINER -->
 					 <div class="main-container container-fluid">

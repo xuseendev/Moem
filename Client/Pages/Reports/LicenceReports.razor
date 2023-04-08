@@ -1,0 +1,238 @@
+@page "/reports/licence"
+@inject IJSRuntime jsRuntime
+@inject IDialogService Dialog
+@inject IHttpRepository<LicenceDto> licenceService
+@inject IHttpRepository<BaseLookUpDto> lookupService
+@inject HttpInerceptorService _interceptor
+@attribute [Authorize(Roles="Administrator")]
+
+@implements IDisposable
+
+<div class="side-app">
+					 <!-- CONTAINER -->
+					 <div class="main-container container-fluid">
+						<!-- PAGE-HEADER -->
+						<div class="page-header">
+								<div>
+									<h1 class="page-title">Licence Report</h1>
+								</div>
+								<div class="ms-auto pageheader-btn">
+									<ol class="breadcrumb">
+										<li class="breadcrumb-item">Home</li>
+										<li class="breadcrumb-item"><a href="javascript:void(0);">Licences</a></li>
+										<li class="breadcrumb-item active" aria-current="page">List</li>
+									</ol>
+								</div>
+							</div>
+                             
+    <div class="card mt-3 border-0">
+        <div class="card-body">
+              <EditForm Model="SearchLicence" OnValidSubmit="LoadLicences">
+                <div class="row g-2">
+                    <div class="col-md-2">
+                        <div class="search-box">
+                            <MudTextField Label="Licence Id" Variant="Variant.Outlined" @bind-Value="SearchLicence.LicenceId"
+                                For="@(() => SearchLicence.LicenceId)" />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="search-box">
+             
+                                       <MudSelect    Variant="Variant.Outlined"  Label="Licence Status" @bind-Value="SearchLicence.LicenceStatus" AnchorOrigin="Origin.BottomCenter" For="@(() => SearchLicence.LicenceStatus)">
+
+                        @foreach (var status in LicenceStatus)
+                        {
+
+                            <MudSelectItem Value="@(status.Name)">@status.Name</MudSelectItem>
+
+
+                        }
+                    </MudSelect>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="search-box">
+                              <MudTextField  Label="Company Tellphone" Variant="Variant.Outlined" InputType="InputType.Number"
+                                @bind-Value="SearchLicence.Phone" For="@(() => SearchLicence.Phone)" />
+                        </div>
+                    </div>
+                <div class="col-md-2">
+                        <div class="search-box">
+                              <MudTextField  Label="Company Name" Variant="Variant.Outlined" 
+                                @bind-Value="SearchLicence.CompanyName" For="@(() => SearchLicence.CompanyName)" />
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="search-box">
+                                             <MudDatePicker Label="Date From" @bind-Date="SearchLicence.From"  Variant="Variant.Outlined" For="@(() => SearchLicence.To)" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="search-box">
+                                              <MudDatePicker Label="Date To" @bind-Date="SearchLicence.To" Variant="Variant.Outlined" For="@(() => SearchLicence.To)" />
+
+                        </div>
+                    </div>
+
+
+
+                    <!--end col-->
+                    <div class="col-md-4 mt-2">
+                        <div>
+                     <MudButton Color="Color.Inherit" ButtonType="ButtonType.Submit"  StartIcon="@Icons.Material.Filled.Search" Style="background-color:green;color:white;">
+                        Filter
+                    </MudButton>
+                      <MudButton Color="Color.Inherit" @onclick="ExportExcel" StartIcon="@Icons.Material.Filled.ImportExport" Style="background-color:grey;color:white;">
+                        Excel
+                    </MudButton>
+                     <MudButton Color="Color.Inherit" ButtonType="ButtonType.Reset"  StartIcon="@Icons.Material.Filled.LockReset" Style="background-color:red;color:white;">
+                        Reset
+                    </MudButton>
+                        </div>
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+            </EditForm>
+        </div>
+    </div>
+    </div><!-- .nk-block-head -->
+    <div class="nk-block">
+        <MudTable Loading="loading" Items="@Licences" Dense="true" Hover="@hover" Bordered="@bordered"
+            Striped="@striped" @bind-SelectedItem="selectedItem1">
+            <ToolBarContent>
+                <MudText Typo="Typo.h6">List</MudText>
+                <MudSpacer />
+
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Id</MudTh>
+                <MudTh>Licence #</MudTh>
+                <MudTh>Company</MudTh>
+                <MudTh>Type</MudTh>
+                <MudTh>Mineral Type</MudTh>
+                <MudTh>Start Date</MudTh>
+                <MudTh>End Date</MudTh>
+                <MudTh>Status</MudTh>
+                <MudTh>CreatedBy</MudTh>
+                <MudTh>CreatedOn</MudTh>
+
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Nr">@context.Id</MudTd>
+                <MudTd DataLabel="Region">@context.LicenceId</MudTd>
+                <MudTd DataLabel="Name">@context.CompanyName</MudTd>
+                <MudTd DataLabel="Name">@context.LicenceType</MudTd>
+                <MudTd DataLabel="Name">@context.MineralType</MudTd>
+                <MudTd DataLabel="Name">@context.LicenceStartDate.Value.ToShortDateString()</MudTd>
+                <MudTd DataLabel="Name">@context.LicenceEndDate.ToShortDateString()</MudTd>
+                <MudTd DataLabel="Name">@context.Status</MudTd>
+
+                <MudTd DataLabel="CreatedBy">@context.CreatedBy</MudTd>
+                <MudTd DataLabel="CreatedOn">@context.CreatedOn.ToShortDateString()</MudTd>
+    
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+
+    </div>
+</div>
+
+
+@code {
+
+
+
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+    private bool loading = true;
+    private SearchLicenceDetailDto SearchLicence = new SearchLicenceDetailDto();
+    private LicenceDto selectedItem1 = null;
+
+
+    DialogOptions maxWidth = new DialogOptions()
+    {
+        MaxWidth = MaxWidth.Large,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+        CloseOnEscapeKey = true
+    };
+
+       private async Task ExportExcel()
+    {
+        var wb = new XLWorkbook();
+        wb.Properties.Author = "the Author";
+        wb.Properties.Title = "the Title";
+        wb.Properties.Subject = "the Subject";
+
+        var ws = wb.Worksheets.Add("LicenceReport");
+
+        ws.Cell(1, 1).Value = "Id";
+        ws.Cell(1, 2).Value = "Licence #";
+        ws.Cell(1, 3).Value = "Company";
+        ws.Cell(1, 4).Value = "Type";
+        ws.Cell(1, 5).Value = "Mineral Type";
+        ws.Cell(1, 5).Value = "Start Date";
+        ws.Cell(1, 5).Value = "End Date";
+        ws.Cell(1, 6).Value = "Status";
+
+
+        for (int row = 0; row < Licences.Count(); row++)
+        {
+            ws.Cell(row + 1, 1).Value = Licences[row].Id;
+            ws.Cell(row + 1, 2).Value = Licences[row].LicenceId;
+            ws.Cell(row + 1, 3).Value = Licences[row].CompanyName;
+            ws.Cell(row + 1, 4).Value = Licences[row].LicenceType;
+            ws.Cell(row + 1, 5).Value = Licences[row].MineralType;
+            ws.Cell(row + 1, 6).Value = Licences[row].LicenceStartDate;
+            ws.Cell(row + 1, 7).Value = Licences[row].LicenceEndDate;
+            ws.Cell(row + 1, 8).Value = Licences[row].Status;
+        }
+
+        MemoryStream XLSStream = new();
+        wb.SaveAs(XLSStream);
+        var XLSSArray = XLSStream.ToArray();
+        await SaveAs(jsRuntime, "LicenceReport" + ".xlsx", XLSSArray);
+    }
+
+      async Task SaveAs(IJSRuntime js, string fileName, byte[] data)
+    {
+        await js.InvokeAsync<object>(
+            "BlazorDownloadFile",
+            fileName,
+            Convert.ToBase64String(data)
+        );
+    }
+
+   
+    private List<LicenceDto> Licences = new List<LicenceDto>();
+    private List<BaseLookUpDto> LicenceStatus=new List<BaseLookUpDto>();
+
+    public async Task LoadLicences()
+    {
+        loading = true;
+        _interceptor.MonitorEvent();
+        Licences = await
+        licenceService.GetAll($"{EndPoints.LicencesEndPoint}SearchLicence?licenceId={SearchLicence.LicenceId}&licenceStatus={SearchLicence.LicenceStatus}&phone={SearchLicence.Phone}&companyName={SearchLicence.CompanyName}&from={SearchLicence.From}&to={SearchLicence.To}");
+        loading = false;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadLicences();
+        LicenceStatus=await lookupService.GetAll($"{EndPoints.LicenceStatusEndPoint}Lookup");
+    }
+
+
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
+
+
+}

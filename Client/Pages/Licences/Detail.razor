@@ -1,11 +1,11 @@
-@page "/licences/detail/{id:int}"
+@page "/licences/detail/{id:int}/{paramName?}"
 @using MoeSystem.Client.Pages.Licences.Components
 
 
 @inject IHttpRepository<LicenceDetailDto> licenceService
 @inject IHttpRepository<LicenceDocumentDetailDto> LicenceDocumentService
 @inject IDialogService Dialog
-@attribute [Authorize]
+@attribute [Authorize(Roles="Administrator,DetailLicenses")]
 
 <div class="side-app">
 					 <!-- CONTAINER -->
@@ -40,7 +40,34 @@
                             <MudTabPanel Text="Licence" Icon="@Icons.Filled.AccountBox">
 
                                 <LicenceDetail Licence="Licence" />
+                                <div class="nk-block">
 
+
+
+
+
+                                    <div class="nk-divider divider md"></div>
+                                    <div class="nk-block">
+                                    
+                                    <div class="bq-note">
+                                    
+                                        <div class="bq-note-item">
+                                                <div class="bq-note-text text-center">
+                                                 
+                                                                    @if(Licence.LicenceStatus=="Completed" && ParamName=="Completed"){
+
+                                                                    <MudButton Variant="Variant.Filled" class="ml-1"
+                                                        StartIcon="@Icons.Material.Filled.Print" Color="Color.Info" 
+                                                        Href="@($"/print/printlicence/{Licence.Id}")" Target="_blank"> 
+                                                                        Print Licence
+                                                                    </MudButton>
+                                                                    }   
+                                                </div>
+
+                                            </div><!-- .bq-note-item -->
+                                    </div><!-- .bq-note -->
+                                </div><!-- .nk-block -->
+                                </div>
 
 
                             </MudTabPanel>
@@ -86,6 +113,9 @@
 @code {
     [Parameter]
     public int Id { get; set; }
+
+    [Parameter]
+    public string? ParamName{get;set;}
 
     private LicenceDetailDto Licence = new LicenceDetailDto();
 
