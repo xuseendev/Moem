@@ -13,6 +13,8 @@ namespace MoeSystem.Shared.Models.Company
         public int CompanyId { get; set; }
         [Required, Range(1, int.MaxValue)]
 
+        public string Test { get; set; }
+
         public int CompanyTypeId { get; set; }
         [Required]
 
