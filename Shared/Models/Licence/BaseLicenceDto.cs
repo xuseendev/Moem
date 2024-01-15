@@ -11,7 +11,6 @@ namespace MoeSystem.Shared.Models.Licence
     {
         public int LicenceId { get; set; }
 
-        [Required, Range(1, int.MaxValue)]
         public int CompanyId { get; set; }
 
         [Required, Range(1, int.MaxValue)]
@@ -21,7 +20,7 @@ namespace MoeSystem.Shared.Models.Licence
 
         public string TermOfTheLicence { get; set; }
         public DateTime? LicenceStartDate { get; set; }
-        public DateTime LicenceEndDate { get; set; }
+        public DateTime? LicenceEndDate { get; set; }
         [Required, Range(1, int.MaxValue)]
 
 

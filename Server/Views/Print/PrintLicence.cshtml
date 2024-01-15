@@ -199,7 +199,7 @@ p{margin:0}
                     <tr>
 
                         <td>Term ends On:</td>
-                        <td>@Model.LicenceEndDate.ToString("dd-MM-yyyy")</td>
+                        <td>@Model.LicenceEndDate.Value.ToString("dd-MM-yyyy")</td>
                     </tr>
                     <tr>
 
@@ -211,12 +211,12 @@ p{margin:0}
                 </table>
                 @if (Model.LicenceType.LicenceTypeTemplate.ShowCordinate)
                 {
-                    <br />
-                    <br />
-                    <h5><b>COORDINATES OF THE MINERAL RIGHT AREA</b></h5>
+                        <br />
+                        <br />
+                        <h5><b>COORDINATES OF THE MINERAL RIGHT AREA</b></h5>
                     @foreach (var item in Model.LicenceCordinates)
                     {
-                        <h6 class="mt-2" style="font-size: large;">@item.Lat, @item.Lng</h6>
+                                <h6 class="mt-2" style="font-size: large;">@item.Lat, @item.Lng</h6>
                     }
                 }
             </div>
@@ -246,7 +246,7 @@ p{margin:0}
             <center>
              Licensing And permitting Section-Department of Minerals MoEM
             </center>
-           
+
             </div>
 
 

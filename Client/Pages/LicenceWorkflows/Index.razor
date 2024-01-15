@@ -131,7 +131,7 @@
                 <MudTd DataLabel="Name">@context.Licence.CompanyName</MudTd>
                 <MudTd DataLabel="Name">@context.Licence.MineralType</MudTd>
                 <MudTd DataLabel="Name">@context.Licence.LicenceStartDate.Value.ToShortDateString()</MudTd>
-                <MudTd DataLabel="Name">@context.Licence.LicenceEndDate.ToShortDateString()</MudTd>
+                <MudTd DataLabel="Name">@context.Licence.LicenceEndDate.Value.ToShortDateString()</MudTd>
                 <MudTd DataLabel="Region">@context.WorkFlowName</MudTd>
                 <MudTd DataLabel="Active">@if (context.Status)
                     {

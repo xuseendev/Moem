@@ -42,7 +42,7 @@ namespace MoeSystem.Server.Controllers
         [HttpGet("GetExpiringLicences")]
         public async Task<ActionResult<PagedResult<LicenceDto>>> GetExpiringLicences([FromQuery] SearchLicenceDto queryParameters)
         {
-            return await _licenceRepository.GetExpiredLicences(queryParameters);
+            return await _licenceRepository.GetExpiringLicences(queryParameters);
         }
 
         [HttpGet("GetLatestLicences")]

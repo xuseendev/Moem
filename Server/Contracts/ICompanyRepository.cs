@@ -21,5 +21,6 @@ namespace MoeSystem.Server.Contracts
         Task<List<CompanyOwnershipDto>> GetCompanyOwnerships(int? companyId);
         Task<List<CompanyLicenceDto>> GetCompanyLicences(int? companyId);
         Task<List<CompanyDto>> SearchCompanies(SearchCompanyDetailDto search);
+        Task<List<CompanyDto>> SearchCompanyFilters(CompanyFilterDto search);
     }
 }

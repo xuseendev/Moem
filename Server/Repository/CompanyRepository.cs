@@ -106,6 +106,21 @@ namespace MoeSystem.Server.Repository
             return await data.ToListAsync();
         }
 
+        public async Task<List<CompanyDto>> SearchCompanyFilters(CompanyFilterDto search)
+        {
+            var data = _context.Companies
+                .ProjectTo<CompanyDto>(_mapper.ConfigurationProvider)
+                .AsQueryable();
+
+            if (search.CompanyId != null)
+                data = data.Where(x => x.CompanyId.ToString().ToLower().Contains($"{search.CompanyId.ToLower()}"));
+
+            if (search.Phone != null) data = data.Where(x => x.TellPhone.Contains($"{search.Phone}"));
+
+            data = data.OrderByDescending(x => x.Id);
+            return await data.ToListAsync();
+        }
+
         public async Task<List<BaseLogsDto>> GetLogs(int? companyId)
         {
             return await _context.Logs.Where(x => x.CompanyId == companyId).ProjectTo<BaseLogsDto>(_mapper.ConfigurationProvider).ToListAsync();

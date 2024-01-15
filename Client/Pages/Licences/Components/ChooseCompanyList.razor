@@ -1,0 +1,82 @@
+
+
+<MudTable Items="Companies" Dense="true" Hover="true" Bordered="true" Striped="true"
+    Filter="new Func<CompanyDto,bool>(FilterCompanyOwnership)" @bind-SelectedItem="selectedOwnership">
+    <ToolBarContent>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchOwnership" Placeholder="Search" Adornment="Adornment.Start"
+            AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>Id</MudTh>
+        <MudTh>Company Id</MudTh>
+        <MudTh>Name</MudTh>
+
+        <MudTh>Company Type</MudTh>
+        <MudTh>Email</MudTh>
+        <MudTh>Phone</MudTh>
+        <MudTh>CreatedOn</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Nr">@context.Id</MudTd>
+        <MudTd DataLabel="Region">@context.CompanyId</MudTd>
+        <MudTd DataLabel="Name">
+            @context.Name
+
+        </MudTd>
+
+
+        <MudTd DataLabel="CreatedBy">@context.CompanyType</MudTd>
+        <MudTd DataLabel="CreatedBy">@context.Email</MudTd>
+        <MudTd DataLabel="CreatedBy">@context.TellPhone</MudTd>
+
+        <MudTd DataLabel="CreatedOn">@context.CreatedOn</MudTd>
+        <MudTd DataLabel="Actions">
+            <MudIconButton Icon="@Icons.Material.Filled.CheckCircle" @onclick="@(() => this.SelectCompany(context))"
+                Variant="Variant.Outlined" Color="Color.Success" Size="Size.Medium" />
+
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+   [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+  [Parameter] public EventCallback<CompanyDto> ValueChanged { get; set; }
+ 
+  public async Task SelectCompany(CompanyDto company)
+        { 
+            await ValueChanged.InvokeAsync(company);
+            MudDialog.Close(DialogResult.Ok(company));
+        }
+    private CompanyDto selectedOwnership = null;
+    private string searchOwnership = "";
+    private HashSet<CompanyDto> selectedOwnershipItems = new HashSet<CompanyDto>();
+    private bool FilterCompanyOwnership(CompanyDto element) => FilterCompanyOwnership1(element, searchOwnership);
+
+    private bool FilterCompanyOwnership1(CompanyDto element, string searchString)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (element.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (element.Id.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    }
+
+
+    [Parameter]
+    public List<CompanyDto> Companies {get;set;}
+
+
+
+
+
+  
+
+}

@@ -338,7 +338,7 @@ namespace MoeSystem.Server.Repository
                 .Take(queryParameters.PageSize)
                 .ProjectTo<LicenceDto>(_mapper.ConfigurationProvider)
                 .AsQueryable();
-            data = data.Where(q => q.LicenceEndDate < DateTime.Now);
+            data = data.Where(q => q.LicenceEndDate.Value.Date > DateTime.Now.Date);
             if (queryParameters.Name != null)
             {
                 data = data.Where(x => x.CompanyName.ToLower().Contains($"{queryParameters.Name.ToLower()}"));
@@ -362,7 +362,8 @@ namespace MoeSystem.Server.Repository
                 .Take(queryParameters.PageSize)
                 .ProjectTo<LicenceDto>(_mapper.ConfigurationProvider)
                 .AsQueryable();
-            data = data.Where(q => q.LicenceEndDate.Date.AddMonths(-1) > DateTime.Now.Date);
+            var expiryDate = DateTime.Today.AddDays(30);
+            data = data.Where(q => q.LicenceEndDate.Value >= DateTime.Today && q.LicenceEndDate <= expiryDate);
             if (queryParameters.Name != null)
             {
                 data = data.Where(x => x.CompanyName.ToLower().Contains($"{queryParameters.Name.ToLower()}"));
@@ -373,7 +374,6 @@ namespace MoeSystem.Server.Repository
                 PageNumber = queryParameters.PageNumber,
                 RecordNumber = queryParameters.PageSize,
                 TotalCount = totalSize
-
             };
 
         }

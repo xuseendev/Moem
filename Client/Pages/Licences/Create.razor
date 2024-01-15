@@ -2,28 +2,57 @@
 @inject IHttpRepository<BaseLookUpDto> lookupService
 @inject IHttpRepository<CompanyDto> companyService
 @inject IHttpRepository<LicenceTypeDto> licenceTypeService
+@inject IHttpRepository<CompanyDto> companyService
+@inject IDialogService Dialog
 @inject ISnackbar snackbarService
+@using System.Globalization;
 @inject NavigationManager navManager
-<EditForm Model="@model" OnValidSubmit="CreateLicenceType">
-    <DataAnnotationsValidator />
-    <MudGrid>
+    <EditForm Model="SearchCompany" OnValidSubmit="Search">
         <MudItem xs="12" sm="12">
             <MudCard>
                 <MudCardContent>
-                           <h6 class="overline-title text-primary-alt ">Company Information</h6>
+                    <h6 class="overline-title text-primary-alt mb-3">Search Company Information</h6>
+   
+                    <MudItem xs="12">
+                        <MudGrid>
+                        
+                            <MudItem xs="4">
+                                         <MudTextField Label="Company Id" Variant="Variant.Outlined"   @bind-Value="SearchCompany.CompanyId"
+                        For="@(() => SearchCompany.CompanyId)" />
+                            </MudItem>
+                                         <MudItem xs="4">
+                                         <MudTextField Label="Company Phone" Variant="Variant.Outlined"  @bind-Value="SearchCompany.Phone"
+                        For="@(() => SearchCompany.Phone)" />
+                            </MudItem>
+                                                      <MudItem xs="4" class="mt-3">
+                                 <MudButton Color="Color.Inherit" ButtonType="ButtonType.Submit"  StartIcon="@Icons.Material.Filled.Search" Style="background-color:green;color:white;">
+                        Filter
+                    </MudButton>
+                            </MudItem>
+                        </MudGrid>
+                    </MudItem>
+                </MudCardContent>
+            </MudCard>
+               </MudItem>
+     </EditForm>
+               <br>
+
+               
+<EditForm Model="@model" OnValidSubmit="CreateLicenceType">
+    <DataAnnotationsValidator />
+    <MudGrid>
+       
+
+                  <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+                    <h6 class="overline-title text-primary-alt ">Company Information</h6>
    
                     <MudItem xs="12">
                         <MudGrid>
                                           <MudItem xs="4">
-                                                                                                         <MudSelect Variant="Variant.Outlined" T="int" Label="Company" ValueChanged="value => CompanyOnChange(value)"  AnchorOrigin="Origin.BottomCenter"    For="@(() => model.CompanyId)">
-                        @foreach (var company in Companies)
-                        {
-
-                            <MudSelectItem Value="@(company.Id)">@company.Name</MudSelectItem>
-
-
-                        }
-                                                              </MudSelect>
+                                          <MudTextField Label="Company Id" Variant="Variant.Outlined"  Disabled="true" @bind-Value="Company.Id"
+                        For="@(() => Company.Id)" />
                             </MudItem>
                             <MudItem xs="4">
                                          <MudTextField Label="Company Name" Variant="Variant.Outlined"  Disabled="true" @bind-Value="Company.Name"
@@ -33,8 +62,28 @@
                                          <MudTextField Label="Company Phone" Variant="Variant.Outlined"  Disabled="true" @bind-Value="Company.TellPhone"
                         For="@(() => Company.TellPhone)" />
                             </MudItem>
+                                             <MudItem xs="4">
+                                         <MudTextField Label="Company Type" Variant="Variant.Outlined"  Disabled="true" @bind-Value="Company.CompanyType"
+                        For="@(() => Company.CompanyType)" />
+                            </MudItem>
+                                 <MudItem xs="4">
+                                         <MudTextField Label="Email" Variant="Variant.Outlined"  Disabled="true" @bind-Value="Company.Email"
+                        For="@(() => Company.Email)" />
+                            </MudItem>
+                                    <MudItem xs="4">
+                                         <MudTextField Label="REgion" Variant="Variant.Outlined"  Disabled="true" @bind-Value="Company.Region"
+                        For="@(() => Company.Region)" />
+                            </MudItem>
                         </MudGrid>
                     </MudItem>
+                </MudCardContent>
+            </MudCard>
+               </MudItem>
+        <MudItem xs="12" sm="12">
+            <MudCard>
+                <MudCardContent>
+                    
+
                          <h6 class="overline-title text-primary-alt mt-5">Licence Information</h6>
                           <MudItem xs="12" class="mb-2">
                         <MudGrid>
@@ -165,7 +214,9 @@
 
 @code {
     CreateLicenceDto model = new CreateLicenceDto();
+    private CompanyFilterDto SearchCompany=new CompanyFilterDto();
      private CompanyDto Company =new CompanyDto();
+     private List<CompanyDto> ListCompanies=new List<CompanyDto>();
      private LicenceTypeDto LicenceType=new LicenceTypeDto();
          [Parameter] 
     public int? Id { get; set; }
@@ -173,23 +224,48 @@
     public string ButtonText { get; set; }
 
     bool loading = false;
+    bool searchLoading = false;
     [Parameter]
     public EventCallback Workflows { get; set; }
         private List<string> Types = new List<string>(){
          "Indivudual",
          "Group"
 };
+
+  
+
+    private async Task Search(){
+         searchLoading = true;
+        ListCompanies = await
+        companyService.GetAll($"{EndPoints.CompaniesEndPoint}SearchCompanyFilters?companyId={SearchCompany.CompanyId}&phone={SearchCompany.Phone}&name={SearchCompany.Name}");
+        searchLoading = false;
+        IDialogReference dialog;
+        var parameters = new DialogParameters();
+        DialogOptions maxWidth = new DialogOptions()
+        {
+        MaxWidth = MaxWidth.Large,
+        FullWidth = true,
+        Position = DialogPosition.TopCenter,
+        CloseOnEscapeKey = true
+        };
+        parameters.Add("Companies",ListCompanies);
+       var  result=await Dialog.Show<MoeSystem.Client.Pages.Licences.Components.ChooseCompanyList>("Choose Company",parameters, maxWidth).Result;
+        if (!result.Cancelled)
+        {
+            Company = (CompanyDto)(result.Data ?? new CompanyDto());
+        }
+    }
     private async Task CreateLicenceType()
     {
         loading = true;
-        
+        model.CompanyId=Company.Id;
         if(Id==null){
 
-            await licenceService.Post($"{EndPoints.LicencesEndPoint}GenerateLicence", model);
+           var licence= await licenceService.PostAsync($"{EndPoints.LicencesEndPoint}GenerateLicence", model);
             SnackMessage("Succesfully Saved Record", Severity.Success);
-            //navManager.NavigateTo($"/licences/detail/{response.Id}");
+            navManager.NavigateTo($"/licences/detail/{licence.Id}");
         }else{
-            model.Id=Id.Value;
+             model.Id=Id.Value;
              await licenceService.Update($"{EndPoints.LicencesEndPoint}", model,Id.Value);
         SnackMessage("Succesfully Saved Record", Severity.Success); 
         }
@@ -207,7 +283,7 @@
         protected override async Task OnInitializedAsync()
     {
         LicenceTypes = await lookupService.GetAll($"{EndPoints.LicenceTypesEndPoint}LookUp");
-        Companies = await lookupService.GetAll($"{EndPoints.CompaniesEndPoint}LookUp");
+        //Companies = await lookupService.GetAll($"{EndPoints.CompaniesEndPoint}LookUp");
         MineralTypes = await lookupService.GetAll($"{EndPoints.MineralTypeEndPoint}LookUp");
         Regions = await lookupService.GetAll($"{EndPoints.RegionEndPoint}LookUp");
     }
@@ -235,8 +311,7 @@
     private async Task CityOnChange(int value)
     {
         model.CityId =value;
-        Areas = await lookupService.GetAll($"{EndPoints.AreaEndPoint}LookUp/{model.CityId}");
-        
+        Areas = await lookupService.GetAll($"{EndPoints.AreaEndPoint}LookUp/{model.CityId}");  
     }
 
      private async Task CompanyOnChange(int value)
@@ -250,10 +325,12 @@
     private void IssueDateOnChange(DateTime? value)
     {
         model.LicenceStartDate =value.Value;
+        model.LicenceEndDate=null;
           var days=0;
         switch(LicenceType.LicencePeriodType){
             case "Year":
-            days=365 * LicenceType.LicencePeriod;
+              Calendar myCal = CultureInfo.InvariantCulture.Calendar;
+            days=myCal.GetDaysInYear(value.Value.Year) * LicenceType.LicencePeriod;
             break;
             case "Month":
             days=30 * LicenceType.
@@ -261,12 +338,11 @@
             break;
             case "End Year":
             var endYear = new DateTime(value.Value.Year, 12, 31);
-            days=Convert.ToInt32((endYear - DateTime.Now).TotalDays);
+            days=Convert.ToInt32((endYear - value.Value).TotalDays);
             break;
             default:
             days=1 * LicenceType.LicencePeriod;
             break;
-
         }
         model.LicenceEndDate=model.LicenceStartDate.Value.AddDays(days);
         

@@ -50,6 +50,12 @@ namespace MoeSystem.Server.Controllers
             return await _companyRepository.SearchCompanies(search);
         }
 
+        [HttpGet("SearchCompanyFilters")]
+        public async Task<ActionResult<List<CompanyDto>>> SearchCompanyFilters([FromQuery] CompanyFilterDto search)
+        {
+            return await _companyRepository.SearchCompanyFilters(search);
+        }
+
         [HttpGet("GetExpiredCompany")]
         public async Task<ActionResult<PagedResult<CompanyLicenceDto>>> GetExpiredCompany([FromQuery] SearchCompanyDto queryParameters)
         {
