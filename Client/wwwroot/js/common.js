@@ -80,7 +80,7 @@ function initializeInactivityTimer(dotnetHelper) {
 
     function resetTimer() {
         clearTimeout(timer);
-        timer = setTimeout(logout, 1200000);
+        timer = setTimeout(logout, 25200000);
     }
 
     function logout() {

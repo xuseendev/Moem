@@ -25,6 +25,9 @@ namespace MoeSystem.Shared.Models.Licence
         public string RegionCode { get; set; }
         public string City { get; set; }
         public string Area { get; set; }
+        public string SignatureName { get; set; }
+        public string SignatureTitle { get; set; }
+
 
     }
 }

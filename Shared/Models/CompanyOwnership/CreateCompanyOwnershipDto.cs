@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MoeSystem.Shared.Models.CompanyOwnership
+﻿namespace MoeSystem.Shared.Models.CompanyOwnership
 {
-    public class CreateCompanyOwnershipDto:BaseCompanyOwnershipDto
+    public class CreateCompanyOwnershipDto : BaseCompanyOwnershipDto
     {
     }
 }

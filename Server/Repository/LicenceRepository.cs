@@ -82,7 +82,7 @@ namespace MoeSystem.Server.Repository
             else
             {
                 licence.LicenceStatus = licenceWorkFlow.LicenceStatus.Name;
-                await SendMessage("Licence Finished", licence.Id);
+                //await SendMessage("Licence Finished", licence.Id);
             }
             licence.Status = licenceWorkFlow.LicenceStatus.Name;
             await logsRepository.AddAsync(new Logs { Description = $"Approved workflow of {licence.Status} on {DateTime.Now}", Dated = DateTime.Now, LicenceId = licence.Id }, context);
@@ -145,7 +145,7 @@ namespace MoeSystem.Server.Repository
                 LicenceId = licence.Id
             }, context);
             //transaction.Commit();
-            await SendMessage("Licence Registration", licence.Id);
+            //await SendMessage("Licence Registration", licence.Id);
             return _mapper.Map<CreateLicenceDto>(licence);
 
         }
@@ -194,9 +194,15 @@ namespace MoeSystem.Server.Repository
         public async Task<LicenceDetailPrintDto> GetLicenceDetailPrint(int? id)
         {
             var licence = await _context.Licences.ProjectTo<LicenceDetailPrintDto>(_mapper.ConfigurationProvider).AsNoTracking().FirstOrDefaultAsync(q => q.Id == id.Value);
+            var signature = await _context.Signatures.OrderByDescending(x => x.CreatedOn).FirstOrDefaultAsync();
             if (licence is null)
             {
                 throw new NotFoundException(nameof(GetLicenceDetailPrint), id);
+            }
+            if (signature != null)
+            {
+                licence.SignatureName = signature.Name;
+                licence.SignatureTitle = signature.Title;
             }
             return licence;
         }
@@ -298,6 +304,10 @@ namespace MoeSystem.Server.Repository
             if (queryParameters.LicenceId != null)
             {
                 data = data.Where(x => x.LicenceId.ToString().ToLower().Contains($"{queryParameters.Name.ToLower()}"));
+            }
+            if (queryParameters.Name != null)
+            {
+                data = data.Where(x => x.CompanyName.ToLower().Contains($"{queryParameters.Name.ToLower()}"));
             }
 
             return new PagedResult<LicenceDto>

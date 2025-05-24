@@ -94,8 +94,9 @@ namespace MoeSystem.Server.Repository
                 .ProjectTo<CompanyDto>(_mapper.ConfigurationProvider)
                 .AsQueryable();
             data = data.Where(x => x.CreatedOn.Date >= search.From.Value.Date && x.CreatedOn.Date <= search.To.Value.Date);
-            if (search.CompanyId != null)
-                data = data.Where(x => x.CompanyId.ToString().ToLower().Contains($"{search.CompanyId.ToLower()}"));
+
+            if (search.CompanyId.HasValue)
+                data = data.Where(x => x.Id.Equals(search.CompanyId));
 
 
 
@@ -112,8 +113,8 @@ namespace MoeSystem.Server.Repository
                 .ProjectTo<CompanyDto>(_mapper.ConfigurationProvider)
                 .AsQueryable();
 
-            if (search.CompanyId != null)
-                data = data.Where(x => x.CompanyId.ToString().ToLower().Contains($"{search.CompanyId.ToLower()}"));
+            if (search.CompanyId.HasValue)
+                data = data.Where(x => x.Id.Equals(search.CompanyId));
 
             if (search.Phone != null) data = data.Where(x => x.TellPhone.Contains($"{search.Phone}"));
 

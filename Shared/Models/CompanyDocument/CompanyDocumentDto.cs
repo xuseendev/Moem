@@ -1,12 +1,4 @@
-﻿using MoeSystem.Shared.Models.Company;
-using MoeSystem.Shared.Models.DocumentType;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace MoeSystem.Shared.Models.CompanyDocument
+﻿namespace MoeSystem.Shared.Models.CompanyDocument
 {
     public class CompanyDocumentDto : BaseCompanyDocumentDto
     {

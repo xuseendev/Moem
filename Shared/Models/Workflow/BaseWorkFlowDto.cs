@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace MoeSystem.Shared.Models.Workflow
 {
     public class BaseWorkFlowDto
     {
-       [Required, Range(1, int.MaxValue)]
+        [Required, Range(1, int.MaxValue)]
 
 
         public int LicenceStatusId { get; set; }
@@ -17,7 +12,7 @@ namespace MoeSystem.Shared.Models.Workflow
 
 
         public int LicenceTypeId { get; set; }
-    [Required, Range(1, int.MaxValue)]
+        [Required, Range(1, int.MaxValue)]
 
 
         public int UserGroupId { get; set; }

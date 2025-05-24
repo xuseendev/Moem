@@ -1,16 +1,6 @@
-﻿using MoeSystem.Shared.Models.Areas;
-using MoeSystem.Shared.Models.City;
-using MoeSystem.Shared.Models.CompanyDocument;
-using MoeSystem.Shared.Models.CompanyLicence;
+﻿using MoeSystem.Shared.Models.CompanyLicence;
 using MoeSystem.Shared.Models.CompanyOwnership;
-using MoeSystem.Shared.Models.CompanyTypes;
 using MoeSystem.Shared.Models.Licence;
-using MoeSystem.Shared.Models.Region;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MoeSystem.Shared.Models.Company
 {

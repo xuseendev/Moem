@@ -5,160 +5,128 @@
 @attribute [Authorize]
 
 @layout EmptyLayout
-<style>
-    media(max-width: 575.98px) {
-        html body .content .content-wrapper {
-            padding: calc(2.2rem - 0.4rem) calc(2.2rem - 1rem) 0;
-        }
-    }
+<div class="row">
+    <div class="col-md-12">
+        <div class="card custom-card" style="border-color:green;border-style:solid;">
 
-    media(max-width: 575.98px) {
+            <div class="d-flex align-items-center justify-content-between w-100">
+                <img src="/images/som.png" width="100" height="100" id="clicked" />
+                <div class="">
 
-        body.navbar-static .app-content .header-navbar .navbar-container,
-        body.navbar-sticky .app-content .header-navbar .navbar-container {
-            padding-left: 1rem;
-            padding-right: 0.5rem;
-        }
-    }
-
-    mediascreen and (-ms-high-contrast: active),
-    (-ms-high-contrast: none) {
-        html.full-screen {
-            width: 100%;
-        }
-
-        html.full-screen .content.app-content {
-            height: 100%;
-            overflow: scroll;
-            overflow-x: hidden;
-        }
-    }
-
-    }
-</style>
-
-<body>
-    <div class="nk-block">
-        <div class="invoice invoice-print">
-            <!-- info row -->
-            <div class="row invoice-info">
-                <div class="col-sm-4 invoice-col">
-                    <img src="images/som.png" width="100" height="100" />
+                    <h3 style="color:green"><b>REPUBLIC OF
+                            SOMALILAND
+                        </b></h3>
+                    <h4>MINISTRY OF ENERGY AND MINERALS</h4>
+                    <h4><b><u>@Licence.LicenceType.Name</u></b></h4>
                 </div>
-                <!-- /.col -->
-                <div class="col-sm-4 invoice-col">
+                <img src="/images/moe.jpg" width="100" height="100" id="clicked" />
 
-
-                    <address>
-
-                        <h5><b>REPUBLIC OF SOMALILAND</b></h5><br>
-                        <h5><b>MINISTRY OF ENERGY AND MINERALS</b></h5><br>
-
-                    </address>
-                </div>
-                <!-- /.col -->
-                <div class="col-sm-4 invoice-col">
-                    <img src="images/moe.jpg" width="100" height="100" />
-
-                </div>
-                <!-- /.col -->
             </div>
-            <!-- /.row -->
 
-
-
-
-
-
-
-
-
-            <div class="invoice-bills">
-                <div class="table-responsive">
-                    <table class="table  table-bordered" style="font-size:medium;font-weight:bold;color:black">
-
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-6">
+                        <p class="fw-normal fs-24 mb-1">Invoice From:</p>
+                        <address> Street, Line <br>State, City <br>Country, Postal Code <br>invoice@spruko.com
+                        </address>
+                    </div>
+                    <div class="col-6 text-end">
+                        <p class="fw-normal fs-24 mb-1">Invoice To:</p>
+                        <address> Street Address <br>State, City <br>Country, Postal Code <br>invoice@spruko.com
+                        </address>
+                    </div>
+                </div>
+                <div class="table-responsive inv-det-th">
+                    <table class="table text-nowrap table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Item</th>
+                                <th scope="col" class="text-center">Quantity</th>
+                                <th scope="col" class="text-end">Unit Price</th>
+                                <th scope="col" class="text-end">Sub Total</th>
+                            </tr>
+                        </thead>
                         <tbody>
                             <tr>
-                                <td>Licence Id</td>
-                                <td>@Licence.LicenceId</td>
-
-                            </tr>
-                            <tr>
-                                <td>Company Name</td>
-                                <td>@Licence.Company.Name</td>
-
-                            </tr>
-                            <tr>
-                                <td>Regoin</td>
-                                <td>@Licence.Region</td>
-
-                            </tr>
-                            <tr>
-                                <td>Type Of Mineral</td>
-                                <td>@Licence.LicenceType.Name</td>
-
-                            </tr>
-                            <tr>
-                                <td>Term Of The Licence</td>
-                                <td>@Licence.TermOfTheLicence</td>
-
-                            </tr>
-                            <tr>
-                                <td>Term Commense On</td>
+                                <td class="text-center fw-normal">1</td>
                                 <td>
-                                    @Licence.LicenceStartDate.Value.ToString("dd-MM-yyyy")
-
+                                    <h6 class="inv-det-td">Website wireframe for 2 pages</h6> <span
+                                        class="text-muted fw-normal"> doloremque laudantium unde ut perspiciatis omnis
+                                        iste natus voluptatem accusantium Sed error sit </span>
                                 </td>
-
+                                <td class="text-center">8</td>
+                                <td class="text-end">$2,240</td>
+                                <td class="text-end">$4,480</td>
                             </tr>
                             <tr>
-                                <td>Term Commense On</td>
+                                <td class="text-center fw-normal">2</td>
                                 <td>
-                                    @Licence.LicenceEndDate.Value.ToString("dd-MM-yyyy")
-
+                                    <h6 class="inv-det-td">E-commerce Development</h6> <span
+                                        class="text-muted fw-normal"> dignissimos eos et ducimus et iusto odio At
+                                        veroaccusamus praesentium qui blanditiis voluptatum </span>
                                 </td>
-
+                                <td class="text-center">15</td>
+                                <td class="text-end">$1,600</td>
+                                <td class="text-end">$6,400</td>
                             </tr>
                             <tr>
-                                <td>Area</td>
-                                <td>@Licence.Area</td>
-
+                                <td class="text-center fw-normal">3</td>
+                                <td>
+                                    <h6 class="inv-det-td">Design and layout of 2 pages in Photoshop</h6> <span
+                                        class="text-muted fw-normal"> Dolor in reprehenderit Duis in voluptate aute
+                                        irure nulla esse cillum dolore eu fugiat pariatur velit </span>
+                                </td>
+                                <td class="text-center">14</td>
+                                <td class="text-end">$530</td>
+                                <td class="text-end">$1,060</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center fw-normal">4</td>
+                                <td>
+                                    <h6 class="inv-det-td">Logo Design</h6> <span class="text-muted fw-normal"> Lorem
+                                        ipsum dolor dignissimos, consectetur irure nulla esse cillum adipiscing elit,
+                                        sed do eiusmod </span>
+                                </td>
+                                <td class="text-center">5</td>
+                                <td class="text-end">$820</td>
+                                <td class="text-end">$2,460</td>
+                            </tr>
+                            <tr>
+                                <td class="text-center fw-normal">5</td>
+                                <td>
+                                    <h6 class="inv-det-td">PSD to HTML coding</h6> <span class="text-muted fw-normal">
+                                        voluptate aute irure nulla sit amet, consectetur adipiscing elit, sed do eiusmod
+                                        tempor incididunt ut labore </span>
+                                </td>
+                                <td class="text-center">24</td>
+                                <td class="text-end">$630</td>
+                                <td class="text-end">$1,890</td>
+                            </tr>
+                            <tr class="inv-det">
+                                <td colspan="4" class="text-black2 fw-bold text-end">TOTAL</td>
+                                <td class="inv-det-tm text-end">$11,160</td>
                             </tr>
                         </tbody>
-                        @* <tfoot>
-                            <tr>
-                            <td colspan="2"></td>
-                            <td colspan="2">Subtotal</td>
-                            <td>$435.00</td>
-                            </tr>
-                            <tr>
-                            <td colspan="2"></td>
-                            <td colspan="2">Processing fee</td>
-                            <td>$10.00</td>
-                            </tr>
-                            <tr>
-                            <td colspan="2"></td>
-                            <td colspan="2">TAX</td>
-                            <td>$43.50</td>
-                            </tr>
-                            <tr>
-                            <td colspan="2"></td>
-                            <td colspan="2">Grand Total</td>
-                            <td>$478.50</td>
-                            </tr>
-                            </tfoot> *@
                     </table>
                 </div>
-            </div><!-- .invoice-bills -->
-
-        </div><!-- .invoice -->
-    </div><!-- .nk-block -->
-    @* <script>
-        function printPromot() {
-        window.print();
-        }
-        </script> *@
-</body>
+            </div>
+            <div class="card-footer">
+                <div class="inv-det justify-content-end text-end d-block d-sm-flex">
+                    <div class="me-0 me-sm-2"> <button type="button" class="btn btn-primary"
+                            onclick="javascript:window.print();"> <i class="las la-wallet"></i> Pay Invoice </button>
+                    </div>
+                    <div class="mt-2 mt-sm-0 me-0 me-sm-2"> <button type="button" class="btn btn-success"
+                            onclick="javascript:window.print();"> <i class="lab la-telegram-plane"></i> Send Invoice
+                        </button> </div>
+                    <div class="mt-2 mt-sm-0"> <button type="button" class="btn btn-info"
+                            onclick="javascript:window.print();"> <i class="las la-print"></i> Print Invoice </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
     [Parameter]

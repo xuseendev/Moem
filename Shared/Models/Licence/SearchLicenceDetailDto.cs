@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace MoeSystem.Shared.Models.Licence
 {
     public class SearchLicenceDetailDto

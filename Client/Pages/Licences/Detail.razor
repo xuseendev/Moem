@@ -5,24 +5,24 @@
 @inject IHttpRepository<LicenceDetailDto> licenceService
 @inject IHttpRepository<LicenceDocumentDetailDto> LicenceDocumentService
 @inject IDialogService Dialog
-@attribute [Authorize(Roles="Administrator,DetailLicenses")]
+@attribute [Authorize(Roles = "Administrator,DetailLicenses")]
 
 <div class="side-app">
-					 <!-- CONTAINER -->
-					 <div class="main-container container-fluid">
-						<!-- PAGE-HEADER -->
-						<div class="page-header">
-								<div>
-									<h1 class="page-title">Licence Detail </h1>
-								</div>
-								<div class="ms-auto pageheader-btn">
-									<ol class="breadcrumb">
-										<li class="breadcrumb-item">Home</li>
-										<li class="breadcrumb-item"><a href="javascript:void(0);">Licence</a></li>
-										<li class="breadcrumb-item active" aria-current="page">Detail</li>
-									</ol>
-								</div>
-							</div>
+    <!-- CONTAINER -->
+    <div class="main-container container-fluid">
+        <!-- PAGE-HEADER -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">Licence Detail </h1>
+            </div>
+            <div class="ms-auto pageheader-btn">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">Home</li>
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Licence</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Detail</li>
+                </ol>
+            </div>
+        </div>
         <div class="card">
             <div class="card-aside-wrap">
                 <div class="card-content">
@@ -35,7 +35,7 @@
                     else
                     {
                         <MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true" PanelClass="pa-6"
-                        Color="@Color.Success">
+                            Color="@Color.Success">
 
                             <MudTabPanel Text="Licence" Icon="@Icons.Filled.AccountBox">
 
@@ -48,25 +48,26 @@
 
                                     <div class="nk-divider divider md"></div>
                                     <div class="nk-block">
-                                    
-                                    <div class="bq-note">
-                                    
-                                        <div class="bq-note-item">
-                                                <div class="bq-note-text text-center">
-                                                 
-                                                                    @if(Licence.LicenceStatus=="Completed" && ParamName=="Completed"){
 
-                                                                    <MudButton Variant="Variant.Filled" class="ml-1"
-                                                        StartIcon="@Icons.Material.Filled.Print" Color="Color.Info" 
-                                                        Href="@($"/print/printlicence/{Licence.Id}")" Target="_blank"> 
-                                                                        Print Licence
-                                                                    </MudButton>
-                                                                    }   
+                                        <div class="bq-note">
+
+                                            <div class="bq-note-item">
+                                                <div class="bq-note-text text-center">
+
+                                                    @if (Licence.LicenceStatus == "Completed" && ParamName == "Completed")
+                                                    {
+
+                                                        <MudButton Variant="Variant.Filled" class="ml-1"
+                                                            StartIcon="@Icons.Material.Filled.Print" Color="Color.Info"
+                                                            Href="@($"/print/printlicence/{Licence.Id}")" Target="_blank">
+                                                            Print Licence
+                                                        </MudButton>
+                                                    }
                                                 </div>
 
                                             </div><!-- .bq-note-item -->
-                                    </div><!-- .bq-note -->
-                                </div><!-- .nk-block -->
+                                        </div><!-- .bq-note -->
+                                    </div><!-- .nk-block -->
                                 </div>
 
 
@@ -74,7 +75,7 @@
                             <MudTabPanel Text="Documents" Icon="@Icons.Filled.Article">
 
                                 <LicenceDocuments LicenceId="Licence.Id" DialogOptions="maxWidth"
-                                LicenceEventCallBack="GetLicence" />
+                                    LicenceEventCallBack="GetLicence" />
                             </MudTabPanel>
                             <MudTabPanel Text="Cordinates" Icon="@Icons.Filled.LocationOn">
 
@@ -115,7 +116,7 @@
     public int Id { get; set; }
 
     [Parameter]
-    public string? ParamName{get;set;}
+    public string? ParamName { get; set; }
 
     private LicenceDetailDto Licence = new LicenceDetailDto();
 

@@ -1,5 +1,3 @@
-using MoeSystem.Shared.Models.UserGroup;
-
 namespace MoeSystem.Shared.Models.User
 {
     public class UserDto

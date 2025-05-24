@@ -13,6 +13,7 @@ using MoeSystem.Server.Data;
 using MoeSystem.Server.Middleware;
 using MoeSystem.Server.Repository;
 using Serilog;
+using Server.Data;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -126,6 +127,7 @@ builder.Services.AddResponseCaching(options =>
 builder.Services.AddEndpointsApiExplorer();
 //builder.Services.AddGraphQLServer().AddQueryType<Query>;
 var app = builder.Build();
+var ss = new SeedService(app.Services);
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
